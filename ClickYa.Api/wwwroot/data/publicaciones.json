@@ -1,0 +1,42 @@
+[
+  {
+    "Id": 17,
+    "TecnicoId": 7,
+    "Titulo": "buena",
+    "Descripcion": "buena",
+    "Imagenes": [
+      "/uploads/47cf6c6e-15ba-4c79-a311-6a744b4df0cc.png",
+      "/uploads/e392ecc1-d309-4e2d-8965-e228ddd37397.png",
+      "/uploads/83d1293f-4171-45e3-be74-99d9eafe18bf.png",
+      "/uploads/ca6afd44-153c-44b5-bbc0-330b788e02be.png",
+      "/uploads/90f39943-eade-4e05-825e-2addf62d0d7f.png"
+    ],
+    "FechaCreacion": "2026-05-20T14:36:29.8796397-03:00"
+  },
+  {
+    "Id": 18,
+    "TecnicoId": 5,
+    "Titulo": "trabajo nuevo",
+    "Descripcion": "mejor que antes",
+    "Imagenes": [
+      "/uploads/f99035a2-c044-427d-ae7c-3d4731813218.webp",
+      "/uploads/559ebce6-4439-450b-a68a-8dd7d00c0e7d.jpg",
+      "/uploads/9f4c8f45-4c91-44b0-a606-4ed489039168.jpg",
+      "/uploads/70867249-8d69-48b0-8d41-35ece4c40ffe.jpg"
+    ],
+    "FechaCreacion": "2026-05-20T15:58:15.3337426-03:00"
+  },
+  {
+    "Id": 19,
+    "TecnicoId": 6,
+    "Titulo": "plomeria",
+    "Descripcion": "este tanbajo se ralizo con buenas herramientos y buen tiempo. muchA GRACIAS",
+    "Imagenes": [
+      "/uploads/56aa27be-dcfb-4110-a0af-e1e7307a670b.png",
+      "/uploads/3f54270e-b1a6-4490-b576-a9ad61c9d4c1.png",
+      "/uploads/3fe10881-9fc5-4951-82dc-0cc59ea93a27.png",
+      "/uploads/a11ff353-a07a-4b86-b235-3c0f333b48ff.png"
+    ],
+    "FechaCreacion": "2026-05-20T16:06:36.4859159-03:00"
+  }
+]

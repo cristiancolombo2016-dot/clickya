@@ -1,0 +1,36 @@
+[
+  {
+    "Id": 1,
+    "Nombre": "Rotiser\u00EDa Tio Alberto ",
+    "Rubro": "Comidas",
+    "Categoria": "parrilla",
+    "Telefono": "\u002B5493364612832",
+    "Descripcion": "Sin descripci\u00F3n",
+    "Estado": "CONFIABLE",
+    "CreatedAt": "2026-05-21T00:00:22.3448062-03:00",
+    "LogoUrl": null,
+    "PortadaUrl": null,
+    "Token": "d4766e104580420b920ee0ecf800e522",
+    "ComercioId": 1,
+    "Email": "",
+    "Password": "",
+    "EsDestacado": false
+  },
+  {
+    "Id": 2,
+    "Nombre": "Adidas club",
+    "Rubro": "Tiendas",
+    "Categoria": "deportes",
+    "Telefono": "\u002B5493364612832",
+    "Descripcion": "Sin descripci\u00F3n",
+    "Estado": "CONFIABLE",
+    "CreatedAt": "2026-05-21T18:42:12.9114336-03:00",
+    "LogoUrl": null,
+    "PortadaUrl": null,
+    "Token": "3556263754494687b83a76278f521bfb",
+    "ComercioId": 3,
+    "Email": "cristiancolombo2016@gmail.com",
+    "Password": "Piscola123",
+    "EsDestacado": false
+  }
+]

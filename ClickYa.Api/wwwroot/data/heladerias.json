@@ -1,0 +1,54 @@
+[
+  {
+    "ComercioId": 13,
+    "Sabores": [
+      {
+        "Nombre": "chocolate",
+        "Disponible": true
+      },
+      {
+        "Nombre": "frutilla",
+        "Disponible": true
+      },
+      {
+        "Nombre": "vainilla",
+        "Disponible": true
+      },
+      {
+        "Nombre": "fernet con coca",
+        "Disponible": true
+      },
+      {
+        "Nombre": "chocolate roger",
+        "Disponible": true
+      }
+    ],
+    "PrecioCuarto": 1000,
+    "PrecioMedio": 15000,
+    "PrecioKilo": 3000
+  },
+  {
+    "ComercioId": 14,
+    "Sabores": [
+      {
+        "Nombre": "chocolate",
+        "Disponible": true
+      },
+      {
+        "Nombre": "vainilla",
+        "Disponible": true
+      },
+      {
+        "Nombre": "frutilla",
+        "Disponible": true
+      },
+      {
+        "Nombre": "coca con fernet",
+        "Disponible": true
+      }
+    ],
+    "PrecioCuarto": 1000,
+    "PrecioMedio": 2000,
+    "PrecioKilo": 3000
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 1,
+    "Rubro": "Electricista",
+    "Descripcion": "se me quem\u00F3 el contactor",
+    "ImagenUrl": "/uploads/a0ba77d9-6e4c-4ea9-a5c7-09eca498a258.jpg",
+    "WhatsAppCliente": "93364612832",
+    "Fecha": "2026-05-12T20:26:51.7587674-03:00",
+    "Estado": "Pendiente"
+  },
+  {
+    "Id": 2,
+    "Rubro": "Electricista",
+    "Descripcion": "se cort\u00F3 toda la loooo",
+    "ImagenUrl": "/uploads/fe38dacc-d2c5-4fa7-b001-4f9457e1b54c.jpg",
+    "WhatsAppCliente": "93364612832",
+    "Fecha": "2026-05-12T20:33:22.5821935-03:00",
+    "Estado": "Aceptado"
+  }
+]

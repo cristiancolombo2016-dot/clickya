@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "ComercioId": 1,
+    "Titulo": "cumple",
+    "Descripcion": "wewrwe",
+    "Precio": "$5000",
+    "Rubro": "comida",
+    "ImagenUrl": "/uploads/20b72658-9340-4372-830e-a86a0a057f41.jfif",
+    "ImagenesUrls": [
+      "/uploads/20b72658-9340-4372-830e-a86a0a057f41.jfif"
+    ],
+    "DatosExtraJson": "{}",
+    "FechaCreacion": "2026-05-16T22:41:35.2122422-03:00"
+  },
+  {
+    "Id": 2,
+    "ComercioId": 3,
+    "Titulo": "Las mejores zapas",
+    "Descripcion": "Venite y conversamos al menos un rato con unos mates y zapas nuevas ",
+    "Precio": "$12000",
+    "Rubro": "tienda",
+    "ImagenUrl": "/uploads/706fdc97-6978-4100-848a-957d65e9c262.png",
+    "ImagenesUrls": [
+      "/uploads/706fdc97-6978-4100-848a-957d65e9c262.png",
+      "/uploads/e2e387df-9b03-4917-8692-edb0112105f9.png",
+      "/uploads/8639fe20-f19a-4d16-bd63-c73d566793b5.png",
+      "/uploads/bd12f9d9-17e4-4484-a552-346e4b0db32a.png",
+      "/uploads/8261dd6e-64c0-4a78-9e7d-0961ca880bb1.png"
+    ],
+    "DatosExtraJson": "{}",
+    "FechaCreacion": "2026-05-21T18:49:19.8027373-03:00"
+  }
+]

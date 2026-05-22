@@ -1,0 +1,38 @@
+[
+  {
+    "Id": 5,
+    "Nombre": "el super t\u00E9cnico ",
+    "Rubro": "gasista",
+    "WhatsApp": "\u002B5493364612832",
+    "Token": "717aeeacee654d30b455acb10745daa8",
+    "Activo": true,
+    "EsPremium": false,
+    "FotoPortada": "/uploads/25251454-5c0c-42d2-a740-464c320acb8b.webp",
+    "Logo": "/uploads/909896ac-af6e-4775-8288-6f23a00dc5b0.png",
+    "Ubicacion": "",
+    "Direccion": "",
+    "Descripcion": "",
+    "FechaPremium": null,
+    "Instagram": "",
+    "Latitud": 0,
+    "Longitud": 0
+  },
+  {
+    "Id": 6,
+    "Nombre": "el plomero",
+    "Rubro": "plomero",
+    "WhatsApp": "\u002B5493364612832",
+    "Token": "9d7234e432ac4fd1bda752154405f418",
+    "Activo": true,
+    "EsPremium": true,
+    "FotoPortada": "/uploads/4ba66c8f-6e38-4cc1-b215-73a88a0a24e0.png",
+    "Logo": "/uploads/fd1a54dc-3c5c-4e3d-87a4-5c1e1f0b7ca8.jpg",
+    "Ubicacion": "",
+    "Direccion": "av. savio 825",
+    "Descripcion": "venite",
+    "FechaPremium": "2026-05-21T20:46:59.299Z",
+    "Instagram": "",
+    "Latitud": 0,
+    "Longitud": 0
+  }
+]

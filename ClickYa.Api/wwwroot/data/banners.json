@@ -1,0 +1,292 @@
+[
+  {
+    "Id": 7,
+    "Seccion": "servicios",
+    "ImagenUrl": "/uploads/b7f0df95-bd0b-4bc3-a152-7d487b501807.jpeg",
+    "LocalId": 0,
+    "TecnicoId": 3,
+    "Dias": 7,
+    "Inicio": "2026-05-14T22:36:04.5821197-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 8,
+    "Seccion": "servicios",
+    "ImagenUrl": "/uploads/72b3978c-df46-4b38-b284-7a2346b5477a.png",
+    "LocalId": 0,
+    "TecnicoId": 3,
+    "Dias": 7,
+    "Inicio": "2026-05-14T22:42:12.0403234-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 9,
+    "Seccion": "servicios",
+    "ImagenUrl": "/uploads/499e57a4-2ff5-46f8-8a7a-3da54ac01ffe.jfif",
+    "LocalId": 0,
+    "TecnicoId": 3,
+    "Dias": 7,
+    "Inicio": "2026-05-14T22:42:27.0010306-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 17,
+    "Seccion": "comidas",
+    "ImagenUrl": "/uploads/1e9b2ab6-21e4-4c46-92f2-eb842e2655b7.png",
+    "LocalId": 4,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-16T23:39:16.7661395-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 18,
+    "Seccion": "comidas",
+    "ImagenUrl": "/uploads/6f7c9532-dd0f-4860-9509-826ef8ef8b5c.png",
+    "LocalId": 14,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-16T23:40:23.2972822-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 20,
+    "Seccion": "tiendas",
+    "ImagenUrl": "/uploads/f070f571-ae34-40ea-a125-8ed720138fa6.png",
+    "LocalId": 9,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-17T00:32:33.8453918-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 21,
+    "Seccion": "tiendas",
+    "ImagenUrl": "/uploads/314f73d2-be71-4bd6-99fc-656e4fd22be5.png",
+    "LocalId": 2,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-17T00:32:51.109574-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 22,
+    "Seccion": "tiendas",
+    "ImagenUrl": "/uploads/d84ebd11-c736-4a23-8e5b-a8c349b14876.png",
+    "LocalId": 3,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-17T00:33:07.6080559-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 24,
+    "Seccion": "destacados",
+    "ImagenUrl": "/uploads/dc7e107d-e3f5-414a-a582-95cbae361573.png",
+    "LocalId": 13,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-17T00:34:11.4193147-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 25,
+    "Seccion": "comidas-promos",
+    "ImagenUrl": "/uploads/fe39b563-3a2e-4760-8dfc-3caea226c3ef.jpeg",
+    "LocalId": 1,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-18T15:48:18.4835474-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 26,
+    "Seccion": "comidas-promos",
+    "ImagenUrl": "/uploads/eeb8c994-83e3-4b85-8727-abee9078ee97.jpeg",
+    "LocalId": 13,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-18T15:48:34.2977578-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 27,
+    "Seccion": "comidas-promos",
+    "ImagenUrl": "/uploads/8bc4b5c5-38ee-4977-88f7-cbe15b55765e.jpeg",
+    "LocalId": 14,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-18T15:48:47.2458416-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 34,
+    "Seccion": "tiendas",
+    "ImagenUrl": "/uploads/60fb8abf-59fb-4e18-b858-cbb214c2545d.png",
+    "LocalId": 3,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-18T21:55:21.0872146-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 37,
+    "Seccion": "bares",
+    "ImagenUrl": "/uploads/a4d19572-1024-458d-9440-6dad7e4645d7.png",
+    "LocalId": 15,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-18T22:20:31.8523193-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 38,
+    "Seccion": "bares",
+    "ImagenUrl": "/uploads/12dbe3e1-f4c9-41b6-be4d-7c98ec208051.png",
+    "LocalId": 16,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-18T22:20:49.2939939-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 39,
+    "Seccion": "bares",
+    "ImagenUrl": "/uploads/552ffd21-01f8-440a-a412-da62d3372295.png",
+    "LocalId": 15,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-18T22:21:09.3637699-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 42,
+    "Seccion": "bares-promos",
+    "ImagenUrl": "/uploads/f7b56e02-efb3-4246-8977-d10e3c9eb2ce.png",
+    "LocalId": 16,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-18T22:22:10.8273077-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 43,
+    "Seccion": "bares-destacados",
+    "ImagenUrl": "/uploads/02515d39-db37-4da7-b98e-8fabf3ed92b1.jpeg",
+    "LocalId": 15,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-19T18:41:02.981011-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 44,
+    "Seccion": "bares-destacados",
+    "ImagenUrl": "/uploads/1618d4d5-2c94-41cf-8854-74b040f9d2f1.png",
+    "LocalId": 15,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-19T18:42:15.2981736-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 45,
+    "Seccion": "home",
+    "ImagenUrl": "/uploads/04e55b2a-f115-4525-9ce9-3ae7f3f80c77.png",
+    "LocalId": 1,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-21T13:58:32.5500669-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 46,
+    "Seccion": "home",
+    "ImagenUrl": "/uploads/b1b1157b-214e-4881-9ebb-1e612c2cc044.png",
+    "LocalId": 1,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-21T13:58:43.9345091-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 47,
+    "Seccion": "home",
+    "ImagenUrl": "/uploads/52cc4683-f274-478e-a9f1-21133f2b6b38.png",
+    "LocalId": 1,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-21T13:58:56.5710156-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 48,
+    "Seccion": "home",
+    "ImagenUrl": "/uploads/2fb53e8d-7072-4e2e-a51b-8108b8b052fc.png",
+    "LocalId": 1,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-21T13:59:07.7943991-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 49,
+    "Seccion": "home",
+    "ImagenUrl": "/uploads/6e90ee07-0565-4d04-90eb-96eed7062f8c.png",
+    "LocalId": 1,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-21T13:59:52.0311955-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 50,
+    "Seccion": "home-destacados",
+    "ImagenUrl": "/uploads/a24be93e-135c-4eb7-89d1-8ea0ae399ce2.png",
+    "LocalId": 1,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-21T15:51:57.2010462-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 52,
+    "Seccion": "comidas-destacados",
+    "ImagenUrl": "/uploads/b410cfc1-4e60-478b-9cd4-1ef367e8f5d2.png",
+    "LocalId": 1,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-21T20:29:45.4758796-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 53,
+    "Seccion": "comidas-destacados",
+    "ImagenUrl": "/uploads/b7c2e5c1-1ebb-46c0-a811-a3459b7147b2.png",
+    "LocalId": 1,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-21T20:30:01.8295428-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 54,
+    "Seccion": "tiendas-destacados",
+    "ImagenUrl": "/uploads/b11e39bd-1af6-47c9-9699-c25e94eab411.png",
+    "LocalId": 3,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-21T20:31:05.5619475-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 55,
+    "Seccion": "home-destacados",
+    "ImagenUrl": "/uploads/27d6fdb8-27e7-41b7-972b-44a00ab6112c.png",
+    "LocalId": 3,
+    "TecnicoId": 0,
+    "Dias": 7,
+    "Inicio": "2026-05-21T20:34:02.7476352-03:00",
+    "Activo": true
+  }
+]

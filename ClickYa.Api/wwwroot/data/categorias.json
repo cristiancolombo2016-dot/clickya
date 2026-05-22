@@ -1,0 +1,170 @@
+[
+  {
+    "Id": 15,
+    "Seccion": "comidas",
+    "Nombre": "pizzeria",
+    "IconoUrl": "/uploads/categorias/fd2d1a90-add1-4ca2-853b-9b95ddc7a104.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 16,
+    "Seccion": "comidas",
+    "Nombre": "parrilla",
+    "IconoUrl": "/uploads/categorias/79919727-cd5c-4394-9489-ef2e8a939dbd.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 17,
+    "Seccion": "comidas",
+    "Nombre": "heladeria",
+    "IconoUrl": "/uploads/categorias/802ca10e-33cd-46cb-b1a7-37412fadbf7e.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 18,
+    "Seccion": "comidas",
+    "Nombre": "hamburguesas",
+    "IconoUrl": "/uploads/categorias/8fd9fc5e-1dc7-46ec-9daa-e9948d4a997e.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 19,
+    "Seccion": "comidas",
+    "Nombre": "empanadas",
+    "IconoUrl": "/uploads/categorias/9edee538-a834-4bf8-9129-1aa85c380393.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 20,
+    "Seccion": "comidas",
+    "Nombre": "verdulerias",
+    "IconoUrl": "/uploads/categorias/97ce6b0a-cb9a-4471-9ff3-d30243d5ffc4.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 21,
+    "Seccion": "comidas",
+    "Nombre": "super24hr",
+    "IconoUrl": "/uploads/categorias/c5dec46e-0205-433f-9bd9-326e7f0f0fdf.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 22,
+    "Seccion": "comidas",
+    "Nombre": "carnicerias",
+    "IconoUrl": "/uploads/categorias/03889cd5-604f-4c0a-8f7c-2c4c15ac8832.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 23,
+    "Seccion": "comidas",
+    "Nombre": "pollerias",
+    "IconoUrl": "/uploads/categorias/dc9f1c45-1fdb-43c9-8aed-181772e65ac1.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 24,
+    "Seccion": "comidas",
+    "Nombre": "pescados",
+    "IconoUrl": "/uploads/categorias/c8ef90a5-cdbd-4cab-8bb6-d84d5fc6adfb.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 25,
+    "Seccion": "tiendas",
+    "Nombre": "ropa",
+    "IconoUrl": "/uploads/categorias/c0d69942-9102-4f59-a524-cd227e38ca4c.png",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 26,
+    "Seccion": "tiendas",
+    "Nombre": "calzado",
+    "IconoUrl": "/uploads/categorias/c17ad5c4-07e2-4ec9-8cb0-805f325a2ac8.jpeg",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 27,
+    "Seccion": "tiendas",
+    "Nombre": "tecnologia",
+    "IconoUrl": "/uploads/categorias/e4492123-7293-4c0f-83c5-be8d14cc8e78.png",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 28,
+    "Seccion": "tiendas",
+    "Nombre": "deportes",
+    "IconoUrl": "/uploads/categorias/fde37289-98ae-45ab-adaa-7f8a3978fb40.png",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 29,
+    "Seccion": "tiendas",
+    "Nombre": "autos y motos",
+    "IconoUrl": "/uploads/categorias/0049c180-f1ec-4b7b-a586-881903f8a5bb.png",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 30,
+    "Seccion": "tiendas",
+    "Nombre": "otros rubros",
+    "IconoUrl": "/uploads/categorias/36fed5c0-42ec-41ee-9bb3-8f84eeeb9479.png",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 31,
+    "Seccion": "servicios",
+    "Nombre": "electricista",
+    "IconoUrl": "/uploads/categorias/184ec64d-a7c7-4ad4-b9ec-523daeb56450.png",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 32,
+    "Seccion": "servicios",
+    "Nombre": "gasista",
+    "IconoUrl": "/uploads/categorias/fdc601e4-603d-4f07-923b-e122addc742a.png",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 33,
+    "Seccion": "servicios",
+    "Nombre": "refrigeraci\u00F3n",
+    "IconoUrl": "/uploads/categorias/5dcda79f-f39e-438d-8116-07dab023b827.png",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 34,
+    "Seccion": "servicios",
+    "Nombre": "Mto. General",
+    "IconoUrl": "/uploads/categorias/750b6c57-4418-47e7-a35e-004ccb4a0049.png",
+    "Orden": 1,
+    "Activo": true
+  },
+  {
+    "Id": 35,
+    "Seccion": "servicios",
+    "Nombre": "plomero",
+    "IconoUrl": "/uploads/categorias/cb8d44f9-bc3a-4fa3-90c9-f2382249ed25.png",
+    "Orden": 1,
+    "Activo": true
+  }
+]

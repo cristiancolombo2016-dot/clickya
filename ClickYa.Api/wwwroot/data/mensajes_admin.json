@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "Texto": "se viene cositas lindas cristian. VAMOSSS!!!!!",
+    "Destino": "tecnicos",
+    "DestinoId": 0,
+    "Fecha": "2026-05-15T16:57:22.9191056-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 2,
+    "Texto": "VAMOSSS",
+    "Destino": "comercios",
+    "DestinoId": 0,
+    "Fecha": "2026-05-15T17:06:09.026741-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 4,
+    "Texto": "afasafsffasfaffafaf",
+    "Destino": "comida",
+    "DestinoId": 0,
+    "Fecha": "2026-05-15T18:03:21.8426915-03:00",
+    "Activo": true
+  },
+  {
+    "Id": 5,
+    "Texto": "fsfakskfakfanfnafmnafafaf",
+    "Destino": "comercios",
+    "DestinoId": 0,
+    "Fecha": "2026-05-15T18:04:05.0246452-03:00",
+    "Activo": true
+  }
+]
