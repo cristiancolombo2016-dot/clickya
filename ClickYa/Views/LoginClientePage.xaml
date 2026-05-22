@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.LoginClientePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Acceso comercio"
+    BackgroundColor="#F4F4F4">
+
+    <Grid>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="20"
+            VerticalOptions="Center">
+
+            <!-- CARD -->
+            <Frame
+                BackgroundColor="White"
+                CornerRadius="18"
+                Padding="28"
+                BorderColor="#EDEDED"
+                HasShadow="False">
+
+                <VerticalStackLayout Spacing="18">
+
+                    <!-- TITULO -->
+                    <Label
+                        Text="Acceso para comercios 
+                                 y Servicios"
+                        FontSize="22"
+                        FontAttributes="Bold"
+                        TextColor="#222"
+                        HorizontalOptions="Center" />
+
+                    <Label
+                        Text="Ingresá con tus datos para administrar tu publicación en ClickYa."
+                        FontSize="14"
+                        TextColor="#555"
+                        HorizontalTextAlignment="Center" />
+
+                    <!-- EMAIL -->
+                    <Frame
+                        BackgroundColor="#F6F6F6"
+                        CornerRadius="12"
+                        Padding="12"
+                        HasShadow="False">
+
+                        <Entry
+                            x:Name="EmailEntry"
+                            Placeholder="Email"
+                            Keyboard="Email"
+                            BackgroundColor="Transparent"
+                            TextColor="#222"
+                            PlaceholderColor="#999" />
+                    </Frame>
+
+                    <!-- PASSWORD CON OJITO -->
+                    <Frame
+                        BackgroundColor="#F6F6F6"
+                        CornerRadius="12"
+                        Padding="0"
+                        HasShadow="False">
+
+                        <Grid ColumnDefinitions="*,Auto" Padding="12">
+
+                            <Entry
+                                x:Name="PasswordEntry"
+                                Placeholder="Contraseña"
+                                IsPassword="True"
+                                BackgroundColor="Transparent"
+                                TextColor="#222"
+                                PlaceholderColor="#999" />
+
+                            <Image
+                                x:Name="TogglePasswordIcon"
+                                Grid.Column="1"
+                                WidthRequest="24"
+                                HeightRequest="24"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Margin="8,0,0,0">
+
+                                <Image.Source>
+                                    <FontImageSource
+                                        Glyph="&#xE8F4;"
+                                        FontFamily="MaterialIcons"
+                                        Size="22"
+                                        Color="#6A1B9A" />
+                                </Image.Source>
+
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnTogglePasswordVisibility" />
+                                </Image.GestureRecognizers>
+                            </Image>
+
+                        </Grid>
+                    </Frame>
+
+                    <!-- BOTÓN ENTRAR -->
+                    <Button
+                        Text="Entrar"
+                        HeightRequest="48"
+                        CornerRadius="14"
+                        BackgroundColor="#6A1B9A"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        Clicked="OnLoginClicked" />
+
+                    <!-- OLVIDÉ CONTRASEÑA -->
+                    <Label
+    Text="¿Olvidaste tu contraseña?"
+    FontSize="13"
+    TextColor="#6A1B9A"
+    HorizontalOptions="Center"
+    Margin="0,6,0,0" />
+
+                    <Label
+    Text="Contactanos y te ayudamos a recuperar el acceso."
+    FontSize="12"
+    TextColor="#777"
+    HorizontalOptions="Center" />
+
+
+                    <!-- REGISTRO -->
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                        <Label
+                            Text="¿Todavía no estás en ClickYa?"
+                            FontSize="13"
+                            TextColor="#777" />
+
+                        <Label
+                            Text=" Registrarse"
+                            FontSize="13"
+                            TextColor="#6A1B9A"
+                            FontAttributes="Bold">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnRegisterClicked" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </StackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </Grid>
+
+</ContentPage>

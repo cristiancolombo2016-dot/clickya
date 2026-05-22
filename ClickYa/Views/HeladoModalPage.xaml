@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="ClickYa.Views.HeladoModalPage"
+    BackgroundColor="#F5F5F5">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- HEADER -->
+            <Grid HeightRequest="140">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#4B0082" Offset="0.0"/>
+                        <GradientStop Color="#B8008A" Offset="0.6"/>
+                        <GradientStop Color="#FF3D3D" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+                    <Label Text="Armá tu helado 🍦" FontSize="24" FontAttributes="Bold" TextColor="White"/>
+                    <Image Source="helado_pote.png" HeightRequest="80"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- CONTENIDO -->
+            <VerticalStackLayout Padding="22" Spacing="22">
+
+                <!-- TAMAÑOS -->
+                <VerticalStackLayout Spacing="12">
+
+                    <Frame x:Name="CardCuarto"
+                           CornerRadius="16" Padding="14"
+                           BackgroundColor="White" BorderColor="#E0E0E0">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="SeleccionarCuarto"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="1/4 kg" FontSize="16" TextColor="#333"/>
+                    </Frame>
+
+                    <Frame x:Name="CardMedio"
+                           CornerRadius="16" Padding="14"
+                           BackgroundColor="#E9F9EF" BorderColor="#4CD964">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="SeleccionarMedio"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="1/2 kg" FontSize="16" FontAttributes="Bold" TextColor="#1E7F43"/>
+                    </Frame>
+
+                    <Frame x:Name="CardKilo"
+                           CornerRadius="16" Padding="14"
+                           BackgroundColor="White" BorderColor="#E0E0E0">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="SeleccionarKilo"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="1 kg" FontSize="16" TextColor="#333"/>
+                    </Frame>
+
+                </VerticalStackLayout>
+
+                <!-- SABORES DINÁMICOS -->
+                <VerticalStackLayout x:Name="ContenedorSabores" Spacing="14"/>
+
+                <!-- BOTONES -->
+                <Button Text="Pedir por WhatsApp"
+                        BackgroundColor="#25D366"
+                        TextColor="White"
+                        FontSize="18"
+                        CornerRadius="30"
+                        HeightRequest="58"
+                        Clicked="AgregarHelado_Clicked"/>
+
+                <Button Text="Cancelar"
+                        BackgroundColor="Transparent"
+                        TextColor="#777"
+                        Clicked="Cerrar_Clicked"/>
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

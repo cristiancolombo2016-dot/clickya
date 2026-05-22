@@ -1,0 +1,308 @@
+﻿@page
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Detalle Comercio – ClickYa</title>
+
+    <style>
+        :root {
+            --violeta: #4B0082;
+            --fucsia: #B8008A;
+            --violeta-soft: #F3E8FF;
+            --gris-bg: #ECEFF3;
+            --gris-card: #FFFFFF;
+            --gris-text: #374151;
+            --gris-muted: #6B7280;
+            --verde: #16A34A;
+            --verde-soft: #DCFCE7;
+            --rojo: #DC2626;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: var(--gris-bg);
+            padding: 40px;
+            color: var(--gris-text);
+        }
+
+        h1 {
+            color: var(--violeta);
+            margin-bottom: 4px;
+        }
+
+        .sub {
+            color: var(--gris-muted);
+            margin-bottom: 18px;
+        }
+
+        .layout {
+            display: flex;
+            gap: 28px;
+            align-items: flex-start;
+        }
+
+        .main {
+            flex: 1;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: var(--gris-card);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+            margin-bottom: 22px;
+            min-height: 210px; /* ✔ ajuste de altura */
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .badge-activo {
+            background: var(--verde-soft);
+            color: var(--verde);
+        }
+
+        .badge-pago {
+            background: var(--violeta-soft);
+            color: var(--violeta);
+        }
+
+        /* ===== BOTONES ===== */
+        button {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--violeta), var(--fucsia));
+            color: #fff;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 18px rgba(184,0,138,.35);
+            }
+
+        /* ✔ BOTÓN OUTLINE (para no chocar) */
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--violeta);
+            color: var(--violeta);
+        }
+
+            .btn-outline:hover {
+                background: var(--violeta-soft);
+            }
+
+        .btn-secondary {
+            background: #E5E7EB;
+            color: var(--gris-text);
+        }
+
+            .btn-secondary:hover {
+                background: #D1D5DB;
+            }
+
+        .btn-danger {
+            background: var(--rojo);
+            color: #fff;
+        }
+
+            .btn-danger:hover {
+                background: #B91C1C;
+            }
+
+        .actions button {
+            margin-right: 10px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+
+        /* ===== PUBLICACIONES ===== */
+        .pub {
+            padding: 14px 0;
+            border-bottom: 1px solid #EEE;
+        }
+
+            .pub:last-child {
+                border-bottom: none;
+            }
+
+        .pub-title {
+            font-weight: 600;
+        }
+
+        .pub-meta {
+            font-size: 13px;
+            color: var(--gris-muted);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .side {
+            width: 300px;
+            background: var(--gris-card);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        }
+
+            .side h3 {
+                margin-top: 0;
+                margin-bottom: 16px;
+                color: var(--violeta);
+                font-size: 16px;
+            }
+
+            .side button {
+                width: 100%;
+                margin-bottom: 12px;
+            }
+
+        /* ===== ESTADO COMERCIO ===== */
+        .estado-comercio {
+            margin-bottom: 12px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 999px;
+        }
+
+        /* Estados */
+        .nuevo {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .confiable {
+            background: #DCFCE7;
+            color: #166534;
+        }
+
+        .bloqueado {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <h1>Bar La Laguna</h1>
+    <div class="sub">Gastronomía</div>
+    <div class="estado-comercio">
+        <span id="estado" class="status nuevo">Nuevo</span>
+    </div>
+
+
+    <div style="margin-bottom:20px;">
+        <span class="badge badge-activo">Activo</span>
+        <span class="badge badge-pago">Pagos al día</span>
+    </div>
+
+    <div class="layout">
+
+        <div class="main">
+
+            <div class="card">
+                <p><b>WhatsApp:</b> 3364 123456</p>
+                <p><b>Ubicación:</b> Av. Central 123</p>
+                <p><b>Publicaciones:</b> 2</p>
+
+                <div class="actions">
+                    <button class="btn-primary" onclick="setEstado('confiable')">
+                        Marcar Confiable
+                    </button>
+
+                    <button class="btn-outline" onclick="setEstado('bloqueado')">
+                        Bloquear Comercio
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <h3>Publicaciones</h3>
+
+                <div class="pub">
+                    <div class="pub-title">Promo Hamburguesa Doble</div>
+                    <div class="pub-meta">Activa</div>
+                </div>
+
+                <div class="pub">
+                    <div class="pub-title">Happy Hour 2x1</div>
+                    <div class="pub-meta">Activa</div>
+                </div>
+            </div>
+
+        </div>
+
+        <aside class="side">
+            <h3>Acciones administrativas</h3>
+
+            <button class="btn-secondary" onclick="confirmarSuspender()">
+                Suspender
+            </button>
+
+            <button class="btn-danger" onclick="confirmarBaja()">
+                Dar de baja
+            </button>
+
+            <button class="btn-primary">
+                Enviar mensaje
+            </button>
+        </aside>
+
+
+    </div>
+    <script>
+        function setEstado(nuevo){
+            const estado = document.getElementById('estado');
+            estado.className = 'status ' + nuevo;
+            estado.innerText = nuevo.charAt(0).toUpperCase() + nuevo.slice(1);
+        }
+
+        function confirmarSuspender(){
+            if (!confirm("¿Seguro que querés SUSPENDER este comercio?\n\nNo será visible temporalmente.")) return;
+            setEstado('bloqueado');
+        }
+
+        function confirmarBaja(){
+            if (!confirm("⚠️ ATENCIÓN ⚠️\n\n¿Seguro que querés DAR DE BAJA este comercio?\n\nEsta acción es definitiva.")) return;
+            setEstado('bloqueado');
+        }
+    </script>
+
+
+</body>
+</html>

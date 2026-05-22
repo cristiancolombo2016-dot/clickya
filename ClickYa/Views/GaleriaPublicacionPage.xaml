@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.GaleriaPublicacionPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="Black"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <Grid Grid.Row="0" Padding="16,50,16,12" BackgroundColor="Black">
+            <Button Text="‹" FontSize="32" TextColor="White"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Start"
+                    Clicked="OnVolverTapped"/>
+            <Label x:Name="LblTitulo"
+                   FontSize="18" FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"/>
+            <Label x:Name="LblContador"
+                   FontSize="14" TextColor="#999"
+                   HorizontalOptions="End"
+                   VerticalOptions="Center"/>
+        </Grid>
+
+        <CarouselView
+            Grid.Row="1"
+            x:Name="CarruselFotos"
+            IndicatorView="IndFotos"
+            PositionChanged="OnPosicionCambiada">
+            <CarouselView.ItemTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding .}"
+                           Aspect="AspectFit"
+                           VerticalOptions="Center"/>
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+
+        <IndicatorView
+            Grid.Row="2"
+            x:Name="IndFotos"
+            IndicatorColor="#555"
+            SelectedIndicatorColor="White"
+            HorizontalOptions="Center"
+            Margin="0,8,0,24"/>
+
+    </Grid>
+</ContentPage>

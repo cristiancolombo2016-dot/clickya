@@ -1,0 +1,177 @@
+﻿@page
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Administrador – ClickYa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: #F2F3F5; /* gris claro */
+        }
+
+        /* ===== HEADER ===== */
+        .admin-header {
+            background: #ffffff;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .admin-header-center {
+            text-align: center;
+            flex: 1;
+        }
+
+            .admin-header-center img {
+                height: 40px;
+            }
+
+            .admin-header-center div {
+                font-size: 13px;
+                color: #666;
+            }
+
+        .admin-user {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* ===== CONTENIDO ===== */
+        .admin-container {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .admin-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            cursor: pointer;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+            .admin-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 24px rgba(0,0,0,0.10);
+            }
+
+            .admin-card h3 {
+                margin: 0 0 8px 0;
+                font-size: 18px;
+                color: #4B0082; /* acento ClickYa */
+            }
+
+            .admin-card p {
+                margin: 0;
+                font-size: 14px;
+                color: #555;
+            }
+
+        .admin-card {
+            position: relative;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: #E53935; /* rojo alerta */
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="admin-header">
+        <div></div>
+
+        <div class="admin-header-center">
+            <!-- Cambiá la ruta del logo si hace falta -->
+            <img src="/images/logo_clickya.png" alt="ClickYa" />
+            <div>Administrador</div>
+        </div>
+
+        <div class="admin-user">
+            Cristian
+        </div>
+    </header>
+
+    <!-- HOME -->
+    <main class="admin-container">
+        <div class="cards-grid">
+
+            <div class="admin-card" onclick="location.href='/Admin/App'">
+                <h3>Ver la App</h3>
+                <p>Vista real de ClickYa como usuario.</p>
+            </div>
+
+            <div class="admin-card" onclick="location.href='/Admin/Mensajes'">
+                <div class="card-badge">3</div>
+
+                <h3>Mensajes</h3>
+                <p>Enviar mensajes a comercios.</p>
+            </div>
+
+
+            <div class="admin-card" onclick="location.href='/Admin/Publicaciones'">
+                <h3>Publicaciones</h3>
+                <p>Gestionar productos, servicios y promos.</p>
+            </div>
+
+            <div class="admin-card" onclick="location.href='/Admin/BannersDestacados'">
+                <h3>Banners y Destacados</h3>
+                <p>Controlar visibilidad y promociones.</p>
+            </div>
+
+            <div class="admin-card" onclick="location.href='/Admin/Categorias'">
+                <h3>Categorías</h3>
+                <p>Gestionar categorías e íconos de la app.</p>
+            </div>
+            <div class="admin-card" onclick="location.href='/Admin/Comercios'">
+                <h3>Comercios</h3>
+                <p>Gestionar estados, confianza y acceso de los comercios.</p>
+            </div>
+
+            <div class="admin-card" onclick="location.href='/Admin/Pagos'">
+                <h3>Pagos</h3>
+                <p>Generar links y controlar cobros.</p>
+            </div>
+
+            <div class="admin-card" onclick="location.href='/Admin/Estadisticas'">
+                <h3>Estadísticas</h3>
+                <p>Estado general de la plataforma.</p>
+            </div>
+            <div class="admin-card" onclick="location.href='/Admin/Tecnicos'">
+                <h3>Técnicos</h3>
+                <p>Gestionar técnicos y sus dashboards.</p>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

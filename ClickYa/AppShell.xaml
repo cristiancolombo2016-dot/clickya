@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Shell
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ClickYa.Views"
+    x:Class="ClickYa.AppShell"
+    FlyoutBehavior="Flyout"
+    FlyoutBackgroundColor="#F4F4F4">
+
+    <!-- ========================= -->
+    <!-- HEADER TIPO CARD -->
+    <!-- ========================= -->
+    <Shell.FlyoutHeader>
+        <Grid BackgroundColor="White" Padding="20">
+            <Label
+                Text="ClickYa"
+                FontSize="22"
+                FontAttributes="Bold"
+                TextColor="#222" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <!-- ========================= -->
+    <!-- TEMPLATE DE ÍTEMS (CLARO) -->
+    <!-- ========================= -->
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid Padding="14">
+                <Label
+                    Text="{Binding Title}"
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    TextColor="#222" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <!-- ========================= -->
+    <!-- SPLASH -->
+    <!-- ========================= -->
+    <ShellContent
+        Route="SplashPage"
+        ContentTemplate="{DataTemplate local:SplashPage}" />
+
+    <!-- ========================= -->
+    <!-- HOME -->
+    <!-- ========================= -->
+    <ShellContent
+        Title="Inicio"
+        Route="HomePage"
+        ContentTemplate="{DataTemplate local:HomePage}" />
+
+    <!-- ========================= -->
+    <!-- ACCESO COMERCIO -->
+    <!-- ========================= -->
+    <ShellContent
+        Title="Acceso comercio"
+        ContentTemplate="{DataTemplate local:LoginClientePage}" />
+    <!-- CONTACTO -->
+    <ShellContent
+    Title="Contacto"
+    Route="contacto"
+    ContentTemplate="{DataTemplate local:ContactoPage}" />
+
+    <!-- ========================= -->
+    <!-- CONFIGURACIÓN -->
+    <!-- ========================= -->
+    <ShellContent
+        Title="Configuración"
+        Route="configuracion"
+        ContentTemplate="{DataTemplate local:ConfiguracionPage}" />
+
+    <!-- ========================= -->
+    <!-- ACERCA DE -->
+    <!-- ========================= -->
+    <ShellContent
+        Title="Acerca de"
+        Route="acerca"
+        ContentTemplate="{DataTemplate local:AcercaDePage}" />
+
+</Shell>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.ConfiguracionPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Configuración"
+    BackgroundColor="White">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="20">
+
+            <!-- SECCIÓN GENERAL -->
+            <Label
+                Text="General"
+                FontSize="18"
+                FontAttributes="Bold"
+                TextColor="#222" />
+
+            <Frame
+                BackgroundColor="#F5F5F5"
+                CornerRadius="14"
+                Padding="16"
+                HasShadow="False">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <Label
+                        Text="Localidad"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        TextColor="#222" />
+
+                    <Label
+                        Text="Seleccioná tu ciudad para ver comercios y servicios disponibles."
+                        FontSize="13"
+                        TextColor="#555" />
+
+                    <Picker
+                        x:Name="LocalidadPicker"
+                        Title="Elegir localidad"
+                        TextColor="#222" />
+
+                    <Label
+                        Text="Actualmente ClickYa opera en San Nicolás de los Arroyos. Próximamente se sumarán nuevas ciudades."
+                        FontSize="12"
+                        TextColor="#777" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+           
+
+            <!-- SECCIÓN INFO -->
+            <Label
+                Text="Información"
+                FontSize="18"
+                FontAttributes="Bold"
+                TextColor="#222"
+                Margin="0,10,0,0" />
+
+            <Frame
+                BackgroundColor="#F5F5F5"
+                CornerRadius="14"
+                Padding="16"
+                HasShadow="False">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <Label
+                        Text="Versión de la aplicación"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        TextColor="#222" />
+
+                    <Label
+                        Text="Versión 1.0"
+                        FontSize="13"
+                        TextColor="#555" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

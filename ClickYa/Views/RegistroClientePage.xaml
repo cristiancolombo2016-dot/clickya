@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.RegistroClientePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Registro de comercio"
+    BackgroundColor="#F4F4F4">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
+
+            <Frame
+                BackgroundColor="White"
+                CornerRadius="18"
+                Padding="24"
+                HasShadow="False">
+
+                <VerticalStackLayout Spacing="16">
+
+                    <Label
+                        Text="Registro de comercios y Servicios"
+                        FontSize="22"
+                        FontAttributes="Bold"
+                        TextColor="#222"
+                        HorizontalOptions="Center" />
+
+                    <Label
+                        Text="Completá el formulario y nos pondremos en contacto para validar y activar tu publicación en ClickYa."
+                        FontSize="14"
+                        TextColor="#555"
+                        HorizontalTextAlignment="Center" />
+
+                    <!-- NOMBRE -->
+                    <Entry
+                        x:Name="NombreEntry"
+                        Placeholder="Nombre del comercio"
+                        BackgroundColor="#F6F6F6"
+                        TextColor="#222"
+                        PlaceholderColor="#999" />
+
+                    <!-- RUBRO -->
+                    <Picker
+    x:Name="RubroPicker"
+    Title="Rubro"
+    BackgroundColor="#F6F6F6"
+    TextColor="#222"
+    TitleColor="#999">
+                        <Picker.Items>
+                            <x:String>Comidas</x:String>
+                            <x:String>Tiendas</x:String>
+                            <x:String>Servicios</x:String>
+                            <x:String>Bares</x:String>
+                        </Picker.Items>
+                    </Picker>
+
+                    <!-- CATEGORIA -->
+                    <Picker
+    x:Name="CategoriaPicker"
+    Title="Categoría"
+    BackgroundColor="#F6F6F6"
+    TextColor="#222"
+    TitleColor="#999" />
+                    <!-- LOCALIDAD -->
+                    <Entry
+                        Text="San Nicolás de los Arroyos"
+                        IsEnabled="False"
+                        BackgroundColor="#EEEEEE"
+                        TextColor="#666" />
+
+                    <!-- WHATSAPP -->
+                    <Entry
+                        x:Name="WhatsappEntry"
+                        Placeholder="WhatsApp de contacto"
+                        Keyboard="Telephone"
+                        BackgroundColor="#F6F6F6"
+                        TextColor="#222"
+                        PlaceholderColor="#999" />
+
+                    <!-- EMAIL -->
+                    <Entry
+                        x:Name="EmailEntry"
+                        Placeholder="Email"
+                        Keyboard="Email"
+                        BackgroundColor="#F6F6F6"
+                        TextColor="#222"
+                        PlaceholderColor="#999" />
+
+                    <!-- CONTRASEÑA -->
+                    <Entry
+                        x:Name="PasswordEntry"
+                        Placeholder="Contraseña (mín. 6 caracteres)"
+                        IsPassword="True"
+                        BackgroundColor="#F6F6F6"
+                        TextColor="#222"
+                        PlaceholderColor="#999" />
+
+                    <!-- MENSAJE -->
+                    <!-- MENSAJE -->
+                    <Editor
+                        x:Name="MensajeEditor"
+                        Placeholder="Mensaje adicional (opcional)"
+                        HeightRequest="100"
+                        BackgroundColor="#F6F6F6"
+                        TextColor="#222" />
+
+                    <!-- BOTÓN -->
+                    <Button
+                        Text="Enviar solicitud"
+                        HeightRequest="48"
+                        CornerRadius="14"
+                        BackgroundColor="#6A1B9A"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        Clicked="OnEnviarClicked" />
+
+                    <Label
+                        Text="El alta del comercio está sujeta a validación."
+                        FontSize="12"
+                        TextColor="#777"
+                        HorizontalOptions="Center" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

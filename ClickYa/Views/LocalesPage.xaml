@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="ClickYa.Views.LocalesPage"
+    Shell.NavBarIsVisible="True"
+    Title="Gastronomía"
+    BackgroundColor="#F4F1FA">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- BLOQUE SUPERIOR -->
+            <VerticalStackLayout Padding="0,0,0,22">
+                <VerticalStackLayout.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#070814" Offset="0.0"/>
+                        <GradientStop Color="#120026" Offset="0.85"/>
+                        <GradientStop Color="#F4F1FA" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </VerticalStackLayout.Background>
+
+                <!-- BANNER -->
+                <Grid HeightRequest="260" Margin="0,8,0,0">
+
+                    <!-- FONDO (misma imagen ampliada) -->
+                    <Image
+        Source="{Binding Source={x:Reference BannerComidas}, Path=CurrentItem}"
+        Aspect="AspectFill"
+        Opacity="0.25" />
+
+                    <!-- CAROUSEL PRINCIPAL -->
+                    <!-- BANNER -->
+                    <CarouselView
+    x:Name="BannerComidas"
+    HeightRequest="260"
+    IndicatorView="Indicadores"
+    Margin="16,10,16,0">
+
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame HeightRequest="240"
+                   CornerRadius="18"
+                   Padding="0"
+                   HasShadow="True"
+                   IsClippedToBounds="True"
+                   BackgroundColor="Black">
+
+                                    <Image Source="{Binding}"
+                       Aspect="AspectFill"
+                       HeightRequest="240"
+                       HorizontalOptions="FillAndExpand"
+                       VerticalOptions="FillAndExpand"
+                       BackgroundColor="Black"/>
+                                </Frame>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+
+                </Grid>
+
+
+                <!-- BUSCADOR -->
+                <Frame Margin="16,-8,16,8" Padding="14,0" HeightRequest="58"
+                       CornerRadius="29" HasShadow="True" BackgroundColor="White">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="AbrirBuscador_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <Grid ColumnDefinitions="38,*,48">
+                        <Label Text="⌕" FontSize="30" TextColor="#7B2CFF" VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="Buscar locales, comidas, categorías..."
+                               TextColor="#9B9BA8" FontSize="14" VerticalOptions="Center"/>
+                        <Frame Grid.Column="2" WidthRequest="42" HeightRequest="42"
+                               CornerRadius="21" BackgroundColor="#6D18E8" Padding="0" HasShadow="False">
+                            <Label Text="⌕" TextColor="White" FontSize="24"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Frame>
+                    </Grid>
+                </Frame>
+
+                <IndicatorView
+                    x:Name="Indicadores"
+                    IndicatorColor="#FFFFFF66"
+                    SelectedIndicatorColor="#C000FF"
+                    HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- CATEGORÍAS -->
+            <VerticalStackLayout Padding="0,10,0,12"
+                                 BackgroundColor="#F4F1FA">
+
+                <Grid Margin="16,0,16,12" ColumnDefinitions="*,Auto">
+                    <Label Text="Categorías"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#111827"/>
+
+                    
+                </Grid>
+
+                <CollectionView
+                    x:Name="ListaCategorias"
+                    HeightRequest="155"
+                    ItemsLayout="HorizontalList"
+                    SelectionMode="None"
+                    Margin="8,0">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout Spacing="6"
+                                                 WidthRequest="180"
+                                                 Padding="4,0">
+
+                                <VerticalStackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnCategoriaTapped"
+                                                          CommandParameter="{Binding Nombre}" />
+                                </VerticalStackLayout.GestureRecognizers>
+
+                                <Frame WidthRequest="170"
+       HeightRequest="95"
+       CornerRadius="0"
+       Padding="0"
+       HasShadow="True"
+       BackgroundColor="White"
+       IsClippedToBounds="True"
+       HorizontalOptions="Center">
+
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnCategoriaTapped"
+                              CommandParameter="{Binding Nombre}" />
+                                    </Frame.GestureRecognizers>
+
+                                    <Image Source="{Binding Icono}"
+           Aspect="AspectFill"
+           HorizontalOptions="FillAndExpand"
+           VerticalOptions="FillAndExpand"/>
+                                </Frame>
+
+                                <Label Text="{Binding Nombre}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="#111827"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="2"/>
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- LOCALES DESTACADOS -->
+            <VerticalStackLayout Padding="0,8,0,20"
+                                 BackgroundColor="#F4F1FA">
+
+                <Grid Margin="16,0,16,12" ColumnDefinitions="*,Auto">
+                    <Label Text="Locales destacados"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#111827"/>
+
+                    
+                </Grid>
+
+                <CollectionView
+                    x:Name="ListaLocales"
+                    HeightRequest="155"
+                    ItemsLayout="HorizontalList"
+                    SelectionMode="None"
+                    Margin="8,0">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+
+                            <Frame WidthRequest="140"
+               HeightRequest="190"
+               Margin="6,0"
+               CornerRadius="18"
+               Padding="0"
+               HasShadow="True"
+               BackgroundColor="White"
+               IsClippedToBounds="True">
+
+                                <VerticalStackLayout Spacing="6">
+
+                                    <!-- IMAGEN -->
+                                    <Image Source="{Binding ImagenBanner}"
+       HeightRequest="120"
+       Aspect="AspectFill"/>
+
+                                    <!-- TEXTO ABAJO -->
+                                    <VerticalStackLayout Padding="8,4" Spacing="2">
+
+                                        <Label Text="{Binding nombre}"
+                           TextColor="#111"
+                           FontSize="15"
+                           FontAttributes="Bold"
+                           LineBreakMode="TailTruncation"
+                           MaxLines="1"/>
+
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label Text="{Binding distancia, StringFormat='📍 {0}'}"
+                               TextColor="#555"
+                               FontSize="11"/>
+
+                                            <Label Grid.Column="1"
+                               Text="⭐ 4.7"
+                               TextColor="#111"
+                               FontSize="11"
+                               FontAttributes="Bold"/>
+                                        </Grid>
+
+                                    </VerticalStackLayout>
+
+                                </VerticalStackLayout>
+
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnLocalTapped"
+                                      CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+
+                            </Frame>
+
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- PROMOCIONES -->
+            <VerticalStackLayout BackgroundColor="#F4F1FA" Padding="0,4,0,28">
+                <Grid Margin="16,0,16,12" ColumnDefinitions="*,Auto">
+                    <Label Text="Promociones para vos"
+                           FontSize="20" FontAttributes="Bold" TextColor="#111827"/>
+                </Grid>
+                <CollectionView x:Name="ListaPromociones"
+                                HeightRequest="140"
+                                ItemsLayout="HorizontalList"
+                                SelectionMode="None"
+                                Margin="8,0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame WidthRequest="260" HeightRequest="130"
+                                   CornerRadius="18" Padding="0" Margin="6,0"
+                                   HasShadow="True" IsClippedToBounds="True">
+                                <Image Source="{Binding ImagenCompleta}" Aspect="AspectFill"/>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

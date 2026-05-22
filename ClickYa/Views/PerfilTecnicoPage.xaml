@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.PerfilTecnicoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F7F7FA"
+    Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- FOTO DE PORTADA -->
+            <Grid HeightRequest="220">
+                <Image x:Name="ImgPortada"
+                       Aspect="AspectFill"
+                       BackgroundColor="#EDE9FE"/>
+                <BoxView Color="#55000000"/>
+
+                <!-- VOLVER -->
+                <Button Text="‹" FontSize="38" TextColor="White"
+        BackgroundColor="Transparent"
+        Margin="8,44,0,0"
+        VerticalOptions="Start" HorizontalOptions="Start"
+        Clicked="OnVolverTapped"/>
+
+                
+            </Grid>
+
+            <!-- INFO PRINCIPAL -->
+            <Frame Margin="18,-30,18,0"
+                   CornerRadius="22"
+                   Padding="20"
+                   HasShadow="True"
+                   BackgroundColor="White">
+                <VerticalStackLayout Spacing="8">
+
+                    <Grid ColumnDefinitions="70,*" ColumnSpacing="12">
+                        <Frame WidthRequest="60" HeightRequest="60"
+               CornerRadius="12" Padding="0"
+               BackgroundColor="#EDE9FE"
+               IsClippedToBounds="True"
+               VerticalOptions="Center">
+                            <Image x:Name="ImgLogo"
+                   Aspect="AspectFit"
+                   IsVisible="False"/>
+                        </Frame>
+                        <Label x:Name="LblNombre"
+               Grid.Column="1"
+               FontSize="22" FontAttributes="Bold"
+               TextColor="#111"
+               VerticalOptions="Center"/>
+                    </Grid>
+
+                    <Label x:Name="LblRubro"
+                           FontSize="15" TextColor="#7C3AED"
+                           FontAttributes="Bold"/>
+
+                    <Label x:Name="LblDireccion"
+                           FontSize="13" TextColor="#666"/>
+
+                    <Label x:Name="LblDescripcion"
+                           FontSize="14" TextColor="#444"
+                           LineBreakMode="WordWrap"/>
+                    <Label x:Name="LblInstagram"
+       FontSize="16" TextColor="#E1306C"
+       IsVisible="False"/>
+
+                    <Label x:Name="LblUbicacion"
+       FontSize="16" TextColor="#4B0082"
+       IsVisible="False"/>
+                    <!-- BOTÓN WHATSAPP -->
+                    <Button x:Name="BtnWhatsApp"
+                            Text="📲 Contactar por WhatsApp"
+                            BackgroundColor="#25D366"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            CornerRadius="16"
+                            HeightRequest="52"
+                            Margin="0,8,0,0"
+                            Clicked="OnWhatsAppTapped"/>
+                    <Button Text="🔗 Compartir perfil"
+        BackgroundColor="#4B0082"
+        TextColor="White"
+        FontSize="15"
+        FontAttributes="Bold"
+        CornerRadius="16"
+        HeightRequest="48"
+        Margin="0,6,0,0"
+        Clicked="OnCompartirTapped"/>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- PUBLICACIONES -->
+            <Label Text="Publicaciones"
+                   FontSize="20" FontAttributes="Bold"
+                   TextColor="#111"
+                   Margin="18,24,18,8"/>
+
+            <CollectionView
+                x:Name="ListaPublicaciones"
+                SelectionMode="None"
+                Margin="18,0,18,30">
+
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="10" VerticalItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.EmptyView>
+                    <Label Text="Sin publicaciones aún"
+                           TextColor="#999" FontSize="14"
+                           HorizontalOptions="Center"
+                           Margin="0,16"/>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="16" Padding="0"
+       HasShadow="True" BackgroundColor="White"
+       IsClippedToBounds="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnPublicacionTapped" CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+                            <VerticalStackLayout>
+                                <Image Source="{Binding PrimeraImagen}"
+                                       HeightRequest="120"
+                                       Aspect="AspectFill"/>
+                                <VerticalStackLayout Padding="10,8" Spacing="4">
+                                    <Label Text="{Binding Titulo}"
+                                           FontSize="14" FontAttributes="Bold"
+                                           TextColor="#111"
+                                           LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding Descripcion}"
+                                           FontSize="12" TextColor="#666"
+                                           MaxLines="2"
+                                           LineBreakMode="WordWrap"/>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

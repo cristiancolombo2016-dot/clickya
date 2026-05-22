@@ -1,0 +1,269 @@
+﻿@page
+@model ClickYa.Comercios.Pages.Admin.ComerciosModel
+
+<style>
+    /* ===== APAGAR SIDEBAR SOLO ACÁ ===== */
+    .cy-sidebar {
+        display: none !important;
+    }
+
+    .cy-shell {
+        margin-left: 0 !important;
+    }
+
+    .cy-main {
+        margin-left: 0 !important;
+    }
+
+    /* ===== LOOK ADMIN (como tu mock) ===== */
+    .cy-wrap {
+        max-width: 980px;
+        margin: 40px auto;
+        padding: 0 18px;
+        font-family: system-ui, sans-serif;
+    }
+
+    .cy-title {
+        font-size: 36px;
+        font-weight: 800;
+        color: #5b0bb5; /* ClickYa violeta */
+        margin: 0 0 22px 0;
+    }
+
+    .cy-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 12px 30px rgba(0,0,0,.08);
+        overflow: hidden;
+    }
+
+    .cy-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 22px;
+        border-bottom: 1px solid #eee;
+        gap: 16px;
+    }
+
+        .cy-row:last-child {
+            border-bottom: none;
+        }
+
+    .cy-left {
+        min-width: 0;
+    }
+
+    .cy-name {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: #111;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .cy-meta {
+        margin-top: 6px;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .2px;
+    }
+
+    .b-nuevo {
+        background: #ffe7c2;
+        color: #b45309;
+    }
+
+    .b-confiable {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .b-bloqueado {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .cy-actions {
+        display: flex;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-weight: 800;
+        cursor: pointer;
+        color: #fff;
+        font-size: 14px;
+        line-height: 1;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 86px;
+    }
+
+    .btn-ver {
+        background: #5b0bb5;
+    }
+
+    .btn-ok {
+        background: #22c55e;
+    }
+
+    .btn-bloq {
+        background: #ef4444;
+    }
+
+    .btn:disabled {
+        opacity: .7;
+        cursor: default;
+    }
+
+    .cy-empty {
+        padding: 18px 22px;
+        color: #6b7280;
+    }
+</style>
+
+<div class="cy-wrap">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+        <div class="cy-title" style="margin:0;">Comercios</div>
+        <a href="/Admin/BannersDestacados" class="btn btn-ver" style="text-decoration:none;">🖼 Banners</a>
+    </div>
+
+    <div class="cy-card">
+        @if (Model.Solicitudes == null || Model.Solicitudes.Count == 0)
+        {
+            <div class="cy-empty">No hay comercios.</div>
+        }
+        else
+        {
+            @foreach (var c in Model.Solicitudes)
+            {
+                var estado = (c.Estado ?? "").Trim().ToUpperInvariant();
+
+                <div class="cy-row">
+                    <div class="cy-left">
+                        <h3 class="cy-name">
+                            @c.Nombre
+
+                            @if (estado == "NUEVO")
+                            {
+                                <span class="badge b-nuevo">Nuevo</span>
+                            }
+                            else if (estado == "CONFIABLE")
+                            {
+                                <span class="badge b-confiable">Confiable</span>
+                            }
+                            else if (estado == "BLOQUEADO")
+                            {
+                                <span class="badge b-bloqueado">Bloqueado</span>
+                            }
+                        </h3>
+
+                        <div class="cy-meta">@c.Rubro · @c.Telefono</div>
+
+                        @if (c.Estado?.Trim().ToUpperInvariant() == "CONFIABLE" && !string.IsNullOrWhiteSpace(c.Token))
+                        {
+                            <div style="margin-top:8px;">
+                                <span style="font-size:13px;color:#166534;font-weight:600;">🔗 Link de acceso:</span>
+                                <br />
+                                <a href="http://192.168.100.9:5175/Comercio/Dashboard?token=@c.Token"
+                                   target="_blank"
+                                   style="font-size:12px;color:#5b0bb5;word-break:break-all;">
+                                    http://192.168.100.9:5175/Comercio/Dashboard?token=@c.Token
+                                </a>
+                                <br />
+                                <a href="https://wa.me/@c.Telefono?text=Hola%20@Uri.EscapeDataString(c.Nombre ?? " ")!%20Tu%20comercio%20fue%20aprobado%20en%20ClickYa%20%F0%9F%8E%89%0AEntrá%20a%20tu%20dashboard%20acá%3A%20http%3A%2F%2F192.168.100.9%3A5175%2FComercio%2FDashboard%3Ftoken%3D@c.Token"
+                                   target="_blank"
+                                   style="display:inline-block;margin-top:8px;background:#25D366;color:white;padding:6px 14px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;">
+                                    📲 Enviar por WhatsApp
+                                </a>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="cy-actions">
+
+                        <!-- VER (ya tenés ComercioDetalle.cshtml) -->
+                        <a class="btn btn-ver"
+                           asp-page="/Admin/ComercioDetalle"
+                           asp-route-id="@c.Id">
+                            Ver
+                        </a>
+
+                        <!-- CONFIABLE (usa tu OnPostAprobarAsync) -->
+                        @if (estado != "CONFIABLE")
+                        {
+                            <form method="post" asp-page-handler="Aprobar" style="margin:0;">
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <button type="submit" class="btn btn-ok">Confiable</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-ok" disabled>Confiable</button>
+                        }
+
+                        <!-- BLOQUEAR (UI listo) -->
+                        @if (estado != "BLOQUEADO")
+                        {
+                            <form method="post" asp-page-handler="Bloquear" style="margin:0;">
+                                <input type="hidden" name="id" value="@c.Id" />
+                                <button type="submit" class="btn btn-bloq">Bloquear</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-bloq" disabled>Bloqueado</button>
+                        }
+
+                        <!-- DESTACAR -->
+                        <button class="btn" style="background:#F59E0B;"
+                                onclick="toggleDestacado(@c.Id, @c.EsDestacado.ToString().ToLower())">
+                            @(c.EsDestacado ? "⭐ Destacado" : "Destacar")
+                        </button>
+
+                        <!-- ELIMINAR -->
+                        <button class="btn" style="background:#7f1d1d;"
+                                onclick="eliminar(@c.Id)">
+                            Eliminar
+                        </button>
+
+                    </div>
+                </div>
+            }
+        }
+        <script>
+            async function toggleDestacado(id, esDestacado) {
+                await fetch(`http://192.168.100.9:5191/api/Comercio/${id}/destacado`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(!esDestacado)
+                });
+                location.reload();
+            }
+
+            async function eliminar(id) {
+                if (!confirm('¿Eliminar este comercio?')) return;
+                await fetch(`http://192.168.100.9:5191/api/solicitudes/${id}`, { method: 'DELETE' });
+                location.reload();
+            }
+        </script>
+    </div>
+</div>

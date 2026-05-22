@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.BarPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#080A0F"
+    Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- BARRA SUPERIOR -->
+            
+            <Grid HeightRequest="60">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#4B0082" Offset="0.0" />
+                        <GradientStop Color="#111827" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <HorizontalStackLayout Padding="20,0" Spacing="18" VerticalOptions="Center">
+                    <Label Text="‹" FontSize="38" TextColor="White" VerticalOptions="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnVolverTapped"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label Text="" FontSize="24" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- PORTADA Y LOGO -->
+            <Grid HeightRequest="330">
+                <Image x:Name="ImgPortada" Source="bar1.png" Aspect="AspectFill" HeightRequest="230" VerticalOptions="Start"/>
+                <BoxView HeightRequest="100" VerticalOptions="End" BackgroundColor="#080A0F"/>
+                <Frame WidthRequest="122" HeightRequest="122" CornerRadius="61" Padding="4"
+                       BackgroundColor="White" BorderColor="White" HasShadow="True"
+                       VerticalOptions="End" HorizontalOptions="Center" Margin="0,0,0,40">
+                    <Image x:Name="ImgLogo" Source="logo_clickya.png" Aspect="AspectFill"/>
+                </Frame>
+            </Grid>
+
+            <!-- NOMBRE LOCAL -->
+            <VerticalStackLayout Spacing="4" HorizontalOptions="Center" Margin="0,-25,0,20">
+                <Label x:Name="LblNombre" Text="Bar" FontSize="34" FontAttributes="Bold"
+                       TextColor="White" HorizontalOptions="Center"/>
+                <HorizontalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Label Text="📍" FontSize="17" TextColor="#D13D8B"/>
+                    <Label x:Name="LblDireccion" Text="Centro" FontSize="18" TextColor="#B8B8B8"/>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- BOTONES ACCIÓN -->
+            <Frame Margin="24,0" Padding="18" CornerRadius="22" BackgroundColor="#12151D" BorderColor="#232833" HasShadow="True">
+                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="18">
+
+                    <Frame Grid.Column="0" WidthRequest="58" HeightRequest="58" CornerRadius="18"
+                           Padding="0" BackgroundColor="#19D267" HorizontalOptions="Center">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnWhatsAppClicked"/>
+                        </Frame.GestureRecognizers>
+                        <Image Source="icono_whatsapp.png" WidthRequest="26" HeightRequest="26"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+
+                    <Frame Grid.Column="1" WidthRequest="58" HeightRequest="58" CornerRadius="18"
+                           Padding="0" BackgroundColor="#D13D8B" HorizontalOptions="Center">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnInstagramClicked"/>
+                        </Frame.GestureRecognizers>
+                        <Image Source="icono_instagram.png" WidthRequest="26" HeightRequest="26"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+
+                    <Frame Grid.Column="2" WidthRequest="58" HeightRequest="58" CornerRadius="18"
+                           Padding="0" BackgroundColor="#6A35D8" HorizontalOptions="Center">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnUbicacionClicked"/>
+                        </Frame.GestureRecognizers>
+                        <Image Source="icono_ubicacion.png" WidthRequest="26" HeightRequest="26"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+
+                    <Frame Grid.Column="3" WidthRequest="58" HeightRequest="58" CornerRadius="18"
+                           Padding="0" BackgroundColor="#E6B84D" HorizontalOptions="Center">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCompartirClicked"/>
+                        </Frame.GestureRecognizers>
+                        <Image Source="icono_compartir.png" WidthRequest="26" HeightRequest="26"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+
+                </Grid>
+            </Frame>
+
+            <!-- PUBLICACIONES -->
+            <Grid Margin="24,26,24,12" ColumnDefinitions="*,Auto">
+                <Label Text=" La carta" FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                <Label Text="Ver todas" Grid.Column="1" FontSize="15" TextColor="#9B5CFF" VerticalOptions="Center"/>
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding Publicaciones}" ItemsLayout="HorizontalList"
+                            HeightRequest="210" Margin="24,0,0,0" HorizontalScrollBarVisibility="Never">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame WidthRequest="170" Margin="0,0,14,0" Padding="0" CornerRadius="18"
+                               BackgroundColor="#151820" BorderColor="#2A2F3A" HasShadow="True">
+                            <VerticalStackLayout Spacing="0">
+                                <Image Source="{Binding Imagen}"
+       HeightRequest="95"
+       Aspect="AspectFill">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnPublicacionTapped"
+                              CommandParameter="{Binding Imagen}"/>
+                                    </Image.GestureRecognizers>
+                                </Image>
+                                <VerticalStackLayout Padding="12" Spacing="5">
+                                    <Label Text="{Binding Titulo}" TextColor="White" FontSize="16"
+                                           FontAttributes="Bold" LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding Descripcion}" TextColor="#B8B8B8"
+                                           FontSize="13" LineBreakMode="TailTruncation"/>
+                                    <Label Text="{Binding Precio}" TextColor="#E6B84D"
+                                           FontSize="15" FontAttributes="Bold"/>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- GALERÍA -->
+            <Grid Margin="24,28,24,12" ColumnDefinitions="*,Auto">
+                <Label Text=" Galería de imágenes" FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                <Label Text="Ver todas" Grid.Column="1" FontSize="15" TextColor="#9B5CFF" VerticalOptions="Center"/>
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding Galeria}" ItemsLayout="HorizontalList"
+                            HeightRequest="115" Margin="24,0,0,0" HorizontalScrollBarVisibility="Never">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame WidthRequest="115" HeightRequest="105" Margin="0,0,12,0"
+                               Padding="0" CornerRadius="16" BackgroundColor="#151820"
+                               BorderColor="#2A2F3A" HasShadow="True">
+                            <Image Source="{Binding}" Aspect="AspectFill">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnGaleriaTapped" CommandParameter="{Binding}"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- INFORMACIÓN FINAL -->
+            <Frame Margin="24,28,24,40" Padding="18" CornerRadius="20"
+                   BackgroundColor="#12151D" BorderColor="#12151D" HasShadow="True">
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

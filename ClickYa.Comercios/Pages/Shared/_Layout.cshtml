@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>ClickYa Comercios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body class="cy-body">
+
+    <!-- TOPBAR -->
+    <div class="cy-topbar">
+        <button class="cy-menu-btn" onclick="document.getElementById('cySidebar').classList.add('open')">☰</button>
+    </div>
+
+    <!-- OVERLAY -->
+    <div id="cyOverlay" class="cy-overlay" onclick="cerrarSidebar()"></div>
+
+    <!-- SHELL -->
+    <div class="cy-shell">
+
+        <!-- SIDEBAR -->
+        <aside id="cySidebar" class="cy-sidebar">
+
+            <div class="cy-brand" style="justify-content:center">
+                <img src="~/images/logo_clickya.png" class="cy-logo" />
+            </div>
+
+            <nav class="cy-nav">
+
+                <a id="btnEditarPerfil"
+                   class="cy-navlink"
+                   href="#"
+                   onclick="abrirEditarPerfil(); return false;">
+                    Editar perfil
+                </a>
+
+
+
+                <hr class="cy-sep" />
+
+                <a class="cy-navlink" href="/">
+                    Salir
+                </a>
+
+            </nav>
+
+        </aside>
+
+        <!-- CONTENIDO -->
+        <main class="cy-content">
+            @RenderBody()
+        </main>
+
+    </div>
+
+    <!-- ================= EDITAR PERFIL MODAL ================= -->
+    <div id="modalEditarPerfil" class="cy-modal" style="display:none">
+
+        <div class="cy-modal-box">
+
+            <div class="cy-modal-body">
+
+                <!-- LOGO -->
+                <div style="display:flex; align-items:center; gap:14px; margin-bottom:16px">
+                    <img id="previewLogo"
+                         src="~/images/logo_clickya.png"
+                         style="width:100px;height:100px;border-radius:20px;object-fit:cover" />
+
+                    <div>
+                        <button class="btn btn-sm btn-dark" onclick="document.getElementById('inputLogo').click()">
+                            Cambiar logo
+                        </button>
+                        <input type="file" id="inputLogo" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <h2>Editar perfil</h2>
+                <p class="text-muted">Configurá la información pública de tu comercio.</p>
+
+                <!-- FORM -->
+                <label>Nombre del comercio</label>
+                <input id="inpNombre" type="text" class="form-control">
+
+                <label>Descripción</label>
+<textarea id="inpDescripcion"
+          class="form-control"
+          rows="3"
+          placeholder="Breve descripción del comercio"></textarea>
+
+                <label>WhatsApp</label>
+                <input id="inpWhatsapp" type="text" class="form-control">
+
+                <label>Instagram</label>
+                <input id="inpInstagram" type="text" class="form-control">
+
+                <label>Ubicación</label>
+                <input id="inpUbicacion" type="text" class="form-control">
+
+                <label>Correo electrónico</label>
+                <input id="inpCorreo" type="email" class="form-control">
+
+                <!-- HORARIOS -->
+                <label style="margin-top:10px">Horarios</label>
+
+                <div class="horarios-box">
+
+                    <!-- Día -->
+                    <div class="horario-dia">
+                        <label>
+                            <input type="checkbox"> Lunes
+                        </label>
+                        <input type="time"> <span>a</span> <input type="time">
+                    </div>
+
+                    <div class="horario-dia">
+                        <label>
+                            <input type="checkbox"> Martes
+                        </label>
+                        <input type="time"> <span>a</span> <input type="time">
+                    </div>
+
+                    <div class="horario-dia">
+                        <label>
+                            <input type="checkbox"> Miércoles
+                        </label>
+                        <input type="time"> <span>a</span> <input type="time">
+                    </div>
+
+                    <div class="horario-dia">
+                        <label>
+                            <input type="checkbox"> Jueves
+                        </label>
+                        <input type="time"> <span>a</span> <input type="time">
+                    </div>
+
+                    <div class="horario-dia">
+                        <label>
+                            <input type="checkbox"> Viernes
+                        </label>
+                        <input type="time"> <span>a</span> <input type="time">
+                    </div>
+
+                    <div class="horario-dia">
+                        <label>
+                            <input type="checkbox"> Sábado
+                        </label>
+                        <input type="time"> <span>a</span> <input type="time">
+                    </div>
+
+                    <div class="horario-dia">
+                        <label>
+                            <input type="checkbox"> Domingo
+                        </label>
+                        <input type="time"> <span>a</span> <input type="time">
+                    </div>
+
+                </div>
+
+                <!-- ACCIONES -->
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px">
+                    <button class="btn btn-secondary" onclick="cerrarEditarPerfil()">Cerrar</button>
+                    <button class="btn btn-dark" onclick="guardarPerfil()">Guardar</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= JS INLINE (NO DEPENDE DE NADA) ================= -->
+    <script>
+        function abrirEditarPerfil() {
+            document.getElementById('modalEditarPerfil').style.display = 'flex';
+            cerrarSidebar();
+        }
+
+        function cerrarEditarPerfil() {
+            document.getElementById('modalEditarPerfil').style.display = 'none';
+        }
+
+        function cerrarSidebar() {
+            const sidebar = document.getElementById('cySidebar');
+            const overlay = document.getElementById('cyOverlay');
+            if (sidebar) sidebar.classList.remove('open');
+            if (overlay) overlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    </script>
+
+    <script>
+    // ===============================
+    // PREVIEW LOGO - EDITAR PERFIL
+    // ===============================
+    const inputLogo = document.getElementById('inputLogo');
+    const previewLogo = document.getElementById('previewLogo');
+
+    if (inputLogo && previewLogo) {
+        inputLogo.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                previewLogo.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
+
+
+
+    @RenderSection("Scripts", required: false)
+
+    <script src="~/js/site.js?v=3"></script>
+
+    
+
+</body>
+</html>

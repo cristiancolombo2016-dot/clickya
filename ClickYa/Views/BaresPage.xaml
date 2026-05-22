@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="ClickYa.Views.BaresPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Bares"
+             Shell.NavBarIsVisible="True"
+             BackgroundColor="#080C14">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- BANNER -->
+            <Grid HeightRequest="260" Margin="0,8,0,0">
+                <CarouselView x:Name="BannerCarousel"
+                              HeightRequest="260"
+                              IndicatorView="Indicadores"
+                              Margin="16,0">
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame HeightRequest="240" CornerRadius="18" Padding="0"
+                                   HasShadow="True" IsClippedToBounds="True" BackgroundColor="Black">
+                                <Image Source="{Binding}" Aspect="AspectFill" HeightRequest="240"
+                                       HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+                            </Frame>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+            </Grid>
+
+            <IndicatorView x:Name="Indicadores"
+                           IndicatorColor="#FFFFFF33"
+                           SelectedIndicatorColor="#9B5CFF"
+                           HorizontalOptions="Center"
+                           Margin="0,6,0,0"/>
+
+            <!-- BUSCADOR -->
+            <Frame Margin="16,12,16,8" Padding="14,0" HeightRequest="52"
+                   CornerRadius="26" HasShadow="False" BackgroundColor="#12151D"
+                   BorderColor="#2A2F3A">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="AbrirBuscador_Tapped"/>
+                </Frame.GestureRecognizers>
+                <Grid ColumnDefinitions="38,*,48">
+                    <Label Text="⌕" FontSize="28" TextColor="#9B5CFF" VerticalOptions="Center"/>
+                    <Label Grid.Column="1" Text="Buscar bares, pubs..."
+                           TextColor="#444" FontSize="14" VerticalOptions="Center"/>
+                    <Frame Grid.Column="2" WidthRequest="38" HeightRequest="38"
+                           CornerRadius="19" BackgroundColor="#9B5CFF" Padding="0" HasShadow="False">
+                        <Label Text="⌕" TextColor="White" FontSize="22"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                </Grid>
+            </Frame>
+
+            <!-- DESTACADOS -->
+            <VerticalStackLayout Padding="0,16,0,20" BackgroundColor="#080C14">
+                <Label Text="Destacados" FontSize="18" FontAttributes="Bold"
+                       TextColor="#EEE" Margin="16,0,16,10"/>
+                <CollectionView x:Name="ListaDestacados"
+                                HeightRequest="160"
+                                ItemsLayout="HorizontalList"
+                                SelectionMode="None"
+                                Margin="8,0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame WidthRequest="120" HeightRequest="150" Margin="6,0"
+                                   CornerRadius="16" Padding="0" HasShadow="False"
+                                   BackgroundColor="#12151D" IsClippedToBounds="True"
+                                   BorderColor="#2A2F3A">
+                                <VerticalStackLayout Spacing="0">
+                                    <Image Source="{Binding Logo}" HeightRequest="100" Aspect="AspectFill"/>
+                                    <VerticalStackLayout Padding="8,6" Spacing="2">
+                                        <Label Text="{Binding nombre}" TextColor="#EEE" FontSize="12"
+                                               FontAttributes="Bold" LineBreakMode="TailTruncation" MaxLines="1"/>
+                                        <Label Text="{Binding categoria}" TextColor="#9B5CFF" FontSize="10"/>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnBarTapped" CommandParameter="{Binding id}"/>
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- TODOS LOS BARES -->
+            <VerticalStackLayout Padding="0,0,0,20" BackgroundColor="#080C14">
+                <Label Text="Todos los bares" FontSize="18" FontAttributes="Bold"
+                       TextColor="#EEE" Margin="16,0,16,10"/>
+                <CollectionView x:Name="ListaBares" SelectionMode="None"
+                                HeightRequest="180" ItemsLayout="HorizontalList" Margin="8,0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame WidthRequest="160" HeightRequest="170" Margin="6,0"
+                                   CornerRadius="16" Padding="0" HasShadow="False"
+                                   BackgroundColor="#0D1018" BorderColor="#2A2F3A"
+                                   IsClippedToBounds="True">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnBarTapped" CommandParameter="{Binding id}"/>
+                                </Frame.GestureRecognizers>
+                                <VerticalStackLayout Spacing="0">
+                                    <Image Source="{Binding Logo}" HeightRequest="110" Aspect="AspectFill"/>
+                                    <VerticalStackLayout Padding="10,6" Spacing="2">
+                                        <Label Text="{Binding nombre}" TextColor="#F0E6FF"
+                                               FontSize="13" FontAttributes="Bold"
+                                               LineBreakMode="TailTruncation" MaxLines="1"/>
+                                        <Label Text="{Binding categoria}" TextColor="#E6B84D" FontSize="11"/>
+                                        <Label Text="{Binding distancia, StringFormat='📍 {0}'}"
+                                               TextColor="#555" FontSize="10"/>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- PROMOCIONES -->
+            <VerticalStackLayout Padding="0,0,0,40" BackgroundColor="#080C14">
+                <Label Text="Promociones" FontSize="18" FontAttributes="Bold"
+                       TextColor="#EEE" Margin="16,0,16,10"/>
+                <CollectionView x:Name="ListaPromos"
+                                HeightRequest="120"
+                                ItemsLayout="HorizontalList"
+                                SelectionMode="None"
+                                Margin="8,0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame WidthRequest="220" HeightRequest="110" Margin="6,0"
+                                   CornerRadius="16" Padding="0" HasShadow="False"
+                                   BackgroundColor="#12151D" IsClippedToBounds="True"
+                                   BorderColor="#2A2F3A">
+                                <Image Source="{Binding ImagenCompleta}" Aspect="AspectFill"/>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnPromoTapped" CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

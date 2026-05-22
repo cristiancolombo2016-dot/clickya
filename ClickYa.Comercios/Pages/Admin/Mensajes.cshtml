@@ -1,0 +1,234 @@
+﻿@page
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Mensajes – ClickYa</title>
+
+    <style>
+        :root {
+            --violeta: #4B0082;
+            --fucsia: #B8008A;
+            --violeta-soft: #F3E8FF;
+            --gris-bg: #ECEFF3;
+            --gris-card: #FFFFFF;
+            --gris-text: #374151;
+            --gris-muted: #6B7280;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: var(--gris-bg);
+            padding: 40px;
+            color: var(--gris-text);
+        }
+
+        h1 {
+            color: var(--violeta);
+            margin-bottom: 6px;
+        }
+
+        .sub {
+            color: var(--gris-muted);
+            margin-bottom: 24px;
+        }
+
+        .layout {
+            display: flex;
+            gap: 28px;
+            align-items: flex-start;
+        }
+
+        .card {
+            background: var(--gris-card);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+            margin-bottom: 24px;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--gris-muted);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid #E5E7EB;
+            font-family: system-ui;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: none;
+            min-height: 120px;
+        }
+
+        button {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--violeta), var(--fucsia));
+            color: #fff;
+            transition: all .2s ease;
+        }
+
+            button:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 18px rgba(184,0,138,.35);
+            }
+
+        .msg {
+            border-bottom: 1px solid #EEE;
+            padding: 14px 0;
+        }
+
+            .msg:last-child {
+                border-bottom: none;
+            }
+
+        .msg-title {
+            font-weight: 600;
+        }
+
+        .msg-meta {
+            font-size: 12px;
+            color: var(--gris-muted);
+            margin-top: 4px;
+        }
+
+        .btn-eliminar {
+            margin-top: 6px;
+            background: #dc2626;
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Mensajes</h1>
+    <div class="sub">Envío de mensajes a técnicos y comercios</div>
+
+    <div class="layout">
+
+        <!-- ENVIAR MENSAJE -->
+        <div style="flex:1">
+            <div class="card">
+                <h3>Enviar mensaje</h3>
+
+                <div style="margin-bottom:14px;">
+                    <label>Destino</label>
+                    <select id="destino">
+                        <option value="todos">Todos (técnicos y comercios)</option>
+                        <option value="tecnicos">Solo técnicos / servicios</option>
+                        <option value="comercios">Todos los comercios</option>
+                        <option value="comida">Solo comida</option>
+                        <option value="tiendas">Solo tiendas</option>
+                        <option value="bares">Solo bares</option>
+                        <option value="heladerias">Solo heladerías</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:14px;">
+                    <label>Mensaje</label>
+                    <textarea id="mensaje" placeholder="Ej: Renovación de plan disponible..."></textarea>
+                </div>
+
+                <button onclick="enviarMensaje()">Enviar mensaje</button>
+            </div>
+        </div>
+
+        <!-- HISTORIAL -->
+        <div style="width:360px">
+            <div class="card">
+                <h3>Historial</h3>
+                <div id="historial">Cargando...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const API = 'http://localhost:5191';
+
+        async function init() {
+            cargarHistorial();
+        }
+
+        async function enviarMensaje() {
+            const destino = document.getElementById('destino').value;
+            const texto = document.getElementById('mensaje').value.trim();
+
+            if (!texto) { alert('Escribí un mensaje'); return; }
+
+            if (!confirm(`¿Enviar este mensaje a ${destino}?`)) return;
+
+            const body = {
+                texto: texto,
+                destino: destino,
+                destinoId: 0
+            };
+
+            const r = await fetch(`${API}/api/MensajeAdmin`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            if (r.ok) {
+                document.getElementById('mensaje').value = '';
+                cargarHistorial();
+                alert('✅ Mensaje enviado');
+            } else {
+                alert('Error al enviar');
+            }
+        }
+
+        async function cargarHistorial() {
+            try {
+                const r = await fetch(`${API}/api/MensajeAdmin/activos`);
+                const lista = await r.json();
+                const cont = document.getElementById('historial');
+
+                if (lista.length === 0) {
+                    cont.innerHTML = '<p style="color:#999;font-size:14px;">Sin mensajes</p>';
+                    return;
+                }
+
+                cont.innerHTML = lista.map(m => `
+                    <div class="msg">
+                        <div class="msg-title">${m.texto}</div>
+                        <div class="msg-meta">${m.destino} · ${new Date(m.fecha).toLocaleDateString()}</div>
+                        <button class="btn-eliminar" onclick="eliminarMensaje(${m.id})">Eliminar</button>
+                    </div>
+                `).join('');
+            } catch(e) {
+                document.getElementById('historial').innerHTML = '<p style="color:#999;">Error al cargar</p>';
+            }
+        }
+
+        async function eliminarMensaje(id) {
+            if (!confirm('¿Eliminar este mensaje?')) return;
+            await fetch(`${API}/api/MensajeAdmin/${id}`, { method: 'DELETE' });
+            cargarHistorial();
+        }
+
+        init();
+    </script>
+
+</body>
+</html>

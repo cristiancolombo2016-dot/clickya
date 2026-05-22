@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClickYa.Views.LocalPage"
+             BackgroundColor="#4B0082">
+
+    <Grid RowDefinitions="Auto,*">
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#4B0082" Offset="0.0"/>
+                <GradientStop Color="#B8008A" Offset="0.6"/>
+                <GradientStop Color="#FF3D3D" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <!-- ================= BARRA SUPERIOR ================= -->
+        <Grid Grid.Row="0" Padding="15,12" ColumnDefinitions="*,Auto">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#4B0082" Offset="0.0"/>
+                    <GradientStop Color="#B8008A" Offset="0.6"/>
+                    <GradientStop Color="#FF3D3D" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+
+            <Label Text="" Grid.Column="0"/>
+
+            <!-- CARRITO -->
+            <Grid Grid.Column="1">
+                <Frame BackgroundColor="#FF9800"
+                       CornerRadius="20"
+                       Padding="8"
+                       HasShadow="False"
+                       HeightRequest="38"
+                       WidthRequest="38">
+
+                    <Image Source="icono_carrito.png"
+                           HeightRequest="20"
+                           WidthRequest="20">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="AbrirCarrito_Clicked"/>
+                        </Image.GestureRecognizers>
+                    </Image>
+                </Frame>
+
+                <Frame x:Name="BadgeCarrito"
+                       BackgroundColor="#FF3D3D"
+                       CornerRadius="10"
+                       HeightRequest="20"
+                       WidthRequest="20"
+                       Padding="0"
+                       HorizontalOptions="End"
+                       VerticalOptions="Start"
+                       TranslationX="7"
+                       TranslationY="-5"
+                       IsVisible="False"
+                       BorderColor="White">
+
+                    <Label x:Name="LblCantidadCarrito"
+                           Text="0"
+                           FontSize="12"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
+            </Grid>
+        </Grid>
+
+        <!-- ================= CONTENIDO ================= -->
+        <ScrollView Grid.Row="1"
+                    Margin="0"
+                    Padding="0"
+                    BackgroundColor="#4B0082">
+
+            <VerticalStackLayout Spacing="0"
+                                 Padding="0"
+                                 BackgroundColor="#4B0082">
+
+                <!-- ================= HERO / PORTADA ================= -->
+                <Grid HeightRequest="260"
+                      Margin="0"
+                      Padding="0"
+                      IsClippedToBounds="True">
+
+                    <Grid.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#4B0082" Offset="0.0"/>
+                            <GradientStop Color="#B8008A" Offset="0.6"/>
+                            <GradientStop Color="#FF3D3D" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </Grid.Background>
+
+                    <!-- CONTENEDOR MULTIMEDIA -->
+                    <Grid x:Name="PortadaMediaContainer"
+                          BackgroundColor="Black">
+
+                        <Image x:Name="ImgPortada"
+                               Aspect="AspectFill"
+                               HorizontalOptions="Fill"
+                               VerticalOptions="Fill"/>
+                    </Grid>
+
+                    <!-- CAPA OSCURA -->
+                    <BoxView Color="Black"
+                             Opacity="0.22"/>
+
+                    <!-- LOGO + INFO -->
+                    <Grid VerticalOptions="End"
+                          Margin="18,0,18,18"
+                          ColumnDefinitions="110,*"
+                          ColumnSpacing="14">
+
+                        <Frame WidthRequest="98"
+                               HeightRequest="98"
+                               CornerRadius="49"
+                               Padding="0"
+                               BackgroundColor="White"
+                               HasShadow="True"
+                               IsClippedToBounds="True">
+
+                            <Image x:Name="ImgLogo"
+                                   Aspect="AspectFill"/>
+                        </Frame>
+
+                        <VerticalStackLayout Grid.Column="1"
+                                             VerticalOptions="End"
+                                             Spacing="4">
+
+                            <Label x:Name="LblNombre"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   LineBreakMode="TailTruncation"
+                                   MaxLines="2"/>
+
+                            <!-- Se mantiene para que no rompa el .cs -->
+                            <Label x:Name="LblDireccion"
+                                   IsVisible="False"
+                                   FontSize="18"
+                                   TextColor="White"
+                                   LineBreakMode="TailTruncation"
+                                   MaxLines="1"/>
+
+                            
+                        </VerticalStackLayout>
+                    </Grid>
+                </Grid>
+
+                <!-- ================= CARD INFO ================= -->
+                <Frame Margin="16,14,16,0"
+                       BackgroundColor="White"
+                       CornerRadius="18"
+                       HasShadow="True"
+                       Padding="0">
+
+                    <Grid ColumnDefinitions="*" ColumnSpacing="0">
+
+                        <Grid Padding="10" Grid.Column="0">
+                            <VerticalStackLayout Spacing="2"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center">
+                                <Label Text="🕒"
+       FontSize="24"
+       HorizontalOptions="Center"/>
+                                <Label Text="Horario"
+       FontSize="13"
+       FontAttributes="Bold"
+       TextColor="#4B0082"
+       HorizontalOptions="Center"/>
+                                <Label x:Name="LblHorario"
+       Text="Hoy abierto"
+       FontSize="13"
+       TextColor="#555"
+       HorizontalOptions="Center"
+       MaxLines="3"
+       LineBreakMode="TailTruncation"/>
+                                <Label x:Name="LblDescripcion"
+       FontSize="13"
+       TextColor="#555"
+       HorizontalOptions="Center"
+       MaxLines="5"
+       LineBreakMode="WordWrap"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                    </Grid>
+                </Frame>
+
+                <!-- ================= BOTONES ================= -->
+                <Grid Margin="16,14,16,0"
+      ColumnDefinitions="*,*,*,*"
+      ColumnSpacing="10">
+
+                    <Button Grid.Column="0"
+            ImageSource="icono_whatsapp.png"
+            BackgroundColor="#1FCB54"
+            CornerRadius="14"
+            HeightRequest="52"
+            Clicked="BtnWhatsApp_Clicked"/>
+
+                    <Button Grid.Column="1"
+            ImageSource="icono_ubicacion.png"
+            BackgroundColor="#167BFF"
+            CornerRadius="14"
+            HeightRequest="52"
+            Clicked="BtnMaps_Clicked"/>
+
+                    <Button Grid.Column="2"
+            ImageSource="icono_instagram.png"
+            BackgroundColor="#E1338E"
+            CornerRadius="14"
+            HeightRequest="52"
+            Clicked="BtnInstagram_Clicked"/>
+
+                    <Button Grid.Column="3"
+            ImageSource="icono_compartir.png"
+            BackgroundColor="#E6B84D"
+            CornerRadius="14"
+            HeightRequest="52"
+            Clicked="BtnCompartir_Clicked"/>
+                </Grid>
+                
+
+                <!-- ================= TITULO PRODUCTOS ================= -->
+                <VerticalStackLayout Padding="16,18,16,8"
+                                     Spacing="2">
+                    <Label Text="Nuestros Productos"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="White"/>
+                    <Label Text="Elegí lo que más te guste"
+                           FontSize="13"
+                           TextColor="#EEEEEE"/>
+                </VerticalStackLayout>
+                <!-- ================= HELADERIA ================= -->
+                <VerticalStackLayout x:Name="LayoutHelados"
+                      IsVisible="False"
+                      Padding="20"
+                      Spacing="14">
+
+                    <Frame BackgroundColor="White"
+            CornerRadius="20"
+            Padding="20"
+            HasShadow="True">
+
+                        <VerticalStackLayout Spacing="12">
+                            <Image Source="helado_pote.png"
+                    HeightRequest="120"
+                    HorizontalOptions="Center">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="AbrirHeladoModal_Tapped"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+
+                            <Label Text="Armá tu helado"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    TextColor="#4B0082"
+                    HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </VerticalStackLayout>
+                <!-- ================= PRODUCTOS ================= -->
+                <VerticalStackLayout x:Name="LayoutProductos"
+                                     IsVisible="True">
+
+                    <CollectionView x:Name="ListaProductos"
+                                    Margin="0,0,0,30"
+                                    SelectionMode="None">
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Margin="16,6"
+                                       Padding="0"
+                                       CornerRadius="16"
+                                       BackgroundColor="White"
+                                       HasShadow="True">
+
+                                    <!-- 👇 AGREGAR ESTO -->
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnProductoTapped"
+                              CommandParameter="{Binding}" />
+                                    </Frame.GestureRecognizers>
+
+                                    <Grid ColumnDefinitions="118,*,Auto"
+                                          ColumnSpacing="0"
+                                          MinimumHeightRequest="108">
+
+                                        <!-- IMAGEN -->
+                                        <Grid Grid.Column="0"
+                                              WidthRequest="118"
+                                              HeightRequest="108"
+                                              BackgroundColor="#F2F2F2"
+                                              IsClippedToBounds="True">
+                                            <Image Aspect="AspectFill">
+                                                <Image.Source>
+                                                    <UriImageSource Uri="{Binding imagen}" />
+                                                </Image.Source>
+                                            </Image>
+                                        </Grid>
+
+                                        <!-- INFO -->
+                                        <VerticalStackLayout Grid.Column="1"
+                                                             Padding="14,12,10,12"
+                                                             Spacing="5"
+                                                             VerticalOptions="Center">
+
+                                            <Label Text="{Binding nombre}"
+                                                   FontSize="17"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#333"
+                                                   LineBreakMode="TailTruncation"
+                                                   MaxLines="2"/>
+
+                                            <Label Text="Disponible en este local"
+                                                   FontSize="12"
+                                                   TextColor="#777"
+                                                   LineBreakMode="TailTruncation"
+                                                   MaxLines="1"/>
+
+                                            <Label Text="{Binding precio, StringFormat='$ {0}'}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#4B0082"/>
+                                        </VerticalStackLayout>
+
+                                        <!-- BOTON CARRITO -->
+                                        <VerticalStackLayout Grid.Column="2"
+                                                             Padding="0,0,14,0"
+                                                             VerticalOptions="Center">
+
+                                            <Frame BackgroundColor="#FF9800"
+                                                   CornerRadius="22"
+                                                   Padding="11"
+                                                   HasShadow="False">
+
+                                                <Frame.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="AgregarCarrito_Tapped"
+                                                                          CommandParameter="{Binding}" />
+                                                </Frame.GestureRecognizers>
+
+                                                <Image Source="icono_carrito.png"
+                                                       HeightRequest="22"
+                                                       WidthRequest="22"/>
+                                            </Frame>
+                                        </VerticalStackLayout>
+
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+               
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

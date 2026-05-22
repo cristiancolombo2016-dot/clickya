@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.TecnicosRubroPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F7F7FA"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- HEADER -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Padding="18,50,18,16" BackgroundColor="White">
+            <Button Text="‹" FontSize="38" TextColor="#111"
+        BackgroundColor="Transparent"
+        VerticalOptions="Center"
+        Clicked="OnVolverTapped"/>
+            <Label x:Name="LblRubro" Grid.Column="1"
+                   Text="Técnicos"
+                   FontSize="22" FontAttributes="Bold"
+                   TextColor="#111" VerticalOptions="Center"
+                   Margin="12,0,0,0"/>
+        </Grid>
+
+        <!-- LISTA -->
+        <CollectionView
+            Grid.Row="1"
+            x:Name="ListaTecnicos"
+            SelectionMode="None"
+            Margin="0,8,0,0">
+
+            <CollectionView.EmptyView>
+                <Label Text="No hay técnicos disponibles en este rubro"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       TextColor="#999"
+                       FontSize="15"
+                       Margin="40"/>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame
+                        Margin="18,6"
+                        CornerRadius="18"
+                        Padding="16"
+                        HasShadow="True"
+                        BackgroundColor="White">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnTecnicoTapped" CommandParameter="{Binding .}"/>
+                        </Frame.GestureRecognizers>
+
+                        <Grid ColumnDefinitions="60,*,Auto" ColumnSpacing="14">
+
+
+                            <!-- AVATAR -->
+                            <Frame WidthRequest="60" HeightRequest="60"
+       CornerRadius="12" Padding="0"
+       BackgroundColor="#EDE9FE"
+       VerticalOptions="Center"
+       IsClippedToBounds="True">
+                                <Grid>
+                                    <Label Text="{Binding Iniciales}"
+               FontSize="20" FontAttributes="Bold"
+               TextColor="#5B21B6"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               IsVisible="{Binding SinLogo}"/>
+                                    <Image Source="{Binding LogoUrl}"
+       Aspect="AspectFill"
+       WidthRequest="56"
+       HeightRequest="56"
+       IsVisible="{Binding TieneLogo}"/>
+                                </Grid>
+                            </Frame>
+
+                            <!-- INFO -->
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                                <Label Text="{Binding Nombre}"
+                                       FontSize="17" FontAttributes="Bold"
+                                       TextColor="#111"/>
+                                <Label Text="{Binding Rubro}"
+                                       FontSize="16" TextColor="#666"/>
+                                <Label Text="{Binding DireccionCompleta}"
+       FontSize="16" TextColor="#4B0082"
+       FontAttributes="Bold"
+       IsVisible="{Binding TieneDireccion}"/>
+                            </VerticalStackLayout>
+
+                           
+
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

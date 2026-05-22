@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="#0A0A1A">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- NAVBAR -->
+            <Grid HeightRequest="64" BackgroundColor="#0A0A1A" Padding="16,0">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Label Text="☰" FontSize="24" TextColor="White" VerticalOptions="Center"/>
+                    <Image Grid.Column="1" Source="logo_clickya.png"
+                           HeightRequest="36" WidthRequest="100"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Frame Grid.Column="2" WidthRequest="36" HeightRequest="36"
+                           CornerRadius="18" BackgroundColor="#1A1A2E" Padding="0"
+                           HasShadow="False" BorderColor="#2A2A3E" VerticalOptions="Center">
+                       
+                    </Frame>
+                </Grid>
+            </Grid>
+
+            <!-- TITULO -->
+            <VerticalStackLayout Padding="20,16,20,0" Spacing="6" BackgroundColor="#0A0A1A">
+                <Label Text="El Portal Nicoleño"
+                       FontSize="30" FontAttributes="Bold"
+                       TextColor="White" HorizontalOptions="Center"/>
+                <Label HorizontalOptions="Center" HorizontalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Todo lo que " TextColor="#888" FontSize="15"/>
+                            <Span Text="necesitás" TextColor="#FF2E88" FontSize="15" FontAttributes="Bold"/>
+                            <Span Text=", en " TextColor="#888" FontSize="15"/>
+                            <Span Text="un solo lugar." TextColor="#FF9800" FontSize="15" FontAttributes="Bold"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </VerticalStackLayout>
+
+            <!-- BANNER -->
+            <Grid HeightRequest="280" Margin="16,16,16,0">
+                <CarouselView x:Name="BannerCarousel"
+                              HeightRequest="280"
+                              IndicatorView="BannerIndicators"
+                              Loop="True">
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame CornerRadius="22" Padding="0" HasShadow="True"
+                                   IsClippedToBounds="True" BackgroundColor="#1A1A2E">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Banner_Tapped"/>
+                                </Frame.GestureRecognizers>
+                                <Image Source="{Binding}" Aspect="AspectFill"/>
+                            </Frame>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+            </Grid>
+
+            <IndicatorView x:Name="BannerIndicators"
+                           IndicatorColor="#FFFFFF33"
+                           SelectedIndicatorColor="#FF2E88"
+                           HorizontalOptions="Center"
+                           Margin="0,8,0,0"/>
+
+            <!-- BUSCADOR -->
+            <Frame Margin="16,12,16,0" Padding="14,0" HeightRequest="54"
+                   CornerRadius="27" HasShadow="False" BackgroundColor="#1A1A2E"
+                   BorderColor="#2A2A3E">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="AbrirBuscador_Tapped"/>
+                </Frame.GestureRecognizers>
+                <Grid ColumnDefinitions="36,*,44">
+                    <Label Text="🔍" FontSize="20" VerticalOptions="Center"/>
+                    <Label Grid.Column="1" Text="Buscar locales, servicios o productos..."
+                           TextColor="#555" FontSize="13" VerticalOptions="Center"/>
+                    <Frame Grid.Column="2" WidthRequest="40" HeightRequest="40"
+                           CornerRadius="20" BackgroundColor="#FF2E88" Padding="0" HasShadow="False">
+                        <Label Text="⚙" TextColor="White" FontSize="20"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                </Grid>
+            </Frame>
+
+            <!-- CATEGORÍAS -->
+            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10"
+                  Margin="16,16,16,0" RowDefinitions="Auto">
+
+                <!-- COMIDAS -->
+                <Frame Grid.Column="0" CornerRadius="18" Padding="0"
+                       HasShadow="False" HeightRequest="90" BackgroundColor="#E65100">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="AbrirComida_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="comida.png" WidthRequest="30" HeightRequest="30" HorizontalOptions="Center"/>
+                        <Label Text="Comidas" FontSize="11" FontAttributes="Bold" TextColor="White"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Descubrí lugares" FontSize="9" TextColor="#FFD0A0"
+                               HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- TIENDAS -->
+                <Frame Grid.Column="1" CornerRadius="18" Padding="0"
+                       HasShadow="False" HeightRequest="90" BackgroundColor="#1560BD">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="AbrirTiendas_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="tiendas.png" WidthRequest="30" HeightRequest="30" HorizontalOptions="Center"/>
+                        <Label Text="Tiendas" FontSize="11" FontAttributes="Bold" TextColor="White"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Comprá cercano" FontSize="9" TextColor="#A0C4FF"
+                               HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- SERVICIOS -->
+                <Frame Grid.Column="2" CornerRadius="18" Padding="0"
+                       HasShadow="False" HeightRequest="90" BackgroundColor="#B8008A">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="AbrirServicios_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="servicios.png" WidthRequest="30" HeightRequest="30" HorizontalOptions="Center"/>
+                        <Label Text="Servicios" FontSize="11" FontAttributes="Bold" TextColor="White"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Encontrá ayuda" FontSize="9" TextColor="#FFB0D0"
+                               HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- BARES -->
+                <Frame Grid.Column="3" CornerRadius="18" Padding="0"
+                       HasShadow="False" HeightRequest="90" BackgroundColor="#2E7D32">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="AbrirEspectaculos_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="espectaculos.png" WidthRequest="30" HeightRequest="30" HorizontalOptions="Center"/>
+                        <Label Text="Bares" FontSize="11" FontAttributes="Bold" TextColor="White"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="Salí y disfrutá" FontSize="9" TextColor="#A0FFB0"
+                               HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+            </Grid>
+
+            <!-- DESTACADOS -->
+            <Grid Margin="16,20,16,8" ColumnDefinitions="*,Auto">
+                <Label Text="Destacados de la Semana"
+                       FontSize="20" FontAttributes="Bold" TextColor="White"/>
+                <Label Grid.Column="1" Text="Ver más ›"
+                       FontSize="14" FontAttributes="Bold" TextColor="#FF2E88"
+                       VerticalOptions="Center"/>
+            </Grid>
+
+            <CollectionView x:Name="ListaDestacados"
+                            Margin="16,0,16,30"
+                            SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="3"
+                                     HorizontalItemSpacing="10" VerticalItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="16" BackgroundColor="#12151D"
+                               HasShadow="False" Padding="0"
+                               BorderColor="#2A2F3A" IsClippedToBounds="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="Destacado_Tapped"
+                                                      CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+                            <VerticalStackLayout Spacing="0">
+                                <Image Source="{Binding Imagen}" HeightRequest="90" Aspect="AspectFill"/>
+                                <VerticalStackLayout Padding="8,6" Spacing="2">
+                                    <Label Text="{Binding Nombre}" TextColor="White"
+                                           FontSize="12" FontAttributes="Bold"
+                                           LineBreakMode="TailTruncation" MaxLines="1"/>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <Label Text="⭐" FontSize="11"/>
+                                        <Label Grid.Column="1" Text="{Binding Rating}"
+                                               TextColor="#FFD700" FontSize="11"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <Label Text="📍" FontSize="10"/>
+                                        <Label Grid.Column="1" Text="{Binding Ubicacion}"
+                                               TextColor="#888" FontSize="10"
+                                               LineBreakMode="TailTruncation" MaxLines="1"/>
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

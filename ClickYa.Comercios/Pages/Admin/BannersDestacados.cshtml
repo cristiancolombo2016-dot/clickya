@@ -1,0 +1,602 @@
+﻿@page "/Admin/BannersDestacados"
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Banners – ClickYa Admin</title>
+    <style>
+        :root {
+            --violeta: #4B0082;
+            --fucsia: #B8008A;
+            --rojo: #FF3D3D;
+            --gris-bg: #ECEFF3;
+            --verde: #16A34A;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui;
+            background: var(--gris-bg);
+            padding: 40px;
+            color: #374151;
+        }
+
+        h1 {
+            color: var(--violeta);
+        }
+
+        .sub {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .grupo {
+            margin-bottom: 40px;
+        }
+
+        .grupo-titulo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--violeta);
+            border-left: 5px solid var(--fucsia);
+            padding-left: 14px;
+            margin-bottom: 16px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 22px;
+            padding: 26px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+            margin-bottom: 16px;
+        }
+
+        .section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 12px;
+        }
+
+            .section b {
+                font-size: 16px;
+                color: #444;
+            }
+
+        .btn {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg,var(--violeta),var(--fucsia),var(--rojo));
+        }
+
+        .items {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 8px 0;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            min-width: 220px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,.12);
+            padding: 10px;
+        }
+
+            .item img {
+                width: 100%;
+                height: 110px;
+                object-fit: cover;
+                border-radius: 12px;
+                cursor: pointer;
+            }
+
+        .menu {
+            margin-top: 8px;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+            .menu label {
+                font-size: 12px;
+                color: #555;
+                font-weight: 600;
+            }
+
+        .badge {
+            align-self: flex-start;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #DCFCE7;
+            color: var(--verde);
+        }
+
+        .contador {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .btn-eliminar {
+            background: #FF3D3D;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        input[type=file] {
+            display: none;
+        }
+
+        .modal-img {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+            .modal-img img {
+                max-width: 90%;
+                max-height: 90%;
+                border-radius: 18px;
+            }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .modal-agregar {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+            .modal-box h3 {
+                margin: 0;
+                color: var(--violeta);
+            }
+
+        .preview-img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 14px;
+            display: none;
+        }
+
+        .btn-upload {
+            background: #eee;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .modal-box label {
+            font-size: 13px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .modal-box select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Banners y Destacados</h1>
+    <div class="sub">Administrá qué se muestra en cada sección de ClickYa</div>
+
+    <div id="secciones"></div>
+
+    <div class="modal-img" id="modalImagen" onclick="cerrarModal()">
+        <span class="modal-close">&times;</span>
+        <img id="modalImagenSrc" src="" />
+    </div>
+
+    <div class="modal-agregar" id="modalAgregar">
+        <div class="modal-box">
+            <h3 id="modalTitulo">Agregar Banner</h3>
+            <button class="btn-upload" onclick="document.getElementById('fileInput').click()">📁 Elegir imagen</button>
+            <input type="file" id="fileInput" accept="image/*" onchange="previsualizarImagen(event)">
+            <img id="previewImg" class="preview-img" />
+            <div>
+                <label id="lblLocal">Local asociado</label>
+                <select id="selectLocal">
+                    <option value="0">-- Elegí un local --</option>
+                </select>
+            </div>
+            <div>
+                <label>Duración</label>
+                <select id="inputDias">
+                    <option value="7">7 días</option>
+                    <option value="14">14 días</option>
+                    <option value="30">30 días</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:10px;">
+                <button class="btn" onclick="subirBanner()" style="flex:1">Guardar</button>
+                <button onclick="cerrarModalAgregar()" style="flex:1;border:none;padding:10px;border-radius:999px;cursor:pointer;background:#eee;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://192.168.100.9:5191';
+
+        const grupos = [
+            {
+                titulo: '🏠 Home',
+                color: '#4B0082',
+                secciones: [
+                    { key: 'home', nombre: 'Banners principales' },
+                    { key: 'home-destacados', nombre: 'Destacados' }
+                ]
+            },
+            {
+                titulo: '🍔 Comidas',
+                color: '#E65100',
+                secciones: [
+                    { key: 'comidas', nombre: 'Banners principales' },
+                    { key: 'comidas-destacados', nombre: 'Destacados' },
+                    { key: 'comidas-promos', nombre: 'Promociones' }
+                ]
+            },
+            {
+                titulo: '🛍 Tiendas',
+                color: '#1560BD',
+                secciones: [
+                    { key: 'tiendas', nombre: 'Banners principales' },
+                    { key: 'tiendas-destacados', nombre: 'Destacados' },
+                    { key: 'tiendas-promos', nombre: 'Promociones' }
+                ]
+            },
+            {
+                titulo: '🔧 Servicios',
+                color: '#EC407A',
+                secciones: [
+                    { key: 'servicios', nombre: 'Banners principales' }
+                ]
+            },
+            {
+                titulo: '🍺 Bares',
+                color: '#2E7D32',
+                secciones: [
+                    { key: 'bares', nombre: 'Banners principales' },
+                    { key: 'bares-destacados', nombre: 'Destacados' },
+                    { key: 'bares-promos', nombre: 'Promociones' }
+                ]
+            }
+        ];
+
+        let seccionActual = '';
+        let comercios = [];
+        let tecnicos = [];
+
+        async function init() {
+            try { const r = await fetch(`${API}/api/Comercio/todos`); comercios = await r.json(); } catch { comercios = []; }
+            try { const r2 = await fetch(`${API}/api/Tecnico`); tecnicos = await r2.json(); } catch { tecnicos = []; }
+
+            const cont = document.getElementById('secciones');
+
+            grupos.forEach(grupo => {
+                let html = `<div class="grupo"><div class="grupo-titulo" style="border-color:${grupo.color}">${grupo.titulo}</div>`;
+                grupo.secciones.forEach(s => {
+                    html += `<div class="card"><div class="section"><b>${s.nombre}</b><button class="btn" onclick="abrirModalAgregar('${s.key}','${s.nombre}')">+ Agregar</button></div><div class="items" id="lista-${s.key}">Cargando...</div></div>`;
+                });
+                html += `</div>`;
+                cont.innerHTML += html;
+            });
+
+            for (const grupo of grupos) {
+                for (const s of grupo.secciones) {
+                    await cargarBanners(s.key);
+                }
+            }
+        }
+
+        async function cargarBanners(seccion) {
+            try {
+                const r = await fetch(`${API}/api/Banners/todos`);
+                const todos = await r.json();
+                const filtrados = todos.filter(b => (b.seccion || b.Seccion || '').toLowerCase() === seccion);
+                renderBanners(seccion, filtrados);
+            } catch {
+                const el = document.getElementById(`lista-${seccion}`);
+                if (el) el.innerHTML = 'Error al cargar';
+            }
+        }
+
+        function renderBanners(seccion, banners) {
+            const cont = document.getElementById(`lista-${seccion}`);
+            if (!cont) return;
+
+            if (banners.length === 0) {
+                cont.innerHTML = '<span style="color:#999;font-size:14px;">Sin banners</span>';
+                return;
+            }
+
+            cont.innerHTML = banners.map(b => {
+                const imgUrl = b.imagenUrl || b.ImagenUrl || '';
+                const localId = b.localId || b.LocalId || 0;
+                const tecnicoId = b.tecnicoId || b.TecnicoId || 0;
+                const dias = b.dias || b.Dias || 7;
+                const inicio = new Date(b.inicio || b.Inicio);
+                const fin = new Date(inicio);
+                fin.setDate(fin.getDate() + dias);
+                const restante = Math.max(0, Math.ceil((fin - new Date()) / 86400000));
+
+                let nombreAsociado = '';
+                if (seccion === 'servicios') {
+                    const tec = tecnicos.find(t => (t.id || t.Id) === tecnicoId);
+                    nombreAsociado = tec ? (tec.nombre || tec.Nombre) : `ID: ${tecnicoId}`;
+                } else {
+                    const local = comercios.find(c => (c.id || c.Id) === localId);
+                    nombreAsociado = local ? (local.nombre || local.Nombre) : `Local ID: ${localId}`;
+                }
+
+                return `
+                <div class="item">
+                    <img src="${API}${imgUrl}" onclick="verImagenGrande('${API}${imgUrl}')">
+                    <div class="menu">
+                        <label>${seccion === 'servicios' ? 'Técnico' : 'Local'}: ${nombreAsociado}</label>
+                        <span class="badge">Activo</span>
+                        <span class="contador">Días restantes: ${restante}</span>
+                        <button class="btn" style="font-size:12px;padding:6px 12px;margin-top:4px;" onclick="abrirModalEditar(${b.id || b.Id},'${seccion}')">✏️ Editar</button>
+                        <button class="btn-eliminar" onclick="eliminarBanner(${b.id || b.Id},'${seccion}')">Eliminar</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function abrirModalAgregar(seccion, nombre) {
+            seccionActual = seccion;
+            document.getElementById('modalTitulo').textContent = `Agregar: ${nombre}`;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewImg').style.display = 'none';
+            document.getElementById('inputDias').value = '7';
+
+            const sel = document.getElementById('selectLocal');
+            const lbl = document.getElementById('lblLocal');
+
+            if (seccion === 'servicios') {
+                lbl.textContent = 'Técnico asociado';
+                sel.innerHTML = '<option value="0">-- Elegí un técnico --</option>';
+                tecnicos.forEach(t => {
+                    sel.innerHTML += `<option value="${t.id || t.Id}">${t.nombre || t.Nombre} (ID: ${t.id || t.Id})</option>`;
+                });
+            } else {
+                lbl.textContent = 'Local asociado';
+                sel.innerHTML = '<option value="0">-- Elegí un local --</option>';
+
+                let rubroFiltro = '';
+                if (seccion.startsWith('comidas')) rubroFiltro = 'comidas';
+                else if (seccion.startsWith('tiendas')) rubroFiltro = 'tiendas';
+                else if (seccion.startsWith('bares')) rubroFiltro = 'bares';
+
+                const filtrados = rubroFiltro
+                    ? comercios.filter(c => (c.rubro || c.Rubro || '').toLowerCase() === rubroFiltro)
+                    : comercios;
+
+                filtrados.forEach(c => {
+                    const id = c.id || c.Id;
+                    const nom = c.nombre || c.Nombre;
+                    sel.innerHTML += `<option value="${id}">${nom} (ID: ${id})</option>`;
+                });
+            }
+
+            document.getElementById('modalAgregar').style.display = 'flex';
+        }
+
+        function cerrarModalAgregar() {
+            document.getElementById('modalAgregar').style.display = 'none';
+        }
+
+        function previsualizarImagen(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                const img = document.getElementById('previewImg');
+                img.src = ev.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function subirBanner() {
+            const file = document.getElementById('fileInput').files[0];
+            const localId = parseInt(document.getElementById('selectLocal').value) || 0;
+            const dias = parseInt(document.getElementById('inputDias').value) || 7;
+
+            if (!file) { alert('Elegí una imagen'); return; }
+            if (localId <= 0) { alert('Elegí un local o técnico'); return; }
+
+            const form = new FormData();
+            form.append('Imagen', file);
+            form.append('Seccion', seccionActual);
+            form.append('Dias', dias);
+
+            if (seccionActual === 'servicios') {
+                form.append('TecnicoId', localId);
+                form.append('LocalId', 0);
+            } else {
+                form.append('LocalId', localId);
+                form.append('TecnicoId', 0);
+            }
+
+            try {
+                const r = await fetch(`${API}/api/Banners`, { method: 'POST', body: form });
+                if (!r.ok) throw new Error('Error al guardar');
+                cerrarModalAgregar();
+                cargarBanners(seccionActual);
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        async function eliminarBanner(id, seccion) {
+            if (!confirm('¿Eliminar este banner?')) return;
+            await fetch(`${API}/api/Banners/${id}`, { method: 'DELETE' });
+            cargarBanners(seccion);
+        }
+
+        function verImagenGrande(src) {
+            document.getElementById('modalImagenSrc').src = src;
+            document.getElementById('modalImagen').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalImagen').style.display = 'none';
+        }
+
+        let _editandoBannerId = null;
+        let _editandoBannerSeccion = null;
+
+        function abrirModalEditar(id, seccion) {
+            _editandoBannerId = id;
+            _editandoBannerSeccion = seccion;
+            document.getElementById('editBannerFileInput').value = '';
+            document.getElementById('editBannerPreview').style.display = 'none';
+
+            const sel = document.getElementById('editBannerLocal');
+            if (seccion === 'servicios') {
+                sel.innerHTML = '<option value="0">-- Elegí un técnico --</option>';
+                tecnicos.forEach(t => {
+                    sel.innerHTML += `<option value="${t.id || t.Id}">${t.nombre || t.Nombre}</option>`;
+                });
+            } else {
+                sel.innerHTML = '<option value="0">-- Elegí un local --</option>';
+                comercios.forEach(c => {
+                    sel.innerHTML += `<option value="${c.id || c.Id}">${c.nombre || c.Nombre}</option>`;
+                });
+            }
+
+            document.getElementById('modalEditarBanner').style.display = 'flex';
+        }
+
+        function cerrarModalEditarBanner() {
+            document.getElementById('modalEditarBanner').style.display = 'none';
+        }
+
+        function previsualizarImagenEditar(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                const img = document.getElementById('editBannerPreview');
+                img.src = ev.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function guardarEdicionBanner() {
+            const localId = parseInt(document.getElementById('editBannerLocal').value) || 0;
+            const dias = parseInt(document.getElementById('editBannerDias').value) || 7;
+            const file = document.getElementById('editBannerFileInput').files[0];
+
+            if (localId <= 0) { alert('Elegí un local'); return; }
+
+            await fetch(`${API}/api/Banners/${_editandoBannerId}`, { method: 'DELETE' });
+
+            const form = new FormData();
+            if (file) form.append('Imagen', file);
+            form.append('Seccion', _editandoBannerSeccion);
+            form.append('Dias', dias);
+            if (_editandoBannerSeccion === 'servicios') {
+                form.append('TecnicoId', localId);
+                form.append('LocalId', 0);
+            } else {
+                form.append('LocalId', localId);
+                form.append('TecnicoId', 0);
+            }
+
+            try {
+                const r = await fetch(`${API}/api/Banners`, { method: 'POST', body: form });
+                if (!r.ok) throw new Error('Error');
+                cerrarModalEditarBanner();
+                cargarBanners(_editandoBannerSeccion);
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        init();
+    </script>
+
+    <div class="modal-agregar" id="modalEditarBanner">
+        <div class="modal-box">
+            <h3>Editar Banner</h3>
+            <button class="btn-upload" onclick="document.getElementById('editBannerFileInput').click()">📁 Cambiar imagen (opcional)</button>
+            <input type="file" id="editBannerFileInput" accept="image/*" onchange="previsualizarImagenEditar(event)">
+            <img id="editBannerPreview" class="preview-img" />
+            <div>
+                <label>Local asociado</label>
+                <select id="editBannerLocal"></select>
+            </div>
+            <div>
+                <label>Duración</label>
+                <select id="editBannerDias">
+                    <option value="7">7 días</option>
+                    <option value="14">14 días</option>
+                    <option value="30">30 días</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:10px;">
+                <button class="btn" onclick="guardarEdicionBanner()" style="flex:1">Guardar</button>
+                <button onclick="cerrarModalEditarBanner()" style="flex:1;border:none;padding:10px;border-radius:999px;cursor:pointer;background:#eee;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

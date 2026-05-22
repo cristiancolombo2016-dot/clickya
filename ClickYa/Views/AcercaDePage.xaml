@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.AcercaDePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Acerca de"
+    BackgroundColor="White">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="16">
+
+            <Label
+                Text="ClickYa"
+                FontSize="24"
+                FontAttributes="Bold"
+                TextColor="#222" />
+
+            <Label
+                Text="Tu portal local para descubrir comercios, servicios y propuestas de tu ciudad."
+                FontSize="15"
+                TextColor="#444" />
+
+            <Label
+                Text="Nuestra misión"
+                FontSize="18"
+                FontAttributes="Bold"
+                TextColor="#222"
+                Margin="0,12,0,0" />
+
+            <Label
+                Text="Conectar a las personas con los comercios y profesionales locales, facilitando la visibilidad, el contacto y el acceso a productos y servicios."
+                FontSize="14"
+                TextColor="#444" />
+
+            <Label
+                Text="¿Qué es ClickYa?"
+                FontSize="18"
+                FontAttributes="Bold"
+                TextColor="#222"
+                Margin="0,12,0,0" />
+
+            <Label
+                Text="ClickYa es una plataforma digital creada para potenciar el comercio local, permitiendo explorar comercios, promociones y servicios desde una sola app."
+                FontSize="14"
+                TextColor="#444" />
+
+            <Label
+                Text="Versión"
+                FontSize="16"
+                FontAttributes="Bold"
+                TextColor="#222"
+                Margin="0,12,0,0" />
+
+            <Label
+                Text="Versión 1.0 – Beta"
+                FontSize="14"
+                TextColor="#444" />
+
+            <Label
+                Text="© ClickYa"
+                FontSize="16"
+                TextColor="#777"
+                HorizontalOptions="Center"
+                Margin="0,20,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

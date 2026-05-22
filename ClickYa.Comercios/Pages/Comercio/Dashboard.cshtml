@@ -1,0 +1,714 @@
+﻿@page "/Comercio/Dashboard"
+
+<h1 style="display:none">Dashboard Comercio</h1>
+
+    <div class="local-preview" data-rubro="" data-categoria="">
+
+    <!-- ================= MENSAJES ADMIN ================= -->
+    <div style="padding:12px 0 4px">
+
+        <div id="bannerCard" style="background:#f1f0f5;border-radius:16px;overflow:hidden;border:0.5px solid #ddd;display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 0">
+                <span style="font-size:11px;font-weight:500;color:#7c3aed;letter-spacing:.08em">
+                    Mensaje del administrador
+                </span>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span id="bannerCounter" style="font-size:11px;color:#888"></span>
+                    <button onclick="cerrarBanner()" style="background:rgba(0,0,0,0.07);border:none;border-radius:8px;width:26px;height:26px;cursor:pointer;color:#555;font-size:14px">✕</button>
+                </div>
+            </div>
+            <div id="bannerContenido">
+                <div style="padding:12px 16px 10px;display:flex;align-items:flex-start;gap:10px">
+                    <div style="width:34px;height:34px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:17px">💬</div>
+                    <div id="bannerText" style="font-size:15px;color:#1f1f1f;font-weight:500;line-height:1.5;flex:1"></div>
+                </div>
+                <div style="padding:0 16px 12px;display:flex;align-items:center;justify-content:space-between">
+                    <span id="bannerDate" style="font-size:11px;color:#888"></span>
+                    <button onclick="borrarMensaje()" style="background:rgba(220,38,38,0.1);border:1px solid rgba(220,38,38,0.25);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:500;color:#b91c1c;cursor:pointer">🗑 Borrar</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;padding:0 16px 12px">
+                    <div id="bannerDots" style="display:flex;gap:5px;flex:1;align-items:center"></div>
+                    <button id="btnPrevMsg" style="background:rgba(0,0,0,0.07);border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;color:#444;font-size:16px">‹</button>
+                    <button id="btnNextMsg" style="background:rgba(0,0,0,0.07);border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;color:#444;font-size:16px">›</button>
+                </div>
+            </div>
+            <div id="bannerVacio" style="display:none;text-align:center;padding:20px 16px;color:#888;font-size:14px">
+                ✅ Sin mensajes pendientes
+            </div>
+        </div>
+
+        <div id="bannerMini" style="display:none;background:#f1f0f5;border:0.5px solid #ddd;border-radius:12px;padding:10px 14px;display:none;align-items:center;justify-content:space-between;gap:12px">
+            <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
+                <div style="width:8px;height:8px;border-radius:50%;background:#7c3aed;flex-shrink:0"></div>
+                <span id="miniTexto" style="font-size:13px;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                <button onclick="reabrirBanner()" style="background:#7c3aed;border:none;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:500;color:white;cursor:pointer">👁 Ver mensajes</button>
+                <button onclick="ocultarTodo()" style="background:none;border:none;padding:4px;cursor:pointer;color:#888;font-size:14px">✕</button>
+            </div>
+        </div>
+
+    </div>
+
+        
+    <!-- ================= PORTADA ================= -->
+    <div class="local-portada">
+        <img src="~/images/1.jfif" alt="Portada comercio">
+        <div class="estado-comercio estado-activo">
+            <span class="dot"></span>
+            Activo
+        </div>
+        <button class="btn-edit" type="button" id="btnCambiarPortada">
+            Cambiar portada
+        </button>
+        <input type="file" id="inputPortada" accept="image/*" hidden>
+    </div>
+
+    <!-- ================= INFO COMERCIO ================= -->
+    <div class="local-info">
+        <div class="local-logo">
+            <img id="imgLogoDashboard" src="~/images/logo_clickya.png" alt="Logo comercio"
+                 style="cursor:pointer" title="Click para cambiar logo">
+            <input type="file" id="inputLogo" accept="image/*" hidden>
+        </div>
+        <div class="local-data">
+            <h1 id="txtNombre">Nombre del comercio</h1>
+            <div class="local-meta">
+                <span id="txtRubro">Comida</span> ·
+                <span id="txtCiudad">San Nicolás</span>
+            </div>
+            <div class="local-desc" id="txtDesc">
+                Breve descripción del comercio.
+            </div>
+            <div class="local-links">
+                <a id="linkWhatsapp" href="#" target="_blank">WhatsApp</a>
+                <a id="linkInstagram" href="#" target="_blank">Instagram</a>
+                <a id="linkUbicacion" href="#" target="_blank">Ubicación</a>
+            </div>
+        </div>
+    </div>
+    <!-- ================= SECCIÓN HELADERÍA ================= -->
+    <div class="local-section" id="seccionHeladeria" style="display:none">
+        <div class="section-header"><h2>🍦 Heladería</h2></div>
+        <div style="padding:16px; background:white; border-radius:16px; margin-bottom:16px;">
+            <h3 style="margin-bottom:12px;">Precios por tamaño</h3>
+            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+                <div><label style="font-size:13px;">1/4 kg $</label><input type="number" id="precioCuarto" placeholder="0" style="width:100px; padding:8px; border-radius:8px; border:1px solid #ddd;"></div>
+                <div><label style="font-size:13px;">1/2 kg $</label><input type="number" id="precioMedio" placeholder="0" style="width:100px; padding:8px; border-radius:8px; border:1px solid #ddd;"></div>
+                <div><label style="font-size:13px;">1 kg $</label><input type="number" id="precioKilo" placeholder="0" style="width:100px; padding:8px; border-radius:8px; border:1px solid #ddd;"></div>
+            </div>
+            <h3 style="margin-bottom:12px;">Sabores</h3>
+            <div id="listaSabores" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;"></div>
+            <div style="display:flex; gap:8px; margin-bottom:12px;">
+                <input type="text" id="nuevoSabor" placeholder="Ej: Chocolate, Vainilla..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ddd;">
+                <button type="button" onclick="agregarSabor()" class="btn-primary" style="padding:8px 16px;">+ Agregar</button>
+            </div>
+            <button type="button" onclick="guardarHeladeria()" class="btn-primary" style="width:100%; padding:12px;">Guardar cambios</button>
+        </div>
+    </div>
+    <!-- ================= PUBLICACIONES ================= -->
+    <div class="local-section">
+        <div class="section-header">
+            <h2>Publicaciones</h2>
+            <button class="btn-secondary btn-dark" type="button" id="btnAgregarPublicacion">
+                Agregar publicación
+            </button>
+        </div>
+        <div class="publicaciones-grid"></div>
+    </div>
+
+</div>
+
+<!-- ================= MODAL EDITAR PUBLICACIÓN ================= -->
+<div id="modalEditarPublicacion" class="modal-publicacion">
+    <div class="modal-content">
+        <h3>Editar publicación</h3>
+        <label>Imagen</label>
+        <img id="editPreviewImg" src=""
+             style="width:100%; max-height:180px; object-fit:cover; border-radius:12px; margin-bottom:8px; display:none;" />
+        <input type="file" id="editImagen" accept="image/*" multiple>
+        <label>Título</label>
+        <input type="text" id="editTitulo">
+        <label>Descripción</label>
+        <textarea id="editDescripcion"></textarea>
+        <label>Precio</label>
+        <input type="text" id="editPrecio">
+        <div class="modal-actions">
+            <button class="btn-danger" onclick="eliminarPublicacion()">Eliminar</button>
+            <button class="btn-secondary" onclick="cerrarModalPublicacion()">Cancelar</button>
+            <button class="btn-primary" onclick="guardarCambiosPublicacion()">Guardar cambios</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL AGREGAR PUBLICACIÓN ================= -->
+<div id="modalAgregarPublicacion" class="modal-publicacion">
+    <div class="modal-content">
+        <h3>Agregar publicación</h3>
+        <label>Imágenes (hasta 10)</label>
+        <input type="file" id="addImagenes" accept="image/*" multiple>
+        <label>Título</label>
+        <input type="text" id="addTitulo">
+        <label>Descripción</label>
+        <textarea id="addDescripcion"></textarea>
+        <label>Precio</label>
+        <input type="text" id="addPrecio">
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="cerrarModalAgregar()">Cancelar</button>
+            <button class="btn-primary" onclick="guardarNuevaPublicacionVisual()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const apiBase = "http://192.168.100.9:5191";
+        let comercioId = 1;
+
+        async function inicializar() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get("token");
+
+            if (token) {
+                try {
+                            const res = await fetch(`${apiBase}/api/Comercio/token/${token}`);
+        if (res.ok) {
+            const data = await res.json();
+            comercioId = data.id;
+            window.clickyaComercioId = data.id;
+        }
+                } catch (e) {
+                    console.error("Error obteniendo comercioId por token", e);
+                }
+            }
+
+           cargarDashboard();
+            cargarMensajesAdmin();
+        }
+
+        function cargarDashboard() {
+
+            fetch(`${apiBase}/api/Comercio/${comercioId}`)
+                .then(res => res.json())
+                .then(comercio => {
+                    if (!comercio) return;
+
+                    if (comercio.portadaUrl && comercio.portadaUrl.trim() !== "") {
+                        const imgPortada = document.querySelector(".local-portada img");
+                        if (imgPortada) imgPortada.src = `${apiBase}${comercio.portadaUrl}`;
+                    }
+
+                    if (comercio.logoUrl && comercio.logoUrl.trim() !== "") {
+                        const imgLogo = document.querySelector(".local-logo img");
+                        if (imgLogo) imgLogo.src = `${apiBase}${comercio.logoUrl}?t=${new Date().getTime()}`;
+                    }
+
+                    if (comercio.nombre)
+                        document.getElementById("txtNombre").innerText = comercio.nombre;
+
+                    if (comercio.descripcion)
+                        document.getElementById("txtDesc").innerText = comercio.descripcion;
+
+                    if (comercio.rubro) {
+                        const txtRubro = document.getElementById("txtRubro");
+                        if (txtRubro) txtRubro.innerText = comercio.rubro;
+                        const contenedor = document.querySelector(".local-preview");
+                        const rubroNorm = comercio.rubro.toLowerCase().replace(/s$/, "");
+                        contenedor.setAttribute("data-rubro", rubroNorm);
+                    }
+
+                            if (comercio.categoria) {
+            const contenedor = document.querySelector(".local-preview");
+            if (contenedor) contenedor.setAttribute("data-categoria", comercio.categoria.toLowerCase());
+
+            const esHeladeria = comercio.categoria.toLowerCase().includes("helad");
+            const seccion = document.getElementById("seccionHeladeria");
+            if (seccion) seccion.style.display = esHeladeria ? "block" : "none";
+            if (esHeladeria) cargarDatosHeladeria();
+        }
+
+                    if (comercio.whatsApp) {
+                        const link = document.getElementById("linkWhatsapp");
+                        if (link) link.href = "https://wa.me/" + comercio.whatsApp;
+                    }
+
+                    if (comercio.instagram) {
+                        const link = document.getElementById("linkInstagram");
+                        if (link) link.href = "https://instagram.com/" + comercio.instagram;
+                    }
+
+                    if (comercio.ubicacion) {
+                        const link = document.getElementById("linkUbicacion");
+                        if (link) link.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(comercio.ubicacion);
+                    }
+                })
+                .catch(err => console.error("Error cargando comercio:", err));
+
+            const btnCambiarPortada = document.getElementById("btnCambiarPortada");
+            const inputPortada = document.getElementById("inputPortada");
+            const imgPortada = document.querySelector(".local-portada img");
+
+            if (btnCambiarPortada && inputPortada && imgPortada) {
+                btnCambiarPortada.addEventListener("click", () => inputPortada.click());
+
+                inputPortada.addEventListener("change", async () => {
+                    const file = inputPortada.files[0];
+                    if (!file) return;
+
+                    const formData = new FormData();
+                    formData.append("archivo", file);
+
+                    try {
+                        const response = await fetch(`${apiBase}/api/Comercio/${comercioId}/portada`, {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        if (!response.ok) { alert("Error al subir imagen"); return; }
+
+                        const data = await response.json();
+                        imgPortada.src = `${apiBase}${data.portadaUrl}?t=${new Date().getTime()}`;
+                    } catch (error) {
+                        console.error(error);
+                        alert("Error de conexión con la API");
+                    }
+                });
+            }
+
+            const imgLogoDashboard = document.getElementById("imgLogoDashboard");
+            const inputLogo = document.getElementById("inputLogo");
+
+            if (imgLogoDashboard && inputLogo) {
+                imgLogoDashboard.addEventListener("click", () => inputLogo.click());
+
+                inputLogo.addEventListener("change", async () => {
+                    const file = inputLogo.files[0];
+                    if (!file) return;
+
+                    const formData = new FormData();
+                    formData.append("archivo", file);
+
+                    try {
+                        const response = await fetch(`${apiBase}/api/Comercio/${comercioId}/logo`, {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        if (!response.ok) { alert("Error al subir logo"); return; }
+
+                        const data = await response.json();
+                        imgLogoDashboard.src = `${apiBase}${data.logoUrl}?t=${new Date().getTime()}`;
+                    } catch (error) {
+                        console.error(error);
+                        alert("Error de conexión con la API");
+                    }
+                });
+            }
+
+            const btnAgregar = document.getElementById("btnAgregarPublicacion");
+            if (btnAgregar) {
+                btnAgregar.addEventListener("click", () => {
+                    limpiarModalAgregar();
+                    abrirModalAgregar();
+                });
+            }
+
+            fetch(`${apiBase}/api/Publicaciones/comercio/${comercioId}`)
+                .then(res => res.json())
+                .then(lista => {
+                    const grid = document.querySelector(".publicaciones-grid");
+                    if (!grid) return;
+                    grid.innerHTML = "";
+                    lista.forEach(pub => agregarCardDesdeApi(pub));
+                });
+
+            const editInput = document.getElementById("editImagen");
+            const editPreview = document.getElementById("editPreviewImg");
+
+            if (editInput && editPreview) {
+                editInput.addEventListener("change", function () {
+                    const file = this.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        editPreview.src = e.target.result;
+                        editPreview.style.display = "block";
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        function editarPublicacion(event) {
+            const card = event.target.closest(".publicacion-card");
+            if (!card) return;
+
+            const imgCard = card.querySelector("img");
+            const preview = document.getElementById("editPreviewImg");
+            const inputImg = document.getElementById("editImagen");
+
+            if (imgCard && preview) {
+                preview.src = imgCard.src;
+                preview.style.display = "block";
+            }
+
+            if (inputImg) inputImg.value = "";
+
+            document.getElementById("editTitulo").value = card.querySelector("h3")?.innerText || "";
+            document.getElementById("editDescripcion").value = card.querySelector("p")?.innerText || "";
+            document.getElementById("editPrecio").value = card.querySelector(".precio")?.innerText || "";
+
+            window._cardEditando = card;
+            document.getElementById("modalEditarPublicacion").style.display = "flex";
+        }
+
+        function guardarCambiosPublicacion() {
+            const card = window._cardEditando;
+            if (!card) return;
+
+            const id = card.dataset.id;
+            const titulo = document.getElementById("editTitulo").value;
+            const descripcion = document.getElementById("editDescripcion").value;
+            const precio = document.getElementById("editPrecio").value;
+            const inputImagen = document.getElementById("editImagen");
+            const formData = new FormData();
+
+            if (inputImagen && inputImagen.files.length > 0) {
+                Array.from(inputImagen.files).slice(0, 10).forEach(f => formData.append("Imagenes", f));
+            }
+
+            const rubro = document.querySelector(".local-preview")?.dataset?.rubro || "comida";
+
+            formData.append("Titulo", titulo);
+            formData.append("Descripcion", descripcion);
+            formData.append("Precio", precio);
+            formData.append("Rubro", rubro);
+            formData.append("ComercioId", comercioId);
+            formData.append("DatosExtraJson", "{}");
+
+            fetch(`${apiBase}/api/Publicaciones/${id}`, { method: "PUT", body: formData })
+                .then(res => { if (!res.ok) throw new Error("Error al editar"); return res.json(); })
+                .then(data => {
+                    card.querySelector("h3").innerText = data.titulo;
+                    card.querySelector("p").innerText = data.descripcion;
+                    card.querySelector(".precio").innerText = data.precio;
+                    if (data.imagenUrl) card.querySelector("img").src = `${apiBase}${data.imagenUrl}`;
+                    cerrarModalPublicacion();
+                })
+                .catch(err => { console.error(err); alert("Error al actualizar publicación"); });
+        }
+
+        function eliminarPublicacion() {
+            const card = window._cardEditando;
+            if (!card) return;
+
+            const id = card.dataset.id;
+            if (!confirm("¿Seguro que querés eliminar esta publicación?")) return;
+
+            fetch(`${apiBase}/api/Publicaciones/${id}`, { method: "DELETE" })
+                .then(res => { if (!res.ok) throw new Error("Error al eliminar"); return res.text(); })
+                .then(() => { card.remove(); cerrarModalPublicacion(); })
+                .catch(err => { console.error(err); alert("Error al eliminar publicación"); });
+        }
+
+        function guardarNuevaPublicacionVisual() {
+            const titulo = document.getElementById("addTitulo")?.value || "";
+            const descripcion = document.getElementById("addDescripcion")?.value || "";
+            const precio = document.getElementById("addPrecio")?.value || "";
+            const inputImagenes = document.getElementById("addImagenes");
+
+            if (!titulo.trim()) { alert("El título es obligatorio"); return; }
+
+            const formData = new FormData();
+
+            if (inputImagenes && inputImagenes.files.length > 0) {
+                Array.from(inputImagenes.files).slice(0, 10).forEach(f => formData.append("Imagenes", f));
+            }
+
+            const rubro = document.querySelector(".local-preview")?.dataset?.rubro || "comida";
+
+            formData.append("Titulo", titulo);
+            formData.append("Descripcion", descripcion);
+            formData.append("Precio", precio);
+            formData.append("Rubro", rubro);
+            formData.append("ComercioId", comercioId);
+            formData.append("DatosExtraJson", "{}");
+
+            fetch(`${apiBase}/api/Publicaciones`, { method: "POST", body: formData })
+                .then(res => { if (!res.ok) throw new Error("Error al guardar"); return res.json(); })
+                .then(nueva => { agregarCardDesdeApi(nueva); cerrarModalAgregar(); })
+                .catch(error => { console.error(error); alert("Error de conexión con la API"); });
+        }
+
+        function agregarCardDesdeApi(pub) {
+            const grid = document.querySelector(".publicaciones-grid");
+            if (!grid) return;
+
+            const card = document.createElement("div");
+            card.className = "publicacion-card";
+            card.dataset.id = pub.id;
+
+            const imagen = pub.imagenUrl && pub.imagenUrl.trim() !== ""
+                ? (pub.imagenUrl.startsWith("http") ? pub.imagenUrl : `${apiBase}${pub.imagenUrl}`)
+                : "/images/2.jfif";
+
+            card.innerHTML = `
+                <img src="${imagen}" alt="">
+                <div class="publicacion-info">
+                    <h3>${escapeHtml(pub.titulo)}</h3>
+                    <p>${escapeHtml(pub.descripcion)}</p>
+                    <span class="precio">${escapeHtml(pub.precio)}</span>
+                </div>
+                <button class="btn-edit-publicacion" type="button" onclick="editarPublicacion(event)">Editar</button>
+            `;
+
+            card.dataset.datosextra = pub.datosExtraJson || "";
+            grid.prepend(card);
+        }
+
+        function abrirModalAgregar() {
+            document.getElementById("modalAgregarPublicacion").style.display = "flex";
+        }
+
+        function cerrarModalAgregar() {
+            document.getElementById("modalAgregarPublicacion").style.display = "none";
+        }
+
+        function cerrarModalPublicacion() {
+            document.getElementById("modalEditarPublicacion").style.display = "none";
+        }
+
+        function limpiarModalAgregar() {
+            ["addTitulo","addDescripcion","addPrecio"]
+                .forEach(id => { const el = document.getElementById(id); if (el) el.value = ""; });
+            const img = document.getElementById("addImagenes");
+            if (img) img.value = "";
+        }
+
+        function escapeHtml(str) {
+            return (str ?? "").toString()
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+        let saboresHeladeria = [];
+
+        function cargarDatosHeladeria() {
+            fetch(`${apiBase}/api/Heladeria/${comercioId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.precioCuarto) document.getElementById("precioCuarto").value = data.precioCuarto;
+                    if (data.precioMedio) document.getElementById("precioMedio").value = data.precioMedio;
+                    if (data.precioKilo) document.getElementById("precioKilo").value = data.precioKilo;
+                    saboresHeladeria = data.sabores || [];
+                    renderizarSabores();
+                })
+                .catch(err => console.error("Error cargando heladería:", err));
+        }
+
+        function renderizarSabores() {
+            const lista = document.getElementById("listaSabores");
+            if (!lista) return;
+            lista.innerHTML = "";
+            saboresHeladeria.forEach((s, i) => {
+                const chip = document.createElement("div");
+                chip.style.cssText = `display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:20px; border:1px solid ${s.disponible ? '#4B0082' : '#ccc'}; background:${s.disponible ? '#f3e8ff' : '#f5f5f5'};`;
+                chip.innerHTML = `<span style="font-size:13px; color:${s.disponible ? '#4B0082' : '#999'};">${escapeHtml(s.nombre)}</span><span onclick="toggleSabor(${i})" style="font-size:11px; cursor:pointer;">${s.disponible ? '✓' : '✗'}</span><span onclick="eliminarSabor(${i})" style="font-size:11px; color:#dc2626; margin-left:4px; cursor:pointer;">✕</span>`;
+                lista.appendChild(chip);
+            });
+        }
+
+        function agregarSabor() {
+            const input = document.getElementById("nuevoSabor");
+            const nombre = input?.value.trim();
+            if (!nombre) return;
+            saboresHeladeria.push({ nombre, disponible: true });
+            renderizarSabores();
+            input.value = "";
+        }
+
+        function toggleSabor(i) {
+            saboresHeladeria[i].disponible = !saboresHeladeria[i].disponible;
+            renderizarSabores();
+        }
+
+        function eliminarSabor(i) {
+            saboresHeladeria.splice(i, 1);
+            renderizarSabores();
+        }
+
+        function guardarHeladeria() {
+            const data = {
+                comercioId: comercioId,
+                precioCuarto: parseFloat(document.getElementById("precioCuarto").value) || 0,
+                precioMedio: parseFloat(document.getElementById("precioMedio").value) || 0,
+                precioKilo: parseFloat(document.getElementById("precioKilo").value) || 0,
+                sabores: saboresHeladeria
+            };
+            fetch(`${apiBase}/api/Heladeria/${comercioId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+                .then(res => { if (!res.ok) throw new Error("Error"); return res.json(); })
+                .then(() => alert("Heladería guardada correctamente"))
+                .catch(err => { console.error(err); alert("Error al guardar heladería"); });
+        }
+            let mensajesAdmin = [];
+        let msgCurrent = 0;
+
+        async function cargarMensajesAdmin() {
+            try {
+                const res = await fetch(`${apiBase}/api/MensajeAdmin/comercio/${comercioId}`);
+                if (!res.ok) return;
+                mensajesAdmin = await res.json();
+                if (mensajesAdmin.length === 0) return;
+                msgCurrent = 0;
+                document.getElementById("bannerCard").style.display = "block";
+                renderBanner();
+            } catch (e) {
+                console.warn("No se pudieron cargar mensajes admin", e);
+            }
+        }
+
+        function renderBanner() {
+            if (mensajesAdmin.length === 0) {
+                document.getElementById("bannerContenido").style.display = "none";
+                document.getElementById("bannerVacio").style.display = "block";
+                document.getElementById("bannerCounter").textContent = "";
+                document.getElementById("miniTexto").textContent = "Sin mensajes pendientes";
+                return;
+            }
+            document.getElementById("bannerContenido").style.display = "block";
+            document.getElementById("bannerVacio").style.display = "none";
+            if (msgCurrent >= mensajesAdmin.length) msgCurrent = mensajesAdmin.length - 1;
+            const m = mensajesAdmin[msgCurrent];
+            document.getElementById("bannerText").textContent = m.texto;
+            const fecha = new Date(m.fecha).toLocaleDateString("es-AR", { day: "numeric", month: "short" });
+            document.getElementById("bannerDate").textContent = fecha + " · Administrador ClickYa";
+            document.getElementById("bannerCounter").textContent = (msgCurrent + 1) + " / " + mensajesAdmin.length;
+            document.getElementById("btnPrevMsg").disabled = msgCurrent === 0;
+            document.getElementById("btnNextMsg").disabled = msgCurrent === mensajesAdmin.length - 1;
+            document.getElementById("miniTexto").textContent = mensajesAdmin.length + " mensaje" + (mensajesAdmin.length !== 1 ? "s" : "") + " sin leer";
+            const dotsEl = document.getElementById("bannerDots");
+            dotsEl.innerHTML = "";
+            mensajesAdmin.forEach((_, i) => {
+                const d = document.createElement("div");
+                d.style.cssText = `width:${i === msgCurrent ? "18px" : "6px"};height:6px;border-radius:${i === msgCurrent ? "3px" : "50%"};background:${i === msgCurrent ? "#7c3aed" : "#ccc"};cursor:pointer;transition:all .2s`;
+                d.onclick = () => { msgCurrent = i; renderBanner(); };
+                dotsEl.appendChild(d);
+            });
+        }
+
+        async function borrarMensaje() {
+            if (!confirm("¿Borrar este mensaje?")) return;
+            const m = mensajesAdmin[msgCurrent];
+            try {
+                await fetch(`${apiBase}/api/MensajeAdmin/${m.id}`, { method: "DELETE" });
+            } catch (e) {}
+            mensajesAdmin.splice(msgCurrent, 1);
+            if (msgCurrent >= mensajesAdmin.length && msgCurrent > 0) msgCurrent--;
+            renderBanner();
+        }
+
+        function cerrarBanner() {
+            document.getElementById("bannerCard").style.display = "none";
+            document.getElementById("bannerMini").style.display = "flex";
+        }
+
+        function reabrirBanner() {
+            document.getElementById("bannerCard").style.display = "block";
+            document.getElementById("bannerMini").style.display = "none";
+            msgCurrent = 0;
+            renderBanner();
+        }
+
+        function ocultarTodo() {
+            document.getElementById("bannerMini").style.display = "none";
+        }
+
+        document.getElementById("btnPrevMsg").onclick = () => { if (msgCurrent > 0) { msgCurrent--; renderBanner(); } };
+        document.getElementById("btnNextMsg").onclick = () => { if (msgCurrent < mensajesAdmin.length - 1) { msgCurrent++; renderBanner(); } };
+
+            
+        inicializar();
+    </script>
+}
+
+<style>
+    .modal-publicacion {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.55);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .modal-content {
+        background: #fff;
+        border-radius: 20px;
+        padding: 24px;
+        width: 520px;
+        max-width: 92%;
+        box-shadow: 0 20px 50px rgba(0,0,0,.25);
+        max-height: 84vh;
+        overflow: auto;
+    }
+
+        .modal-content label {
+            font-size: 13px;
+            margin-top: 12px;
+            display: block;
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            margin-top: 6px;
+        }
+
+    #editDescripcion {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .modal-actions {
+        margin-top: 18px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+    .btn-secondary {
+        background: #888;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+        .btn-secondary:hover {
+            background: #666;
+        }
+</style>

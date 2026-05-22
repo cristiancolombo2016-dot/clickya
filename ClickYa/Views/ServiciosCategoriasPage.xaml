@@ -1,0 +1,150 @@
+<ContentPage
+    x:Class="ClickYa.Views.ServiciosCategoriasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#1A0A2E"
+    NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="0,0,0,20" Spacing="0">
+
+                <!-- BANNER -->
+                <Grid HeightRequest="260" Margin="0,8,0,0">
+                    <CarouselView x:Name="carouselBanners"
+                                  HeightRequest="260"
+                                  IndicatorView="indicadores"
+                                  Margin="16,0">
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame HeightRequest="240" CornerRadius="0" Padding="0"
+                                       HasShadow="True" IsClippedToBounds="True" BackgroundColor="Black">
+                                    <Image Source="{Binding .}" Aspect="AspectFill" HeightRequest="240"
+                                           HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="Banner_Tapped"/>
+                                    </Frame.GestureRecognizers>
+                                </Frame>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+                </Grid>
+
+                <IndicatorView x:Name="indicadores"
+                               IndicatorColor="#FFFFFF33"
+                               SelectedIndicatorColor="#E040FB"
+                               HorizontalOptions="Center"
+                               Margin="0,6,0,0"/>
+
+                <!-- URGENCIA -->
+                <Frame CornerRadius="16" Padding="14,12" HasShadow="False"
+                       IsClippedToBounds="True" BackgroundColor="#C62828"
+                       Margin="16,20,16,0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="BtnUrgencia_Clicked"/>
+                    </Frame.GestureRecognizers>
+                    <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="12">
+                        <Frame WidthRequest="44" HeightRequest="44" CornerRadius="12"
+                               BackgroundColor="#FFFFFF22" Padding="0" HasShadow="False">
+                            <Label Text="🚨" FontSize="24"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center"/>
+                        </Frame>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                            <Label Text="¿Tenés una urgencia?"
+                                   TextColor="White" FontSize="15" FontAttributes="Bold"/>
+                            <Label Text="Tocá acá y conectamos con un experto"
+                                   TextColor="#FFB0B0" FontSize="11"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" Text="›" FontSize="24"
+                               TextColor="#FFFFFF66" VerticalOptions="Center"/>
+                    </Grid>
+                </Frame>
+
+                <!-- BUSCADOR -->
+                <Frame CornerRadius="22" Padding="14,0" HeightRequest="52"
+                       HasShadow="False" BorderColor="#3A1A60"
+                       BackgroundColor="#231040" Margin="16,12,16,0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="AbrirBuscador_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Label Text="🔍" FontSize="18" TextColor="#E040FB" VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="Buscar técnico o rubro..."
+                               TextColor="#555" FontSize="14" VerticalOptions="Center"/>
+                    </Grid>
+                </Frame>
+
+                <!-- CATEGORÍAS -->
+                <Label Text="Categorías" FontSize="20" FontAttributes="Bold"
+                       TextColor="#EEE" Margin="16,18,16,10"/>
+
+                <CollectionView ItemsSource="{Binding Categorias}"
+                                ItemsLayout="HorizontalList"
+                                HorizontalScrollBarVisibility="Never"
+                                SelectionMode="None"
+                                Margin="8,0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame WidthRequest="150" HeightRequest="160" Margin="6"
+                                   Padding="0" CornerRadius="18" BackgroundColor="#2A1040"
+                                   BorderColor="#3A1A60" HasShadow="False" IsClippedToBounds="True">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnCategoriaTapped"
+                                                          CommandParameter="{Binding Nombre}"/>
+                                </Frame.GestureRecognizers>
+                                <Grid>
+                                    <Image Source="{Binding Imagen}" Aspect="AspectFill"/>
+                                    <BoxView Color="#60000000"/>
+                                    <Label Text="{Binding Nombre}" TextColor="White"
+                                           FontSize="15" FontAttributes="Bold"
+                                           Margin="10" VerticalOptions="End"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- SERVICIOS DESTACADOS -->
+                <Label Text="Servicios destacados" FontSize="20" FontAttributes="Bold"
+                       TextColor="#EEE" Margin="16,18,16,10"/>
+
+                <CollectionView ItemsSource="{Binding ServiciosDestacados}"
+                                SelectionMode="None" Margin="16,0">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" Span="2"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="5" CornerRadius="16"
+       Padding="0" HasShadow="False" BackgroundColor="#2A1040"
+       BorderColor="#3A1A60" IsClippedToBounds="True">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnDestacadoTapped"
+                              CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                                <VerticalStackLayout>
+                                    <Image Source="{Binding Imagen}" Aspect="AspectFill"
+               HeightRequest="120" HorizontalOptions="Fill"/>
+                                    <VerticalStackLayout Padding="10,8" Spacing="4">
+                                        <Label Text="{Binding Nombre}" FontSize="14"
+                   FontAttributes="Bold" TextColor="White"
+                   LineBreakMode="TailTruncation"/>
+                                        <Label Text="{Binding Descripcion}" FontSize="12"
+                   TextColor="#B8A0FF" LineBreakMode="TailTruncation" MaxLines="1"/>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- BARRA ABAJO -->
+        <Grid Grid.Row="1" HeightRequest="80" BackgroundColor="#1A0A2E"/>
+
+    </Grid>
+</ContentPage>

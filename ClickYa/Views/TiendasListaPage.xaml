@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.TiendasListaPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Tiendas"
+    Shell.NavBarIsVisible="True"
+    BackgroundColor="#F0F4FF">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0" Padding="0,16,0,30">
+
+            <!-- TÍTULO CATEGORÍA -->
+            <Label x:Name="LblCategoria"
+                   Text="Ropa"
+                   FontSize="26" FontAttributes="Bold"
+                   TextColor="#111827"
+                   Margin="16,0,16,16"/>
+
+            <!-- LISTA -->
+            <CollectionView x:Name="ListaTiendas"
+                            ItemsSource="{Binding Tiendas}"
+                            SelectionMode="None"
+                            Margin="16,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="16" Padding="12" Margin="0,0,0,12"
+                               BackgroundColor="White" BorderColor="#E5E7EB"
+                               HasShadow="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="AbrirLocal_Tapped"
+                                                      CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid ColumnDefinitions="60,*,Auto" ColumnSpacing="12">
+                                <Frame WidthRequest="52" HeightRequest="52" CornerRadius="12"
+                                       Padding="0" BackgroundColor="#F0F4FF"
+                                       HasShadow="False" IsClippedToBounds="True"
+                                       VerticalOptions="Center">
+                                    <Image Source="{Binding LogoFinal}" Aspect="AspectFill"/>
+                                </Frame>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                                    <Label Text="{Binding nombre}" FontSize="16"
+                                           FontAttributes="Bold" TextColor="#111827"/>
+                                    <Label FontSize="13">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="📍 " TextColor="#1560BD"/>
+                                                <Span Text="{Binding direccion}" TextColor="#1560BD" FontAttributes="Bold"/>
+                                                <Span Text="{Binding separador}" TextColor="#777" FontSize="12"/>
+                                                <Span Text="🚶 " FontSize="18"/>
+                                                <Span Text="{Binding kmTexto}" TextColor="#777" FontSize="18"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </VerticalStackLayout>
+                                <Label Grid.Column="2" Text="›" FontSize="26"
+                                       TextColor="#1560BD" VerticalOptions="Center"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- VACÍO -->
+            <Label x:Name="LblVacio"
+                   Text="No hay tiendas en esta categoría."
+                   TextColor="#777" FontSize="15"
+                   HorizontalOptions="Center"
+                   IsVisible="False"
+                   Margin="0,40,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

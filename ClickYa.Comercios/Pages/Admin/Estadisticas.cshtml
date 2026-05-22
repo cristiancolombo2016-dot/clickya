@@ -1,0 +1,177 @@
+﻿@page
+@model ClickYa.Comercios.Pages.Admin.EstadisticasModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Estadísticas – ClickYa</title>
+
+    <style>
+        :root {
+            --violeta: #4B0082;
+            --fucsia: #B8008A;
+            --violeta-soft: #F3E8FF;
+            --gris-bg: #ECEFF3;
+            --gris-card: #FFFFFF;
+            --gris-text: #374151;
+            --gris-muted: #6B7280;
+            --verde: #16A34A;
+            --verde-soft: #DCFCE7;
+            --azul-soft: #E0E7FF;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: var(--gris-bg);
+            padding: 40px;
+            color: var(--gris-text);
+        }
+
+        h1 {
+            color: var(--violeta);
+            margin-bottom: 6px;
+        }
+
+        .sub {
+            color: var(--gris-muted);
+            margin-bottom: 28px;
+        }
+
+        /* ===== GRID CARDS ===== */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 22px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: var(--gris-card);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+        }
+
+            .card h3 {
+                margin-top: 0;
+                margin-bottom: 6px;
+                color: var(--violeta);
+                font-size: 16px;
+            }
+
+            .card .num {
+                font-size: 28px;
+                font-weight: 700;
+                margin-top: 8px;
+            }
+
+        .muted {
+            color: var(--gris-muted);
+            font-size: 13px;
+        }
+
+        /* ===== AGENDA CARD ===== */
+        .agenda-card {
+            background: linear-gradient(135deg, var(--violeta), var(--fucsia));
+            color: #fff;
+            border-radius: 22px;
+            padding: 26px;
+            box-shadow: 0 14px 34px rgba(0,0,0,.25);
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+
+            .agenda-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 18px 42px rgba(0,0,0,.35);
+            }
+
+            .agenda-card h2 {
+                margin: 0 0 6px 0;
+                font-size: 20px;
+            }
+
+            .agenda-card p {
+                margin: 0;
+                font-size: 14px;
+                opacity: .9;
+            }
+
+        /* ===== SECTION ===== */
+        .section {
+            margin-top: 32px;
+        }
+
+            .section h2 {
+                color: var(--violeta);
+                margin-bottom: 14px;
+            }
+
+        .placeholder {
+            background: var(--gris-card);
+            border-radius: 20px;
+            padding: 26px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+            color: var(--gris-muted);
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Estadísticas</h1>
+    <div class="sub">
+        Vista general del estado y actividad de la plataforma
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="grid">
+        <div class="card">
+            <h3>Comercios activos</h3>
+            <div class="num">—</div>
+            <div class="muted">Total en la plataforma</div>
+        </div>
+
+        <div class="card">
+            <h3>Banners activos</h3>
+            <div class="num">—</div>
+            <div class="muted">Home y rubros</div>
+        </div>
+
+        <div class="card">
+            <h3>Destacados</h3>
+            <div class="num">—</div>
+            <div class="muted">Visibles en Home</div>
+        </div>
+
+        <div class="card">
+            <h3>Mensajes enviados</h3>
+            <div class="num">—</div>
+            <div class="muted">Totales</div>
+        </div>
+    </div>
+
+    <!-- AGENDA -->
+    <div class="agenda-card" onclick="location.href='/Admin/Agenda'">
+        <h2>📅 Agenda de la Plataforma</h2>
+        <p>
+            Planificá campañas, promociones y acciones futuras (FreeMonday, lanzamientos, etc.)
+        </p>
+    </div>
+
+    <!-- FUTURO -->
+    <div class="section">
+        <h2>Actividad</h2>
+        <div class="placeholder">
+            Acá se mostrarán gráficos y métricas cuando la plataforma esté en uso.
+        </div>
+    </div>
+
+</body>
+</html>

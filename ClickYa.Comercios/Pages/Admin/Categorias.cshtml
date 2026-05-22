@@ -1,0 +1,525 @@
+﻿@page "/Admin/Categorias"
+@model ClickYa.Comercios.Pages.Admin.CategoriasModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Categorías – ClickYa Admin</title>
+
+    <style>
+        :root {
+            --violeta: #4B0082;
+            --fucsia: #B8008A;
+            --rojo: #FF3D3D;
+            --gris-bg: #ECEFF3;
+            --verde: #16A34A;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui;
+            background: var(--gris-bg);
+            padding: 40px;
+            color: #374151;
+        }
+
+        h1 {
+            color: var(--violeta);
+        }
+
+        .sub {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 22px;
+            padding: 26px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+            margin-bottom: 30px;
+        }
+
+        .section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(135deg,var(--violeta),var(--fucsia),var(--rojo));
+        }
+
+        .items {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 16px 0;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            width: 180px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,.12);
+            padding: 14px;
+        }
+
+            .item img {
+                width: 90px;
+                height: 90px;
+                object-fit: contain;
+                border-radius: 18px;
+                background: #16002E;
+                padding: 12px;
+                display: block;
+                margin: auto;
+                cursor: pointer;
+            }
+
+        .menu {
+            margin-top: 10px;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: center;
+        }
+
+        .nombre {
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .seccion {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .orden {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .badge {
+            align-self: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #DCFCE7;
+            color: var(--verde);
+        }
+
+        .btn-eliminar {
+            background: #FF3D3D;
+            color: #fff;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        input[type=file] {
+            display: none;
+        }
+
+        .modal-img {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+            .modal-img img {
+                max-width: 90%;
+                max-height: 90%;
+                border-radius: 18px;
+                background: white;
+                padding: 20px;
+            }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .modal-agregar {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+            .modal-box h3 {
+                margin: 0;
+                color: var(--violeta);
+            }
+
+            .modal-box label {
+                font-size: 13px;
+                color: #555;
+                font-weight: 700;
+            }
+
+            .modal-box input,
+            .modal-box select {
+                width: 100%;
+                padding: 10px;
+                border-radius: 12px;
+                border: 1px solid #ddd;
+                font-size: 14px;
+                box-sizing: border-box;
+            }
+
+        .preview-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            border-radius: 18px;
+            background: #16002E;
+            padding: 12px;
+            display: none;
+            margin: auto;
+        }
+
+        .btn-upload {
+            background: #eee;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Categorías</h1>
+    <div class="sub">Administrá las categorías que se muestran en ClickYa</div>
+
+    <div id="secciones"></div>
+
+    <!-- MODAL VER IMAGEN -->
+    <div class="modal-img" id="modalImagen" onclick="cerrarModal()">
+        <span class="modal-close">&times;</span>
+        <img id="modalImagenSrc" src="" />
+    </div>
+    <!-- MODAL EDITAR CATEGORÍA -->
+    <div class="modal-agregar" id="modalEditar">
+        <div class="modal-box">
+            <h3>Editar Categoría</h3>
+            <div>
+                <label>Nombre</label>
+                <input id="editNombre" type="text" placeholder="Ej: Pizzería" />
+            </div>
+            <div>
+                <label>Orden</label>
+                <input id="editOrden" type="number" value="1" min="1" />
+            </div>
+            <button class="btn-upload" onclick="document.getElementById('editFileInput').click()">
+                📁 Cambiar ícono (opcional)
+            </button>
+            <input type="file" id="editFileInput" accept="image/*" onchange="previsualizarImagenEditar(event)" />
+            <img id="editPreviewImg" class="preview-img" />
+            <div style="display:flex;gap:10px;">
+                <button class="btn" onclick="guardarEdicion()" style="flex:1">Guardar</button>
+                <button onclick="cerrarModalEditar()" style="flex:1;border:none;padding:10px;border-radius:999px;cursor:pointer;background:#eee;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL AGREGAR CATEGORÍA -->
+    <div class="modal-agregar" id="modalAgregar">
+        <div class="modal-box">
+            <h3>Agregar Categoría</h3>
+
+            <div>
+                <label>Sección</label>
+                <select id="inputSeccion">
+                    <option value="comidas">Comidas</option>
+                    <option value="tiendas">Tiendas</option>
+                    <option value="servicios">Servicios</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Nombre</label>
+                <input id="inputNombre" type="text" placeholder="Ej: Hamburguesas" />
+            </div>
+
+            <div>
+                <label>Orden</label>
+                <input id="inputOrden" type="number" value="1" min="1" />
+            </div>
+
+            <button class="btn-upload" onclick="document.getElementById('fileInput').click()">
+                📁 Elegir ícono
+            </button>
+
+            <input type="file" id="fileInput" accept="image/*" onchange="previsualizarImagen(event)" />
+            <img id="previewImg" class="preview-img" />
+
+            <div style="display:flex;gap:10px;">
+                <button class="btn" onclick="subirCategoria()" style="flex:1">Guardar</button>
+                <button onclick="cerrarModalAgregar()" style="flex:1;border:none;padding:10px;border-radius:999px;cursor:pointer;background:#eee;">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://192.168.100.9:5191';
+
+        const secciones = ['comidas', 'tiendas', 'servicios'];
+        const nombres = {
+            comidas: 'Comidas',
+            tiendas: 'Tiendas',
+            servicios: 'Servicios'
+        };
+
+        async function init() {
+            const cont = document.getElementById('secciones');
+
+            secciones.forEach(s => {
+                cont.innerHTML += `
+                    <div class="card">
+                        <div class="section">
+                            <b>${nombres[s]}</b>
+                            <button class="btn" onclick="abrirModalAgregar('${s}')">Agregar categoría</button>
+                        </div>
+                        <div class="items" id="lista-${s}">Cargando...</div>
+                    </div>`;
+            });
+
+            secciones.forEach(s => cargarCategorias(s));
+        }
+
+        async function cargarCategorias(seccion) {
+            try {
+                const r = await fetch(`${API}/api/Categorias/seccion/${seccion}`);
+                const categorias = await r.json();
+
+                renderCategorias(seccion, categorias);
+            } catch (e) {
+                document.getElementById(`lista-${seccion}`).innerHTML = 'Error al cargar';
+            }
+        }
+
+        function renderCategorias(seccion, categorias) {
+            const cont = document.getElementById(`lista-${seccion}`);
+
+            if (!categorias || categorias.length === 0) {
+                cont.innerHTML = '<span style="color:#999;font-size:14px;">Sin categorías</span>';
+                return;
+            }
+
+            cont.innerHTML = categorias.map(c => {
+                const id = c.id || c.Id;
+                const nombre = c.nombre || c.Nombre || '';
+                const iconoUrl = c.iconoUrl || c.IconoUrl || '';
+                const orden = c.orden || c.Orden || 0;
+                const activo = c.activo ?? c.Activo;
+
+                return `
+                    <div class="item">
+                        <img src="${API}${iconoUrl}" onclick="verImagenGrande('${API}${iconoUrl}')">
+                        <div class="menu">
+                            <span class="nombre">${nombre}</span>
+                            <span class="seccion">${nombres[seccion]}</span>
+                            <span class="orden">Orden: ${orden}</span>
+                            <span class="badge">${activo ? 'Activo' : 'Inactivo'}</span>
+                            <button class="btn" style="font-size:12px;padding:7px 12px;margin-top:4px;" onclick="abrirModalEditar(${id}, '${nombre}', '${seccion}', ${orden})">✏️ Editar</button>
+                            <button class="btn-eliminar" onclick="eliminarCategoria(${id}, '${seccion}')">Eliminar</button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function abrirModalAgregar(seccion) {
+            document.getElementById('inputSeccion').value = seccion;
+            document.getElementById('inputNombre').value = '';
+            document.getElementById('inputOrden').value = '1';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewImg').style.display = 'none';
+
+            document.getElementById('modalAgregar').style.display = 'flex';
+        }
+
+        function cerrarModalAgregar() {
+            document.getElementById('modalAgregar').style.display = 'none';
+        }
+
+        function previsualizarImagen(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = ev => {
+                const img = document.getElementById('previewImg');
+                img.src = ev.target.result;
+                img.style.display = 'block';
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        async function subirCategoria() {
+            const seccion = document.getElementById('inputSeccion').value;
+            const nombre = document.getElementById('inputNombre').value.trim();
+            const orden = parseInt(document.getElementById('inputOrden').value) || 1;
+            const file = document.getElementById('fileInput').files[0];
+
+            if (!nombre) {
+                alert('Escribí el nombre de la categoría');
+                return;
+            }
+
+            if (!file) {
+                alert('Elegí un ícono');
+                return;
+            }
+
+            const form = new FormData();
+            form.append('Seccion', seccion);
+            form.append('Nombre', nombre);
+            form.append('Orden', orden);
+            form.append('Icono', file);
+
+            try {
+                const r = await fetch(`${API}/api/Categorias`, {
+                    method: 'POST',
+                    body: form
+                });
+
+                if (!r.ok) {
+                    const txt = await r.text();
+                    throw new Error(txt || 'Error al guardar');
+                }
+
+                cerrarModalAgregar();
+                cargarCategorias(seccion);
+
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        async function eliminarCategoria(id, seccion) {
+            if (!confirm('¿Eliminar esta categoría?')) return;
+
+            await fetch(`${API}/api/Categorias/${id}`, {
+                method: 'DELETE'
+            });
+
+            cargarCategorias(seccion);
+        }
+
+        function verImagenGrande(src) {
+            document.getElementById('modalImagenSrc').src = src;
+            document.getElementById('modalImagen').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalImagen').style.display = 'none';
+        }
+        let _editandoId = null;
+        let _editandoSeccion = null;
+
+        function abrirModalEditar(id, nombre, seccion, orden) {
+            _editandoId = id;
+            _editandoSeccion = seccion;
+            document.getElementById('editNombre').value = nombre;
+            document.getElementById('editOrden').value = orden;
+            document.getElementById('editFileInput').value = '';
+            document.getElementById('editPreviewImg').style.display = 'none';
+            document.getElementById('modalEditar').style.display = 'flex';
+        }
+
+        function cerrarModalEditar() {
+            document.getElementById('modalEditar').style.display = 'none';
+        }
+
+        function previsualizarImagenEditar(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                const img = document.getElementById('editPreviewImg');
+                img.src = ev.target.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function guardarEdicion() {
+            const nombre = document.getElementById('editNombre').value.trim();
+            const orden = parseInt(document.getElementById('editOrden').value) || 1;
+            const file = document.getElementById('editFileInput').files[0];
+
+            if (!nombre) { alert('Escribí el nombre'); return; }
+
+            const form = new FormData();
+            form.append('Nombre', nombre);
+            form.append('Orden', orden);
+            form.append('Seccion', _editandoSeccion);
+            if (file) form.append('Icono', file);
+
+            try {
+                const r = await fetch(`${API}/api/Categorias/${_editandoId}`, {
+                    method: 'PUT',
+                    body: form
+                });
+
+                if (!r.ok) throw new Error(await r.text());
+
+                cerrarModalEditar();
+                cargarCategorias(_editandoSeccion);
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+        init();
+    </script>
+
+</body>
+</html>

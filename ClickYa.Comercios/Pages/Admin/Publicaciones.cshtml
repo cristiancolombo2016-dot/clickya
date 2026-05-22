@@ -1,0 +1,273 @@
+﻿@page
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Publicaciones – ClickYa</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: #F2F3F5;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #4B0082;
+            margin-bottom: 20px;
+        }
+
+        /* ===== LISTA ===== */
+        .pub-list {
+            background: #fff;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+
+        .pub-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+            .pub-item:last-child {
+                border-bottom: none;
+            }
+
+        .pub-info {
+            max-width: 65%;
+        }
+
+        .pub-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .pub-meta {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* ===== BOTONES ===== */
+        .actions button {
+            margin-left: 6px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-ok {
+            background: #4CAF50;
+            color: #fff;
+        }
+
+        .btn-pause {
+            background: #FB8C00;
+            color: #fff;
+        }
+
+        .btn-reject {
+            background: #E53935;
+            color: #fff;
+        }
+
+        .btn-view {
+            background: #4B0082;
+            color: #fff;
+        }
+
+        /* ===== ESTADOS ===== */
+        .status {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-top: 6px;
+        }
+
+        .status-pendiente {
+            background: #E0E0E0;
+            color: #555;
+        }
+
+        .status-aprobada {
+            background: #C8E6C9;
+            color: #2E7D32;
+        }
+
+        .status-pausada {
+            background: #FFE0B2;
+            color: #EF6C00;
+        }
+
+        .status-rechazada {
+            background: #FFCDD2;
+            color: #C62828;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 14px;
+            padding: 24px;
+            width: 90%;
+            max-width: 520px;
+        }
+
+            .modal h2 {
+                margin: 0 0 6px;
+                color: #4B0082;
+            }
+
+        .modal-meta {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 14px;
+        }
+
+        .modal-images {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+            .modal-images img {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                border-radius: 8px;
+                background: #eee;
+            }
+
+        .btn-close {
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background: #4B0082;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Publicaciones</h1>
+
+    <div class="pub-list">
+
+        <!-- PUBLICACIÓN 1 -->
+        <div class="pub-item">
+            <div class="pub-info">
+                <div class="pub-title">Promo Hamburguesa Doble</div>
+                <div class="pub-meta">
+                    Bar La Laguna ·
+                    <span class="status status-pendiente">Pendiente</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn-ok" onclick="cambiarEstado(this,'aprobada')">Aprobar</button>
+                <button class="btn-pause" onclick="cambiarEstado(this,'pausada')">Pausar</button>
+                <button class="btn-reject" onclick="cambiarEstado(this,'rechazada')">Rechazar</button>
+                <button class="btn-view" onclick="verPublicacion(
+                'Promo Hamburguesa Doble',
+                'Bar La Laguna',
+                'Hamburguesa doble con papas y bebida. Promo válida todo el día.'
+            )">
+                    Ver
+                </button>
+            </div>
+        </div>
+
+        <!-- PUBLICACIÓN 2 -->
+        <div class="pub-item">
+            <div class="pub-info">
+                <div class="pub-title">Servicio Electricista 24hs</div>
+                <div class="pub-meta">
+                    Electricista Juan ·
+                    <span class="status status-pendiente">Pendiente</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn-ok" onclick="cambiarEstado(this,'aprobada')">Aprobar</button>
+                <button class="btn-pause" onclick="cambiarEstado(this,'pausada')">Pausar</button>
+                <button class="btn-reject" onclick="cambiarEstado(this,'rechazada')">Rechazar</button>
+                <button class="btn-view" onclick="verPublicacion(
+                'Servicio Electricista 24hs',
+                'Electricista Juan',
+                'Atención eléctrica urgente las 24 horas.'
+            )">
+                    Ver
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+    <div id="modalVer" class="modal-overlay" onclick="cerrarModal(event)">
+        <div class="modal">
+            <h2 id="modalTitulo"></h2>
+            <div class="modal-meta" id="modalMeta"></div>
+
+            <div class="modal-images">
+                <img src="/images/mock1.jpg" />
+                <img src="/images/mock2.jpg" />
+                <img src="/images/mock3.jpg" />
+            </div>
+
+            <p id="modalDescripcion"></p>
+
+            <button class="btn-close" onclick="cerrarModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        function cambiarEstado(elemento, nuevoEstado) {
+            const estado = elemento.closest('.pub-item').querySelector('.status');
+            estado.className = 'status status-' + nuevoEstado;
+            estado.innerText = nuevoEstado.charAt(0).toUpperCase() + nuevoEstado.slice(1);
+        }
+
+        function verPublicacion(titulo, comercio, descripcion) {
+            document.getElementById('modalTitulo').innerText = titulo;
+            document.getElementById('modalMeta').innerText = comercio;
+            document.getElementById('modalDescripcion').innerText = descripcion;
+            document.getElementById('modalVer').style.display = 'flex';
+        }
+
+        function cerrarModal(e) {
+            if (!e || e.target.id === 'modalVer') {
+                document.getElementById('modalVer').style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>

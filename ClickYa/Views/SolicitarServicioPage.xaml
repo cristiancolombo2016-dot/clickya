@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="ClickYa.Views.SolicitarServicioPage"
+    BackgroundColor="#F7F7FA"
+    Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
+
+            <!-- HEADER -->
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Text="‹" FontSize="38" TextColor="#111"
+                       VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnVolverTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label x:Name="LblRubro" Grid.Column="1"
+                       Text="Solicitar servicio"
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="#111" VerticalOptions="Center"
+                       Margin="12,0,0,0"/>
+            </Grid>
+
+            <!-- FOTO DEL PROBLEMA -->
+            <Label Text="Foto del problema" FontSize="16"
+                   FontAttributes="Bold" TextColor="#333"/>
+
+            <Frame x:Name="FrameFoto"
+                   HeightRequest="200"
+                   CornerRadius="18"
+                   Padding="0"
+                   BackgroundColor="#E8E8E8"
+                   HasShadow="False">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTomarFotoTapped"/>
+                </Frame.GestureRecognizers>
+                <Grid>
+                    <Label Text="📷 Tocá para agregar una foto"
+                           FontSize="16" TextColor="#888"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                    <Image x:Name="ImgFoto"
+                           Aspect="AspectFill"
+                           IsVisible="False"/>
+                </Grid>
+            </Frame>
+
+            <!-- DESCRIPCIÓN -->
+            <Label Text="Describí el problema" FontSize="16"
+                   FontAttributes="Bold" TextColor="#333"/>
+
+            <Frame CornerRadius="16" Padding="16"
+                   BackgroundColor="White" HasShadow="False"
+                   BorderColor="#DDD">
+                <Editor x:Name="EditorDescripcion"
+                        Placeholder="Ej: Se me cortó la luz en toda la casa..."
+                        HeightRequest="120"
+                        TextColor="#111111"
+                        FontSize="16"
+                        BackgroundColor="Transparent"/>
+            </Frame>
+
+            <!-- WHATSAPP -->
+            <Label Text="Tu WhatsApp" FontSize="16"
+                   FontAttributes="Bold" TextColor="#333"/>
+
+            <Frame CornerRadius="16" Padding="16,0"
+                   HeightRequest="58" BackgroundColor="White"
+                   HasShadow="False" BorderColor="#DDD">
+                <Entry x:Name="EntryWhatsApp"
+                       Placeholder="Ej: 5493364612832"
+                       Keyboard="Telephone"
+                        TextColor="#111111"
+                       FontSize="16"
+                       BackgroundColor="Transparent"/>
+            </Frame>
+
+            <!-- BOTÓN ENVIAR -->
+            <Button Text="Enviar solicitud"
+                    BackgroundColor="#5C0BBF"
+                    TextColor="White"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    CornerRadius="18"
+                    HeightRequest="58"
+                    Clicked="OnEnviarTapped"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

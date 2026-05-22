@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.ContactoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Contacto"
+    BackgroundColor="White">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="24"
+            Spacing="20">
+
+            <Label
+                Text="Contacto"
+                FontSize="24"
+                FontAttributes="Bold"
+                TextColor="#222" />
+
+            <Label
+                Text="¿Tenés un comercio o servicio y querés formar parte de ClickYa?"
+                FontSize="15"
+                TextColor="#444" />
+
+            <Label
+                Text="Contactanos y te contamos cómo publicar tu negocio de forma simple y rápida."
+                FontSize="14"
+                TextColor="#444" />
+
+            <!-- CARD CONTACTO -->
+            <Frame
+                BackgroundColor="#F5F5F5"
+                CornerRadius="14"
+                Padding="16"
+                HasShadow="False">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <Label
+                        Text="Localidad"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        TextColor="#222" />
+
+                    <Label
+                        Text="San Nicolás de los Arroyos"
+                        FontSize="14"
+                        TextColor="#444" />
+
+                    <Label
+                        Text="WhatsApp"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        TextColor="#222"
+                        Margin="0,10,0,0" />
+
+                    <Label
+                        Text="+54 336 4612832"
+                        FontSize="14"
+                        TextColor="#444" />
+
+                    <Label
+                        Text="Email"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        TextColor="#222"
+                        Margin="0,10,0,0" />
+
+                    <Label
+                        Text="cristiancolombo2016@gmail.com"
+                        FontSize="14"
+                        TextColor="#444" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <Label
+                Text="ClickYa, hecha por nicoleños para nicoleños."
+                FontSize="16"
+                TextColor="#666" />
+
+            
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

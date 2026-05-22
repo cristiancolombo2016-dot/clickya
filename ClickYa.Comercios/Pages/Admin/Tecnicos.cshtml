@@ -1,0 +1,457 @@
+﻿@page
+@model ClickYa.Comercios.Pages.Admin.TecnicosModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Técnicos – ClickYa Admin</title>
+    <style>
+        :root {
+            --violeta: #4B0082;
+            --fucsia: #B8008A;
+            --gris-bg: #ECEFF3;
+            --verde: #16A34A;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui;
+            background: var(--gris-bg);
+            padding: 40px;
+            color: #374151;
+        }
+
+        h1 {
+            color: var(--violeta);
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 22px;
+            padding: 26px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+            margin-bottom: 30px;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #eee;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+            .row:last-child {
+                border-bottom: none;
+            }
+
+        .row-inactivo {
+            opacity: 0.5;
+        }
+
+        .info h3 {
+            margin: 0;
+            font-size: 17px;
+            color: #111;
+        }
+
+        .info p {
+            margin: 4px 0 0;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .btn-agregar {
+            background: linear-gradient(135deg, var(--violeta), var(--fucsia));
+            margin-bottom: 20px;
+            padding: 12px 24px;
+            font-size: 15px;
+            border-radius: 14px;
+        }
+
+        .btn-aceptar {
+            background: #16A34A;
+        }
+
+        .btn-baja {
+            background: #6B7280;
+        }
+
+        .btn-eliminar {
+            background: #ef4444;
+        }
+
+        .btn-wa {
+            background: #25D366;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-link {
+            background: var(--violeta);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-premium {
+            background: #7C3AED;
+            color: #fff;
+        }
+
+        .btn-quitar-premium {
+            background: #eee;
+            color: #555;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-activo {
+            background: #DCFCE7;
+            color: var(--verde);
+        }
+
+        .badge-inactivo {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+
+        .badge-premium {
+            background: #EDE9FE;
+            color: #5B21B6;
+        }
+
+        .badge-gratuito {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+
+        .badge-vence {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .badge-vencido {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+            .modal-box h3 {
+                margin: 0;
+                color: var(--violeta);
+            }
+
+            .modal-box input, .modal-box select {
+                padding: 10px 14px;
+                border-radius: 10px;
+                border: 1px solid #ddd;
+                font-size: 14px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .modal-box label {
+                font-size: 13px;
+                font-weight: 600;
+                color: #555;
+            }
+
+        .vacio {
+            color: #999;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .alerta-vencimiento {
+            background: #FEF3C7;
+            border: 1px solid #FCD34D;
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #92400E;
+        }
+
+            .alerta-vencimiento strong {
+                display: block;
+                margin-bottom: 6px;
+                font-size: 15px;
+            }
+    </style>
+</head>
+<body>
+
+    <h1>Técnicos</h1>
+
+    <div id="alertasVencimiento"></div>
+
+    <button class="btn btn-agregar" onclick="abrirModal()">+ Agregar técnico</button>
+
+    <div class="card" id="listaTecnicos">
+        <div class="vacio">Cargando...</div>
+    </div>
+
+    <div class="modal" id="modalAgregar">
+        <div class="modal-box">
+            <h3>Agregar técnico</h3>
+            <div>
+                <label>Nombre</label>
+                <input id="inpNombre" type="text" placeholder="Nombre completo" />
+            </div>
+            <div>
+                <label>Rubro</label>
+                <select id="inpRubro">
+                    <option value="Electricista">Electricista</option>
+                    <option value="Gasista">Gasista</option>
+                    <option value="Plomero">Plomero</option>
+                    <option value="Aire acondicionado">Aire acondicionado</option>
+                    <option value="Carpintería">Carpintería</option>
+                    <option value="Cerrajería">Cerrajería</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+            <div>
+                <label>WhatsApp</label>
+                <input id="inpWhatsApp" type="text" placeholder="5493364612832" />
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <input type="checkbox" id="inpPremium" style="width:18px;height:18px;" />
+                <label for="inpPremium" style="font-size:14px;">Es Premium</label>
+            </div>
+            <div style="display:flex;gap:10px;">
+                <button class="btn btn-agregar" onclick="guardarTecnico()" style="flex:1;margin:0">Guardar</button>
+                <button onclick="cerrarModal()" style="flex:1;border:none;padding:10px;border-radius:10px;cursor:pointer;background:#eee;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://192.168.100.9:5191';
+        const DASHBOARD_URL = 'http://192.168.100.9:5175/Tecnico/Dashboard';
+
+        async function cargar() {
+            const r = await fetch(`${API}/api/Tecnico`);
+            const tecnicos = await r.json();
+
+            const cont = document.getElementById('listaTecnicos');
+            const alertas = document.getElementById('alertasVencimiento');
+            alertas.innerHTML = '';
+
+            if (!tecnicos || tecnicos.length === 0) {
+                cont.innerHTML = '<div class="vacio">No hay técnicos registrados</div>';
+                return;
+            }
+
+            // premium primero, luego activos, luego inactivos
+            tecnicos.sort((a, b) => {
+                const pa = a.esPremium || a.EsPremium || false;
+                const pb = b.esPremium || b.EsPremium || false;
+                const aa = a.activo || a.Activo || false;
+                const ab = b.activo || b.Activo || false;
+                if (pb !== pa) return pb - pa;
+                return ab - aa;
+            });
+
+            // Alertas de vencimiento
+            tecnicos.forEach(t => {
+                const esPremium = t.esPremium || t.EsPremium || false;
+                const fechaPremium = t.fechaPremium || t.FechaPremium;
+                if (!esPremium || !fechaPremium) return;
+                const vencimiento = new Date(fechaPremium);
+                vencimiento.setDate(vencimiento.getDate() + 30);
+                const diasRestantes = Math.ceil((vencimiento - new Date()) / (1000 * 60 * 60 * 24));
+                const nombre = t.nombre || t.Nombre;
+                const wa = t.whatsApp || t.WhatsApp;
+                if (diasRestantes <= 5) {
+                    const vencido = diasRestantes < 0;
+                    alertas.innerHTML += `
+                        <div class="alerta-vencimiento">
+                            <strong>⚠️ ${vencido ? 'VENCIDO' : 'Próximo a vencer'} — ${nombre}</strong>
+                            ${vencido ? `Venció hace ${Math.abs(diasRestantes)} días` : `Vence en ${diasRestantes} día${diasRestantes !== 1 ? 's' : ''}`}
+                            <br/>
+                            <a href="https://wa.me/${wa}?text=${encodeURIComponent(`Hola ${nombre}! Tu plan Premium de ClickYa ${vencido ? 'venció' : 'vence en ' + diasRestantes + ' días'}. Renovalo para seguir apareciendo en urgencias.`)}"
+                               target="_blank" style="color:#92400E;font-weight:700;">📲 Recordar por WhatsApp</a>
+                        </div>`;
+                }
+            });
+
+            cont.innerHTML = tecnicos.map(t => {
+                const id = t.id || t.Id;
+                const nombre = t.nombre || t.Nombre;
+                const rubro = t.rubro || t.Rubro;
+                const wa = t.whatsApp || t.WhatsApp;
+                const token = t.token || t.Token;
+                const esPremium = t.esPremium || t.EsPremium || false;
+                const activo = t.activo || t.Activo || false;
+                const fechaPremium = t.fechaPremium || t.FechaPremium;
+                const linkTecnico = `${DASHBOARD_URL}?token=${token}`;
+
+                let badgeVencimiento = '';
+                if (esPremium && fechaPremium) {
+                    const vencimiento = new Date(fechaPremium);
+                    vencimiento.setDate(vencimiento.getDate() + 30);
+                    const diasRestantes = Math.ceil((vencimiento - new Date()) / (1000 * 60 * 60 * 24));
+                    badgeVencimiento = diasRestantes < 0
+                        ? `<span class="badge badge-vencido">⚠️ Vencido</span>`
+                        : `<span class="badge badge-vence">📅 ${diasRestantes}d</span>`;
+                }
+
+                return `
+                <div class="row ${activo ? '' : 'row-inactivo'}">
+                    <div class="info">
+                        <h3>${nombre}
+                            <span class="badge ${esPremium ? 'badge-premium' : 'badge-gratuito'}">${esPremium ? '⭐ Premium' : 'Gratuito'}</span>
+                            ${badgeVencimiento}
+                            <span class="badge ${activo ? 'badge-activo' : 'badge-inactivo'}">${activo ? 'Activo' : 'Inactivo'}</span>
+                        </h3>
+                        <p>${rubro} · ${wa}</p>
+                    </div>
+                    <div class="actions">
+                        ${token
+                            ? `<a class="btn btn-wa" href="https://wa.me/${wa}?text=${encodeURIComponent('Hola ' + nombre + '! Tu acceso al dashboard de ClickYa: ' + linkTecnico)}" target="_blank">📲 Enviar link</a>`
+                            : `<button class="btn btn-link" onclick="generarToken(${id})">Generar link</button>`
+                        }
+                        <a class="btn btn-wa" href="https://wa.me/${wa}" target="_blank">💬 Mensaje</a>
+                        ${esPremium
+                            ? `<button class="btn btn-quitar-premium" onclick="togglePremium(${id}, false)">Quitar premium</button>`
+                            : `<button class="btn btn-premium" onclick="togglePremium(${id}, true)">⭐ Premium</button>`
+                        }
+                        ${activo
+                            ? `<button class="btn btn-baja" onclick="darDeBaja(${id})">Dar de baja</button>`
+                            : `<button class="btn btn-aceptar" onclick="reactivar(${id})">Reactivar</button>`
+                        }
+                        <button class="btn btn-eliminar" onclick="eliminar(${id})">Eliminar</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function togglePremium(id, esPremium) {
+            const r = await fetch(`${API}/api/Tecnico/${id}`);
+            const t = await r.json();
+            const fechaPremium = esPremium ? new Date().toISOString() : null;
+            await fetch(`${API}/api/Tecnico/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...t, esPremium, fechaPremium })
+            });
+            cargar();
+        }
+
+        async function darDeBaja(id) {
+            if (!confirm('¿Dar de baja este técnico?')) return;
+            const r = await fetch(`${API}/api/Tecnico/${id}`);
+            const t = await r.json();
+            await fetch(`${API}/api/Tecnico/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...t, activo: false })
+            });
+            cargar();
+        }
+
+        async function reactivar(id) {
+            const r = await fetch(`${API}/api/Tecnico/${id}`);
+            const t = await r.json();
+            await fetch(`${API}/api/Tecnico/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...t, activo: true })
+            });
+            cargar();
+        }
+
+        async function generarToken(id) {
+            const r = await fetch(`${API}/api/Tecnico/${id}`);
+            const t = await r.json();
+            const token = crypto.randomUUID().replace(/-/g, '');
+            await fetch(`${API}/api/Tecnico/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...t, token })
+            });
+            cargar();
+        }
+
+        async function eliminar(id) {
+            if (!confirm('¿Eliminar este técnico?')) return;
+            await fetch(`${API}/api/Tecnico/${id}`, { method: 'DELETE' });
+            cargar();
+        }
+
+        function abrirModal() { document.getElementById('modalAgregar').style.display = 'flex'; }
+        function cerrarModal() { document.getElementById('modalAgregar').style.display = 'none'; }
+
+        async function guardarTecnico() {
+            const nombre = document.getElementById('inpNombre').value.trim();
+            const rubro = document.getElementById('inpRubro').value;
+            const whatsApp = document.getElementById('inpWhatsApp').value.trim();
+            const esPremium = document.getElementById('inpPremium').checked;
+            if (!nombre || !whatsApp) { alert('Completá todos los campos'); return; }
+            const token = crypto.randomUUID().replace(/-/g, '');
+            const fechaPremium = esPremium ? new Date().toISOString() : null;
+            await fetch(`${API}/api/Tecnico`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, rubro, whatsApp, token, activo: true, esPremium, fechaPremium })
+            });
+            cerrarModal();
+            cargar();
+        }
+
+        cargar();
+    </script>
+
+</body>
+</html>

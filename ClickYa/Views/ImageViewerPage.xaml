@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.ImageViewerPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="Black">
+
+    <Grid>
+
+        <CarouselView
+            x:Name="Carousel"
+            ItemsLayout="Horizontal"
+            IsSwipeEnabled="True">
+
+            <CarouselView.ItemTemplate>
+                <DataTemplate>
+
+                    <Grid>
+                        <Image
+                            Source="{Binding}"
+                            Aspect="AspectFit"
+                            x:Name="ZoomImage">
+
+                            <Image.GestureRecognizers>
+                                <PinchGestureRecognizer
+                                    PinchUpdated="OnPinchUpdated"/>
+                            </Image.GestureRecognizers>
+
+                        </Image>
+                    </Grid>
+
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+
+        </CarouselView>
+
+        <!-- BOTÓN CERRAR -->
+        <Button
+            Text="✕"
+            FontSize="20"
+            BackgroundColor="#66000000"
+            TextColor="White"
+            WidthRequest="44"
+            HeightRequest="44"
+            CornerRadius="22"
+            HorizontalOptions="End"
+            VerticalOptions="Start"
+            Margin="16"
+            Clicked="OnCloseClicked"/>
+
+    </Grid>
+</ContentPage>

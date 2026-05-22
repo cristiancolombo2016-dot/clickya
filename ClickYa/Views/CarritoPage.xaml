@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="ClickYa.Views.CarritoPage"
+    Shell.NavBarIsVisible="True"
+    Title=""
+    BackgroundColor="#F5F5F5">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- HEADER CLICKYA -->
+        <Grid Padding="18">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#4B0082" Offset="0.0"/>
+                    <GradientStop Color="#B8008A" Offset="0.6"/>
+                    <GradientStop Color="#FF3D3D" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+
+            <Label Text="Tu Carrito 🛒"
+                   FontSize="26"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"/>
+        </Grid>
+
+        <!-- CONTENIDO -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <!-- LISTA -->
+                <CollectionView x:Name="ListaCarrito"
+                                SelectionMode="None">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="White"
+                                   CornerRadius="16"
+                                   Padding="12"
+                                   HasShadow="True"
+                                   Margin="0,6">
+
+                                <Grid ColumnDefinitions="70,*,Auto"
+                                      ColumnSpacing="12"
+                                      VerticalOptions="Center">
+
+                                    <!-- IMAGEN -->
+                                    <Image Source="{Binding imagen}"
+                                           HeightRequest="60"
+                                           WidthRequest="60"
+                                           Aspect="AspectFit"/>
+
+                                    <!-- INFO -->
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         Spacing="4"
+                                                         VerticalOptions="Center">
+                                        <Label Text="{Binding nombre}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="#333"/>
+
+                                        <Label Text="{Binding precio, StringFormat='${0}'}"
+                                               FontSize="14"
+                                               TextColor="Gray"/>
+                                    </VerticalStackLayout>
+
+                                    <!-- CANTIDAD -->
+                                    <Frame Grid.Column="2"
+                                           BackgroundColor="#F2F2F2"
+                                           CornerRadius="14"
+                                           Padding="8">
+                                        <HorizontalStackLayout Spacing="14"
+                                                               VerticalOptions="Center">
+
+                                            <Label Text="−"
+                                                   FontSize="22"
+                                                   TextColor="#FF3D3D">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer
+                                                        Tapped="BtnRestar_Clicked"
+                                                        CommandParameter="{Binding}"/>
+                                                </Label.GestureRecognizers>
+                                            </Label>
+
+                                            <Label Text="{Binding cantidad}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#333"/>
+
+                                            <Label Text="+"
+                                                   FontSize="22"
+                                                   TextColor="#4CD964">
+                                                <Label.GestureRecognizers>
+                                                    <TapGestureRecognizer
+                                                        Tapped="BtnSumar_Clicked"
+                                                        CommandParameter="{Binding}"/>
+                                                </Label.GestureRecognizers>
+                                            </Label>
+
+                                        </HorizontalStackLayout>
+                                    </Frame>
+
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- TOTAL -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="18"
+                       Padding="16"
+                       HasShadow="True">
+
+                    <Label x:Name="LblTotal"
+                           Text="Total: $0"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="#333"
+                           HorizontalOptions="Center"/>
+                </Frame>
+
+                <!-- BOTÓN WHATSAPP -->
+                <Border StrokeThickness="0"
+                        BackgroundColor="#25D366"
+                        Padding="16"
+                        StrokeShape="RoundRectangle 22">
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="BtnEnviarWhatsApp_Clicked"/>
+                    </Border.GestureRecognizers>
+
+                    <HorizontalStackLayout Spacing="12"
+                                           HorizontalOptions="Center">
+                        <Image Source="icono_whatsapp.png"
+                               HeightRequest="30"
+                               WidthRequest="30"/>
+                        <Label Text="Enviar pedido por WhatsApp"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+                    </HorizontalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

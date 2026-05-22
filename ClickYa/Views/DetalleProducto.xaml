@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="ClickYa.Views.DetalleProducto"
+    Shell.NavBarIsVisible="True"
+    BackgroundColor="#F5F5F5">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0" Padding="0">
+
+            <!-- IMAGEN GRANDE -->
+            <Grid HeightRequest="300" IsClippedToBounds="True">
+                <Image x:Name="ImgProducto"
+                       Aspect="AspectFill"
+                       HorizontalOptions="Fill"
+                       VerticalOptions="Fill"/>
+
+                <BoxView VerticalOptions="End" HeightRequest="80">
+                    <BoxView.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="Transparent" Offset="0.0"/>
+                            <GradientStop Color="#F5F5F5" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </BoxView.Background>
+                </BoxView>
+            </Grid>
+
+            <VerticalStackLayout Padding="20,0,20,30" Spacing="16">
+
+                <!-- NOMBRE Y PRECIO -->
+                <Frame BackgroundColor="White"
+                       CornerRadius="20"
+                       HasShadow="True"
+                       Padding="20">
+                    <VerticalStackLayout Spacing="8">
+                        <Label x:Name="LblNombre"
+                               FontSize="26"
+                               FontAttributes="Bold"
+                               TextColor="#222"/>
+                        <Label x:Name="LblPrecio"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="#4B0082"/>
+                        <BoxView HeightRequest="1" Color="#EEEEEE" Margin="0,4"/>
+                        <Label x:Name="LblDescripcion"
+                               FontSize="15"
+                               TextColor="#666"
+                               LineBreakMode="WordWrap"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- BOTÓN WHATSAPP -->
+                <Frame BackgroundColor="#25D366"
+                       CornerRadius="18"
+                       Padding="0"
+                       HasShadow="True">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="BtnWhatsApp_Clicked"/>
+                    </Frame.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12"
+                                           HorizontalOptions="Center"
+                                           Padding="0,16">
+                        <Image Source="icono_whatsapp.png"
+                               HeightRequest="26" WidthRequest="26"/>
+                        <Label Text="Pedir por WhatsApp"
+                               FontSize="17"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </Frame>
+
+                <!-- BOTÓN CARRITO -->
+                <Frame CornerRadius="18"
+                       Padding="0"
+                       HasShadow="True">
+                    <Frame.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#4B0082" Offset="0.0"/>
+                            <GradientStop Color="#B8008A" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </Frame.Background>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="BtnAgregarCarrito_Clicked"/>
+                    </Frame.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12"
+                                           HorizontalOptions="Center"
+                                           Padding="0,16">
+                        <Image Source="icono_carrito.png"
+                               HeightRequest="26" WidthRequest="26"/>
+                        <Label Text="Agregar al carrito"
+                               FontSize="17"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </Frame>
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

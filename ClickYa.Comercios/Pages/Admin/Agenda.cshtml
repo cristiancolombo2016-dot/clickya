@@ -1,0 +1,220 @@
+﻿@page
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Agenda – ClickYa</title>
+
+    <style>
+        :root {
+            --violeta: #4B0082;
+            --fucsia: #B8008A;
+            --violeta-soft: #F3E8FF;
+            --gris-bg: #ECEFF3;
+            --gris-card: #FFFFFF;
+            --gris-text: #374151;
+            --gris-muted: #6B7280;
+            --verde: #16A34A;
+            --rojo: #DC2626;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background: var(--gris-bg);
+            padding: 40px;
+            color: var(--gris-text);
+        }
+
+        h1 {
+            color: var(--violeta);
+            margin-bottom: 6px;
+        }
+
+        .sub {
+            color: var(--gris-muted);
+            margin-bottom: 22px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 26px;
+        }
+
+        .card {
+            background: var(--gris-card);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 12px;
+            display: block;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid #D1D5DB;
+            margin-top: 6px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 14px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--violeta), var(--fucsia));
+            color: #fff;
+        }
+
+            .btn-primary:hover {
+                box-shadow: 0 6px 18px rgba(184,0,138,.35);
+            }
+
+        /* ===== LISTA EVENTOS ===== */
+        .evento {
+            border-bottom: 1px solid #EEE;
+            padding: 14px 0;
+        }
+
+            .evento:last-child {
+                border-bottom: none;
+            }
+
+            .evento h4 {
+                margin: 0;
+                color: var(--violeta);
+            }
+
+            .evento small {
+                color: var(--gris-muted);
+                font-size: 12px;
+            }
+
+            .evento p {
+                margin: 6px 0 0;
+                font-size: 14px;
+            }
+    </style>
+</head>
+
+<body>
+
+    <h1>Agenda</h1>
+    <div class="sub">
+        Organizá campañas, promociones y acciones futuras de ClickYa
+    </div>
+
+    <div class="layout">
+
+        <!-- ===== CREAR EVENTO ===== -->
+        <div class="card">
+            <h3>Nuevo evento</h3>
+
+            <label>Título</label>
+            <input id="titulo" placeholder="Ej: Free Monday" />
+
+            <label>Fecha</label>
+            <input type="date" id="fecha" />
+
+            <label>Tipo</label>
+            <select id="tipo">
+                <option value="promo">Promoción</option>
+                <option value="aviso">Aviso</option>
+                <option value="interno">Interno</option>
+            </select>
+
+            <label>Destino</label>
+            <select id="destino">
+                <option value="todos">Todos los comercios</option>
+                <option value="comidas">Comidas</option>
+                <option value="bares">Bares</option>
+                <option value="servicios">Servicios</option>
+            </select>
+
+            <label>Descripción</label>
+            <textarea id="descripcion"></textarea>
+
+            <button class="btn btn-primary" onclick="guardarEvento()">
+                Guardar evento
+            </button>
+        </div>
+
+        <!-- ===== LISTADO ===== -->
+        <div class="card">
+            <h3>Eventos programados</h3>
+            <div id="listaEventos"></div>
+        </div>
+
+    </div>
+
+    <script>
+        let eventos = JSON.parse(localStorage.getItem('agenda_clickya')) || [];
+
+        function guardarEvento() {
+            const ev = {
+                id: Date.now(),
+                titulo: titulo.value,
+                fecha: fecha.value,
+                tipo: tipo.value,
+                destino: destino.value,
+                descripcion: descripcion.value
+            };
+
+            if (!ev.titulo || !ev.fecha) {
+                alert("Completá título y fecha");
+                return;
+            }
+
+            eventos.push(ev);
+            localStorage.setItem('agenda_clickya', JSON.stringify(eventos));
+
+            titulo.value = "";
+            descripcion.value = "";
+
+            render();
+        }
+
+        function render() {
+            const cont = document.getElementById('listaEventos');
+            cont.innerHTML = "";
+
+            eventos
+                .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+                .forEach(e => {
+                    cont.innerHTML += `
+                        <div class="evento">
+                            <h4>${e.titulo}</h4>
+                            <small>${e.fecha} · ${e.tipo} · ${e.destino}</small>
+                            <p>${e.descripcion || ""}</p>
+                        </div>
+                    `;
+                });
+        }
+
+        render();
+    </script>
+
+</body>
+</html>

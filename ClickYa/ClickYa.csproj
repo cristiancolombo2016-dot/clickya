@@ -1,0 +1,237 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0-android</TargetFrameworks>
+
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+
+		<!-- Note for MacCatalyst:
+		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
+		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
+		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
+		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
+		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
+
+		<OutputType>Exe</OutputType>
+		<RootNamespace>ClickYa</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Display name -->
+		<ApplicationTitle>ClickYa</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.companyname.clickya</ApplicationId>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+<MauiIcon Include="Resources\AppIcon\appicon.png" />
+
+		<!-- Splash Screen -->
+
+		<!-- Images -->
+		<MauiImage Include="Resources\Images\*" />
+
+		<!-- Custom Fonts -->
+		<MauiFont Include="Resources\Fonts\*" />
+
+		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Images\home\banners\banner1.png" />
+	  <None Remove="Resources\Images\home\banners\banner2.png" />
+	  <None Remove="Resources\Images\home\banners\banner3.png" />
+	  <None Remove="Resources\Images\home\banners\banner4.png" />
+	  <None Remove="Resources\Images\home\banners\banner5.png" />
+	  <None Remove="Resources\Images\home\banners\banner6.png" />
+	  <None Remove="Resources\Images\home\banners\banner7.png" />
+	  <None Remove="Resources\Images\home\banners\banner8.png" />
+	  <None Remove="Resources\Images\home\banners\banner9.png" />
+	  <None Remove="Resources\Images\home\banners\banner_comida7.png" />
+	  <None Remove="Resources\Images\home\banners\banner_comida8.png" />
+	  <None Remove="Resources\Images\home\banners\banner_comida9.png" />
+	  <None Remove="Resources\Images\home\destacados\pizza.jpg" />
+	  <None Remove="Resources\Images\home\destacados\pizza.png" />
+	  <None Remove="Resources\Images\home\destacados\ropa.png" />
+	  <None Remove="Resources\Images\iconos\buscar.png" />
+	  <None Remove="Resources\Images\iconos\comida.png" />
+	  <None Remove="Resources\Images\iconos\espectaculos.png" />
+	  <None Remove="Resources\Images\iconos\icono_compartir.png" />
+	  <None Remove="Resources\Images\iconos\icono_Instagram.png" />
+	  <None Remove="Resources\Images\iconos\servicios.png" />
+	  <None Remove="Resources\Images\iconos\tiendas.png" />
+	  <None Remove="Resources\Images\locales\hamburguesa_local.png" />
+	  <None Remove="Resources\Images\locales\logo_pizzeria.png" />
+	  <None Remove="Resources\Images\locales\pizzeria.png" />
+	  <None Remove="Resources\Images\productos\hamburguesa_producto.png" />
+	  <None Remove="Resources\Images\productos\pizza_producto.png" />
+	  <None Remove="Resources\Images\productos\sandwich_producto.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.0" />
+		
+
+
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\AcercaDePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\BaresPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\BarPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\BuscadorPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\CarritoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ComidaListaPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Components\BackHeader.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ConfiguracionPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ContactoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\DetalleProducto.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\GaleriaPublicacionPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\HeladoModalPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\HomePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ImageViewerPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\LocalesPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\LocalPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\LoginClientePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\PerfilTecnicoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ProductoTiendaPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ProfesionalPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\RegistroClientePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ServiciosCategoriasPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SolicitarServicioPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SplashPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TecnicosRubroPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TiendaLocalPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TiendasCategoriasPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\TiendasListaPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Pages\" />
+	  <Folder Include="Resources\Images\home\fondos\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Images\home\banners\banner1.png" />
+	  <MauiImage Include="Resources\Images\home\banners\banner2.png" />
+	  <MauiImage Include="Resources\Images\home\banners\banner3.png" />
+	  <MauiImage Include="Resources\Images\home\banners\banner4.png" />
+	  <MauiImage Include="Resources\Images\home\banners\banner5.png" />
+	  <MauiImage Include="Resources\Images\home\banners\banner6.png" />
+	  <MauiImage Include="Resources\Images\home\banners\banner_comida7.png" />
+	  <MauiImage Include="Resources\Images\home\banners\banner_comida8.png" />
+	  <MauiImage Include="Resources\Images\home\banners\banner_comida9.png" />
+	  <MauiImage Include="Resources\Images\home\destacados\pizza.png" />
+	  <MauiImage Include="Resources\Images\home\destacados\ropa.png" />
+	  <MauiImage Include="Resources\Images\iconos\buscar.png" />
+	  <MauiImage Include="Resources\Images\iconos\comida.png" />
+	  <MauiImage Include="Resources\Images\iconos\espectaculos.png" />
+	  <MauiImage Include="Resources\Images\iconos\icono_compartir.png" />
+	  <MauiImage Include="Resources\Images\iconos\icono_ubicacion.png" />
+	  <MauiImage Include="Resources\Images\iconos\icono_instagram.png" />
+	  <MauiImage Include="Resources\Images\iconos\icono_whatsapp.png" />
+	  <MauiImage Include="Resources\Images\iconos\servicios.png" />
+	  <MauiImage Include="Resources\Images\iconos\tiendas.png" />
+	  <MauiImage Include="Resources\Images\locales\mi_carniceria.png" />
+	  <MauiImage Include="Resources\Images\locales\mi_cerveceria.png" />
+	  <MauiImage Include="Resources\Images\locales\mi_empanadas.png" />
+	  <MauiImage Include="Resources\Images\locales\mi_hamburguesa.png" />
+	  <MauiImage Include="Resources\Images\locales\hamburguesa_local.png" />
+	  <MauiImage Include="Resources\Images\locales\mi_heladeria.png" />
+	  <MauiImage Include="Resources\Images\locales\logo_pizzeria.png" />
+	  <MauiImage Include="Resources\Images\locales\mi_panaderia.png" />
+	  <MauiImage Include="Resources\Images\locales\mi_pizza2.png" />
+	  <MauiImage Include="Resources\Images\locales\pizzeria.png" />
+	  <MauiImage Include="Resources\Images\locales\mi_supermercado.png" />
+	  <MauiImage Include="Resources\Images\locales\mi_sushi.png" />
+	  <MauiImage Include="Resources\Images\locales\mi_verduleria.png" />
+	  <MauiImage Include="Resources\Images\productos\hamburguesa_producto.png" />
+	  <MauiImage Include="Resources\Images\productos\pizza_producto.png" />
+	  <MauiImage Include="Resources\Images\productos\sandwich_producto.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiAsset Update="Resources\Raw\videos\burger_video.mp4">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </MauiAsset>
+	</ItemGroup>
+
+</Project>

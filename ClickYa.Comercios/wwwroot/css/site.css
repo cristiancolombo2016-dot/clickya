@@ -1,0 +1,475 @@
+﻿/* ===============================
+   RESET BÁSICO
+   =============================== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, Arial, sans-serif;
+    background: #f4f4f6;
+}
+
+/* ===============================
+   LAYOUT GENERAL
+   =============================== */
+
+.cy-body {
+    background: #f4f4f6;
+}
+
+.cy-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===============================
+   SIDEBAR
+   =============================== */
+
+.cy-sidebar {
+    width: 260px;
+    background: linear-gradient(180deg,#4B0082,#B8008A,#FF3D3D);
+    color: #fff;
+    padding: 16px;
+}
+
+.cy-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.cy-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+}
+
+.cy-brand-text {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.cy-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cy-navlink {
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.15);
+}
+
+    .cy-navlink:hover {
+        background: rgba(255,255,255,.25);
+    }
+
+/* ===============================
+   CONTENIDO
+   =============================== */
+
+.cy-content {
+    flex: 1;
+    padding: 24px;
+    overflow-x: hidden;
+}
+
+.local-preview {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ===============================
+   PORTADA COMERCIO
+   =============================== */
+
+.local-portada {
+    position: relative;
+    height: 420px;
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+    .local-portada:has(video) {
+        height: 180px;
+    }
+
+    .local-portada img,
+    .local-portada video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+
+/* ===============================
+   ESTADO ACTIVO
+   =============================== */
+
+.estado-activo {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,0,0,.65);
+    color: #d8ff3a;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    backdrop-filter: blur(6px);
+}
+
+    .estado-activo .dot {
+        width: 10px;
+        height: 10px;
+        background: #d8ff3a;
+        border-radius: 50%;
+        animation: pulse 1.6s infinite;
+    }
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(216,255,58,.6);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(216,255,58,0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(216,255,58,0);
+    }
+}
+
+.btn-edit {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(0,0,0,.65);
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* ===============================
+   INFO COMERCIO
+   =============================== */
+
+.local-info {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    background: #fff;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.1);
+    margin-bottom: 40px;
+}
+
+.local-logo {
+    position: relative;
+    width: 72px;
+    height: 72px;
+}
+
+    .local-logo img {
+        width: 72px;
+        height: 72px;
+        border-radius: 14px;
+        object-fit: contain; /* 👈 CAMBIAR ESTO */
+        background: white; /* 👈 OPCIONAL pero recomendado */
+    }
+
+
+.btn-edit-logo {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    background: rgba(0,0,0,.85);
+    color: #fff;
+    border: none;
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: .7;
+}
+
+.local-logo:hover .btn-edit-logo {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.local-meta {
+    font-size: 14px;
+    color: #666;
+}
+
+.local-desc {
+    margin-top: 6px;
+}
+
+.btn-primary {
+    margin-left: auto;
+    background: linear-gradient(135deg,#6a00ff,#ff2f92);
+    border: none;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+/* ===============================
+   SECCIONES
+   =============================== */
+
+.local-section {
+    margin-bottom: 40px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-secondary {
+    background: #eee;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+}
+
+.btn-dark {
+    background: #2c2c2c;
+    color: #fff;
+}
+
+    .btn-dark:hover {
+        background: #1f1f1f;
+    }
+
+/* ===============================
+   PUBLICACIONES
+   =============================== */
+
+.publicaciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+    gap: 16px;
+}
+
+.publicacion-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+    position: relative;
+}
+
+    .publicacion-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+.publicacion-info {
+    padding: 12px;
+}
+
+.precio {
+    font-weight: 700;
+}
+
+.btn-edit-publicacion {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,.7);
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* ===============================
+   MODALES
+   =============================== */
+
+.cy-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+
+.cy-modal-box {
+    background: #fff;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.cy-modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-img-action {
+    background: #2b2b2b;
+    color: #fff;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+}
+
+/* ===============================
+   RESPONSIVE
+   =============================== */
+
+@media (max-width: 768px) {
+    .local-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-primary {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .local-portada {
+        height: 200px;
+    }
+}
+
+/* ===============================
+   ORDEN CORRECTO DASHBOARD COMERCIO
+   =============================== */
+
+.local-preview {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Portada */
+.local-portada {
+    order: 1;
+}
+
+/* Info del comercio (panel blanco) */
+.local-info {
+    order: 2;
+}
+
+/* Sección publicaciones */
+.local-section {
+    order: 3;
+}
+.horarios-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.horario-dia {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    gap: 6px;
+}
+
+    .horario-dia input[type="time"] {
+        width: 120px;
+    }
+/* ===============================
+   MOBILE - SIDEBAR RESPONSIVE
+   =============================== */
+
+.cy-topbar {
+    display: none;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #4B0082, #B8008A);
+}
+
+.cy-menu-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}
+
+.cy-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 999;
+}
+
+    .cy-overlay.show {
+        display: block;
+    }
+
+@media (max-width: 768px) {
+
+    .cy-topbar {
+        display: flex;
+        align-items: center;
+    }
+
+    .cy-sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        height: 100vh;
+        width: 260px;
+        z-index: 1000;
+        transition: left .3s ease;
+    }
+
+        .cy-sidebar.open {
+            left: 0;
+        }
+
+    .cy-shell {
+        flex-direction: column;
+    }
+
+    .cy-content {
+        padding: 12px;
+    }
+
+    .publicaciones-grid {
+        grid-template-columns: 1fr;
+    }
+}

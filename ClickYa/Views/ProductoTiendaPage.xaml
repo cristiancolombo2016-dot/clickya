@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="ClickYa.Views.ProductoTiendaPage"
+    BackgroundColor="#F4F4F4">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="18">
+
+            <!-- ========================= -->
+            <!-- CARD IMÁGENES -->
+            <!-- ========================= -->
+            <Frame
+                CornerRadius="28"
+                Padding="12"
+                BackgroundColor="White"
+                HasShadow="True">
+
+                <VerticalStackLayout Spacing="10">
+
+                    <!-- GALERÍA -->
+                    <CollectionView
+                        ItemsSource="{Binding Imagenes}"
+                        HeightRequest="240"
+                        ItemsLayout="HorizontalList"
+                        HorizontalScrollBarVisibility="Never">
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame
+                                    Padding="0"
+                                    Margin="6,0"
+                                    CornerRadius="20"
+                                    BackgroundColor="#F2F2F2"
+                                    HasShadow="False">
+
+                                    <Image
+    Source="{Binding .}"
+    Aspect="AspectFill"
+    HeightRequest="220"
+    WidthRequest="220">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnImagenTapped"/>
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <!-- INDICADORES (VISUAL) -->
+                    <HorizontalStackLayout
+                        HorizontalOptions="Center"
+                        Spacing="8">
+
+                        <BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#7B3FE4"/>
+                        <BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#D1C4E9"/>
+                        <BoxView WidthRequest="10" HeightRequest="10" CornerRadius="5" Color="#D1C4E9"/>
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- ========================= -->
+            <!-- INFO PRODUCTO -->
+            <!-- ========================= -->
+            <VerticalStackLayout Spacing="6">
+
+                <Label
+                    Text="{Binding Nombre}"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    TextColor="#222"/>
+
+                <Label
+                    Text="{Binding Precio, StringFormat='$ {0:N0}'}"
+                    FontSize="20"
+                    FontAttributes="Bold"
+                    TextColor="#7B3FE4"/>
+
+                <Label
+                    Text="{Binding Descripcion}"
+                    FontSize="14"
+                    TextColor="#666"
+                    Margin="0,4,0,0"/>
+
+            </VerticalStackLayout>
+
+            <!-- ========================= -->
+            <!-- TALLES (SOLO SI APLICA – VISUAL) -->
+            <!-- ========================= -->
+            <VerticalStackLayout Spacing="8">
+
+                <Label
+                    Text="Talles disponibles"
+                    FontSize="14"
+                    FontAttributes="Bold"
+                    TextColor="#444"/>
+
+                <FlexLayout BindableLayout.ItemsSource="{Binding Talles}"
+            Wrap="Wrap"
+            Direction="Row"
+            JustifyContent="Start"
+            AlignItems="Start">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Frame CornerRadius="14"
+                   Padding="12,6"
+                   BorderColor="#7B3FE4"
+                   BackgroundColor="White"
+                   Margin="4">
+                                <Label Text="{Binding .}"
+                       TextColor="#7B3FE4"
+                       FontSize="13"/>
+                            </Frame>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+            </VerticalStackLayout>
+
+            <!-- ========================= -->
+            <!-- CTA -->
+            <!-- ========================= -->
+            <Button
+                Text="Consultar por WhatsApp"
+                BackgroundColor="#25D366"
+                TextColor="White"
+                CornerRadius="24"
+                HeightRequest="52"
+                Margin="0,16,0,20"
+                Clicked="OnWhatsAppClicked"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

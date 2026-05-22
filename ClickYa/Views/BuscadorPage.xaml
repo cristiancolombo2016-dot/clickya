@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="ClickYa.Views.BuscadorPage"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="#F4F1FA">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- HEADER -->
+        <Grid Grid.Row="0" Padding="16,48,16,16" BackgroundColor="#130021">
+            <Grid ColumnDefinitions="Auto,*">
+                <Label Text="←" FontSize="28" TextColor="White"
+                       VerticalOptions="Center" Margin="0,0,12,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Volver_Tapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Frame Grid.Column="1" CornerRadius="22" Padding="12,0"
+                       HeightRequest="46" BackgroundColor="White" HasShadow="False">
+                    <Entry x:Name="EntryBuscar"
+                           Placeholder="Buscar locales, técnicos, platos..."
+                           PlaceholderColor="#9B9BA8"
+                           TextColor="#222"
+                           FontSize="15"
+                           BackgroundColor="Transparent"
+                           TextChanged="OnTextChanged"/>
+                </Frame>
+            </Grid>
+        </Grid>
+
+        <!-- CHIPS -->
+        <ScrollView Grid.Row="1" Orientation="Horizontal"
+                    HorizontalScrollBarVisibility="Never"
+                    BackgroundColor="#1A0035" Padding="12,8">
+            <HorizontalStackLayout Spacing="8">
+                <Frame x:Name="ChipTodo" CornerRadius="16" Padding="12,6"
+                       BackgroundColor="#4B0082" HasShadow="False" BorderColor="Transparent">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="FiltroTodo_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <Label Text="Todo" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                </Frame>
+                <Frame x:Name="ChipComidas" CornerRadius="16" Padding="12,6"
+                       BackgroundColor="Transparent" HasShadow="False" BorderColor="#444">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="FiltroComidas_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <Label Text="🍔 Comidas" TextColor="#CCC" FontSize="13"/>
+                </Frame>
+               
+                <Frame x:Name="ChipTiendas" CornerRadius="16" Padding="12,6"
+                       BackgroundColor="Transparent" HasShadow="False" BorderColor="#444">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="FiltroTiendas_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <Label Text="🛍 Tiendas" TextColor="#CCC" FontSize="13"/>
+                </Frame>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!-- RESULTADOS -->
+        <Grid Grid.Row="2" BackgroundColor="#F4F1FA">
+
+            <!-- ESTADO INICIAL -->
+            <VerticalStackLayout x:Name="EstadoInicial"
+                                 VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                <Label Text="🔍" FontSize="52" HorizontalOptions="Center"/>
+                <Label Text="Buscá locales, técnicos o platos"
+                       FontSize="16" TextColor="#888" HorizontalOptions="Center"/>
+                <Label Text="Cerca tuyo primero siempre"
+                       FontSize="13" TextColor="#BBB" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- CARGANDO -->
+            <VerticalStackLayout x:Name="EstadoCargando" IsVisible="False"
+                                 VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                <ActivityIndicator IsRunning="True" Color="#4B0082"/>
+                <Label Text="Buscando..." FontSize="14" TextColor="#888" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- SIN RESULTADOS -->
+            <VerticalStackLayout x:Name="EstadoVacio" IsVisible="False"
+                                 VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                <Label Text="😕" FontSize="52" HorizontalOptions="Center"/>
+                <Label Text="No encontramos resultados"
+                       FontSize="16" TextColor="#888" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- LISTA -->
+            <CollectionView x:Name="ListaResultados" IsVisible="False"
+                            SelectionMode="None" Margin="12,8">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,4" Padding="0" CornerRadius="16"
+                               BackgroundColor="White" HasShadow="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnResultadoTapped" CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid ColumnDefinitions="68,*,Auto" Padding="12" ColumnSpacing="10">
+                                <Frame WidthRequest="48" HeightRequest="48" CornerRadius="24"
+                                       Padding="0" BackgroundColor="#EEE" HasShadow="False"
+                                       VerticalOptions="Center">
+                                    <Image Source="{Binding Logo}" Aspect="AspectFill"/>
+                                </Frame>
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                    <Label Text="{Binding Nombre}" FontSize="15" FontAttributes="Bold" TextColor="#222"/>
+                                    <Label Text="{Binding Subtitulo}" FontSize="12" TextColor="#888"/>
+                                    <Label Text="{Binding DistanciaTexto}"
+                                           FontSize="12" TextColor="#7c3aed"
+                                           IsVisible="{Binding TieneDistancia}"/>
+                                </VerticalStackLayout>
+                                <Frame Grid.Column="2" CornerRadius="10" Padding="8,4"
+                                       HasShadow="False" VerticalOptions="Center"
+                                       BackgroundColor="{Binding ColorTipo}">
+                                    <Label Text="{Binding Tipo}" FontSize="11"
+                                           TextColor="White" FontAttributes="Bold"/>
+                                </Frame>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </Grid>
+    </Grid>
+</ContentPage>

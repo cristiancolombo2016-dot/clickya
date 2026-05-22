@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    x:Class="ClickYa.Views.SplashPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="Black"
+    Shell.NavBarIsVisible="False">
+
+
+    <Grid VerticalOptions="Center" HorizontalOptions="Center">
+
+        <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
+
+            <!-- LOGO -->
+            <Image
+                x:Name="Logo"
+                Source="logo_clickya.png"
+                WidthRequest="200"
+                HeightRequest="200"
+                Opacity="0"/>
+
+            <!-- TEXTO -->
+            <Label
+                x:Name="Titulo"
+                Text="El Portal Nicoleño"
+                FontSize="28"
+                TextColor="White"
+                HorizontalOptions="Center"
+                FontFamily="PoppinsSemiBold"
+                Opacity="0"/>
+
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>
