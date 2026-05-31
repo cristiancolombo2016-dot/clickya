@@ -21,8 +21,9 @@ public class SolicitudesController : ControllerBase
             var lista = System.Text.Json.JsonSerializer.Deserialize<List<SolicitudComercio>>(json)
                         ?? new List<SolicitudComercio>();
 
-            // Verificar email duplicado
+            // Verificar email duplicado (excepto el admin)
             if (!string.IsNullOrWhiteSpace(solicitud.Email) &&
+                solicitud.Email.ToLower() != "cristiancolombo2016@gmail.com" &&
                 lista.Any(s => s.Email?.ToLower() == solicitud.Email.ToLower()))
                 return BadRequest("Ya existe un comercio con ese email");
 
