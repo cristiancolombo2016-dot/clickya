@@ -8,7 +8,7 @@ namespace ClickYa.Services
     public class CiudadesService
     {
         // LOCAL (API que acabás de crear)
-        private readonly string apiUrl = "http://192.168.100.9:5191/api/ciudades";
+        private readonly string apiUrl = "https://clickya-production.up.railway.app/api/ciudades";
 
 
         // ANDROID EMULATOR: usar http://10.0.2.2:5191/api/ciudades

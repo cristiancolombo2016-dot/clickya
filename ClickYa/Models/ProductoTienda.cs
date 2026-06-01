@@ -20,6 +20,8 @@ public class ProductoTienda
 
     // Comidas
     public string Ingredientes { get; set; } = "";
+  
+    public string Seccion { get; set; } = "";  // ← agregá esta línea
 
     // =========================
     // PROPIEDADES DE AYUDA (UI)

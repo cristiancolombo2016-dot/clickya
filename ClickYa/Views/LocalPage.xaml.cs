@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
-
+using Microsoft.Maui.Controls.Shapes;
 
 namespace ClickYa.Views;
 
@@ -15,7 +15,6 @@ public partial class LocalPage : ContentPage
     private Local? _local;
     private readonly ClickYaDataService _dataService = new();
 
-    // 🔹 RECIBE EL ID DESDE LA NAVEGACIÓN
     public string LocalId
     {
         set
@@ -27,7 +26,6 @@ public partial class LocalPage : ContentPage
         }
     }
 
-    // 🔹 SE MANTIENE
     public Local Local
     {
         get => _local!;
@@ -41,7 +39,7 @@ public partial class LocalPage : ContentPage
     public LocalPage()
     {
         InitializeComponent();
-        Shell.SetBackButtonBehavior(this, new BackButtonBehavior { IsEnabled = true });
+        Shell.SetNavBarIsVisible(this, false);   // ← CAMBIO: era SetBackButtonBehavior
     }
 
     protected override void OnAppearing()
@@ -51,7 +49,7 @@ public partial class LocalPage : ContentPage
     }
 
     // ============================================
-    // 🔹 CARGA LOCAL DESDE API
+    // CARGA LOCAL DESDE API
     // ============================================
     private async Task CargarLocalDesdeApi(int id)
     {
@@ -69,7 +67,7 @@ public partial class LocalPage : ContentPage
     }
 
     // ============================================
-    // 🔹 CARGA DATOS EN LA VISTA
+    // CARGA DATOS EN LA VISTA
     // ============================================
     private void CargarLocal()
     {
@@ -78,28 +76,32 @@ public partial class LocalPage : ContentPage
 
         CarritoService.Instancia.SetLocal(_local.nombre);
 
-        // 📌 IMÁGENES (con URL completa)
         var baseUrl = _dataService.BaseUrl;
 
         ImgPortada.Source = !string.IsNullOrWhiteSpace(_local.portadaUrl)
-    ? $"{baseUrl}{_local.portadaUrl}"
-    : "pizzeria.png";
+            ? $"{baseUrl}{_local.portadaUrl}"
+            : "pizzeria.png";
 
         ImgLogo.Source = !string.IsNullOrWhiteSpace(_local.logoUrl)
             ? $"{baseUrl}{_local.logoUrl}"
             : "logo_pizzeria.png";
 
-        // 📌 TEXTOS
         LblNombre.Text = _local.nombre ?? "";
         LblDireccion.Text = _local.ubicacion ?? "";
         LblDireccion.IsVisible = !string.IsNullOrWhiteSpace(_local.ubicacion);
+
         LblDescripcion.Text = !string.IsNullOrWhiteSpace(_local.descripcion)
-    ? _local.descripcion
-    : "Conocé este local, descubrí sus productos y contactate de forma rápida desde ClickYa.";
+            ? _local.descripcion
+            : "Conocé este local, descubrí sus productos y contactate de forma rápida desde ClickYa.";
+
         LblHorario.Text = !string.IsNullOrWhiteSpace(_local.horarios)
-    ? _local.horarios
-    : "Horarios no informados";
-        // HELADERÍA VISUAL
+            ? _local.horarios
+            : "Horarios no informados";
+
+        // ── NUEVO: chips de categoría ──
+        AgregarChips(_local.categoria ?? "");
+
+        // Heladería
         bool esHeladeria =
             _local.categoria != null &&
             _local.categoria.ToLower().Contains("helad");
@@ -107,14 +109,48 @@ public partial class LocalPage : ContentPage
         LayoutHelados.IsVisible = esHeladeria;
         LayoutProductos.IsVisible = true;
 
-        // 🔹 Cargar publicaciones
         _ = CargarPublicacionesAsync();
 
         ActualizarBadgeCarrito();
     }
 
     // ============================================
-    // 🔹 CARGAR PUBLICACIONES
+    // CHIPS DE CATEGORÍA  ← NUEVO
+    // ============================================
+    private void AgregarChips(string categoriaRaw)
+    {
+        FlexChips.Children.Clear();
+
+        var chips = categoriaRaw
+            .Split(new[] { ',', ';', '|' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(c => c.Trim())
+            .Where(c => !string.IsNullOrWhiteSpace(c));
+
+        foreach (var chip in chips)
+        {
+            var border = new Border
+            {
+                BackgroundColor = Color.FromArgb("#55FFFFFF"),
+                StrokeThickness = 0,
+                Padding = new Thickness(10, 4),
+                Margin = new Thickness(0, 3, 6, 0),
+                StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(12) }
+            };
+
+            border.Content = new Label
+            {
+                Text = chip,
+                FontSize = 12,
+                TextColor = Colors.White,
+                VerticalOptions = LayoutOptions.Center
+            };
+
+            FlexChips.Children.Add(border);
+        }
+    }
+
+    // ============================================
+    // CARGAR PUBLICACIONES
     // ============================================
     private async Task CargarPublicacionesAsync()
     {
@@ -130,31 +166,43 @@ public partial class LocalPage : ContentPage
                 return;
 
             var lista = publicaciones
-    .Select(p =>
-    {
-        var urlImagen = $"{_dataService.BaseUrl}{p.ImagenUrl}";
+                .Select(p =>
+                {
+                    var urlImagen = $"{_dataService.BaseUrl}{p.ImagenUrl}";
+                    Debug.WriteLine("URL IMAGEN: " + urlImagen);
 
-        Debug.WriteLine("URL IMAGEN: " + urlImagen);
+                    return new Articulo
+                    {
+                        nombre = p.Titulo ?? "",
+                        precio = ParsePrecio(p.Precio),
+                        imagen = urlImagen,
 
-        return new Articulo
-        {
-            nombre = p.Titulo ?? "",
-            precio = ParsePrecio(p.Precio),
-            imagen = urlImagen,
-            imagenes = p.ImagenesUrls != null && p.ImagenesUrls.Count > 0
-         ? p.ImagenesUrls.Select(url => url.StartsWith("http") ? url : $"{_dataService.BaseUrl}{url}").ToList()
-         : new List<string> { urlImagen },
-            datosExtraJson = p.DatosExtraJson ?? "",
-            cantidad = 1
-        };
-    })
-    .ToList();
+                        imagenes = p.ImagenesUrls != null && p.ImagenesUrls.Count > 0
+                            ? p.ImagenesUrls.Select(url =>
+                                url.StartsWith("http") ? url : $"{_dataService.BaseUrl}{url}")
+                              .ToList()
+                            : new List<string> { urlImagen },
+
+                        datosExtraJson = p.DatosExtraJson ?? "",
+                        seccion = ExtraerSeccion(p.DatosExtraJson),
+                        cantidad = 1
+                    };
+                })
+                .ToList();
 
             if (lista.Count > 0)
             {
+                var grupos = lista
+                    .GroupBy(x =>
+                        string.IsNullOrWhiteSpace(x.seccion)
+                            ? "Nuestros productos"
+                            : x.seccion)
+                    .Select(g => new GrupoProductos(g.Key, g.ToList()))
+                    .ToList();
+
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    ListaProductos.ItemsSource = lista;
+                    ListaProductos.ItemsSource = grupos;
                 });
             }
         }
@@ -167,13 +215,25 @@ public partial class LocalPage : ContentPage
     private int ParsePrecio(string? precio)
     {
         if (string.IsNullOrWhiteSpace(precio)) return 0;
-
         var soloNumeros = new string(precio.Where(char.IsDigit).ToArray());
         return int.TryParse(soloNumeros, out var v) ? v : 0;
     }
 
+    private string ExtraerSeccion(string? json)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(json)) return "";
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("seccion", out var s))
+                return s.GetString() ?? "";
+            return "";
+        }
+        catch { return ""; }
+    }
+
     // ============================================
-    // 🔹 BOTONES
+    // BOTONES DE ACCIÓN
     // ============================================
     private async void BtnWhatsApp_Clicked(object sender, EventArgs e)
     {
@@ -197,6 +257,7 @@ public partial class LocalPage : ContentPage
 
         await Launcher.OpenAsync(url);
     }
+
     private async void BtnCompartir_Clicked(object sender, EventArgs e)
     {
         if (_local == null) return;
@@ -206,22 +267,24 @@ public partial class LocalPage : ContentPage
             Text = $"Mirá {_local.nombre} en ClickYa!\nWhatsApp: {_local.whatsApp}"
         });
     }
+
+    // ── Botón volver flotante  ← NUEVO ────────────────────────
+    private async void OnBackTapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
+    }
+
     // ============================================
-    // 🔹 CARRITO
+    // CARRITO
     // ============================================
     private async void AgregarCarrito_Tapped(object sender, TappedEventArgs e)
     {
-        if (e.Parameter is not Articulo producto)
-            return;
+        if (e.Parameter is not Articulo producto) return;
 
         CarritoService.Instancia.Agregar(producto);
         ActualizarBadgeCarrito();
 
-        await DisplayAlert(
-            "Carrito",
-            $"{producto.nombre} agregado al carrito.",
-            "OK"
-        );
+        await DisplayAlert("Carrito", $"{producto.nombre} agregado al carrito.", "OK");
     }
 
     private void ActualizarBadgeCarrito()
@@ -248,13 +311,27 @@ public partial class LocalPage : ContentPage
     {
         await Navigation.PushModalAsync(new HeladoModalPage(_local?.id ?? 0, _local?.whatsApp ?? ""));
     }
+
     private async void OnProductoTapped(object sender, TappedEventArgs e)
     {
         if (e.Parameter is not Articulo producto) return;
 
         await Shell.Current.GoToAsync("detalleproducto", new Dictionary<string, object>
+        {
+            { "producto", producto }
+        });
+    }
+}
+
+// ============================================
+// MODELO DE GRUPO
+// ============================================
+public class GrupoProductos : List<Articulo>
+{
+    public string Nombre { get; set; } = "";
+
+    public GrupoProductos(string nombre, IEnumerable<Articulo> productos) : base(productos)
     {
-        { "producto", producto }
-    });
+        Nombre = nombre;
     }
 }

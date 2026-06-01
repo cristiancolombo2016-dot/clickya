@@ -1,13 +1,14 @@
 ﻿using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Media;
 using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace ClickYa.Views;
 
 [QueryProperty(nameof(Rubro), "rubro")]
 public partial class SolicitarServicioPage : ContentPage
 {
-    private const string BASE_URL = "http://192.168.100.9:5191";
+    private const string BASE_URL = "https://clickya-production.up.railway.app";
     private FileResult? _fotoSeleccionada;
 
     public string Rubro
@@ -100,7 +101,19 @@ public partial class SolicitarServicioPage : ContentPage
                 }
                 catch { }
             }
-
+            // Guardar solicitud en la API para cada técnico premium
+            foreach (var t in premiums)
+            {
+                var solicitud = new
+                {
+                    TecnicoId = t.Id,
+                    Rubro = rubro,
+                    Descripcion = descripcion,
+                    WhatsAppCliente = whatsapp,
+                    FotoUrl = fotoUrl
+                };
+                await http.PostAsJsonAsync($"{BASE_URL}/api/Urgencia", solicitud);
+            }
             foreach (var tecnico in premiums)
             {
                 var mensaje = $"Hola {tecnico.Nombre}! Tengo una urgencia de {rubro}.\n" +
@@ -110,7 +123,7 @@ public partial class SolicitarServicioPage : ContentPage
                 if (fotoUrl != null)
                     mensaje += $"\nFoto del problema: {fotoUrl}";
 
-                var url = $"https://wa.me/54{tecnico.WhatsApp}?text={Uri.EscapeDataString(mensaje)}";
+                var url = $"https://wa.me/{tecnico.WhatsApp.Replace("+", "")}?text={Uri.EscapeDataString(mensaje)}";
                 await Launcher.OpenAsync(url);
             }
             await Navigation.PopAsync();

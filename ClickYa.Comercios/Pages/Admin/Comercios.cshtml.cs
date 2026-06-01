@@ -15,7 +15,7 @@ namespace ClickYa.Comercios.Pages.Admin
         public ComerciosModel(IHttpClientFactory httpClientFactory)
         {
             _http = httpClientFactory.CreateClient();
-            _http.BaseAddress = new Uri("http://192.168.100.9:5191/");
+            _http.BaseAddress = new Uri("https://clickya-production.up.railway.app/");
         }
 
         public async Task OnGetAsync()

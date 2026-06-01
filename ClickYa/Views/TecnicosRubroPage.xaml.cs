@@ -6,7 +6,7 @@ namespace ClickYa.Views;
 [QueryProperty(nameof(Rubro), "rubro")]
 public partial class TecnicosRubroPage : ContentPage
 {
-    private const string BASE_URL = "http://192.168.100.9:5191";
+    private const string BASE_URL = "https://clickya-production.up.railway.app";
 
     private string _rubro = "";
     public string Rubro
@@ -96,7 +96,7 @@ public class TecnicoItem
     public bool TieneDireccion => !string.IsNullOrEmpty(Direccion);
     public string DireccionCompleta => string.IsNullOrEmpty(Direccion) ? "" : "📍 " + Direccion;
     public string LogoUrl => string.IsNullOrEmpty(Logo)
-        ? "" : $"http://192.168.100.9:5191{Logo}";
+    ? "" : $"https://clickya-production.up.railway.app{Logo}";
     public bool TieneLogo => !string.IsNullOrEmpty(Logo);
     public bool SinLogo => string.IsNullOrEmpty(Logo);
 }

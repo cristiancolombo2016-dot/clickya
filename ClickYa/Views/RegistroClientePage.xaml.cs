@@ -10,22 +10,30 @@ public partial class RegistroClientePage : ContentPage
         InitializeComponent();
         RubroPicker.SelectedIndexChanged += OnRubroChanged;
     }
-
-    private void OnRubroChanged(object sender, EventArgs e)
+    private async void OnRubroChanged(object sender, EventArgs e)
     {
         if (RubroPicker.SelectedItem == null) return;
-        var rubro = RubroPicker.SelectedItem.ToString();
+
+        var rubro = RubroPicker.SelectedItem.ToString()!.ToLower();
         CategoriaPicker.ItemsSource = null;
+        CategoriaPicker.Title = "Cargando...";
 
-        if (rubro == "Comidas")
-            CategoriaPicker.ItemsSource = new List<string> { "pizzeria", "hamburguesa", "parrilla", "heladeria", "cafeteria" };
-        else if (rubro == "Tiendas")
-            CategoriaPicker.ItemsSource = new List<string> { "tecnologia", "ropa", "calzado", "hogar", "belleza", "salud", "ferreterias", "autos y motos", "deportes", "otros rubros" };
-        else if (rubro == "Servicios")
-            CategoriaPicker.ItemsSource = new List<string> { "electricista", "plomero", "gasista", "tecnico" };
-        else if (rubro == "Bares")
-            CategoriaPicker.ItemsSource = new List<string> { "cerveceria", "bar", "pub" };
+        try
+        {
+            var client = new HttpClient { BaseAddress = new Uri("https://clickya-production.up.railway.app/") };
+            var categorias = await client.GetFromJsonAsync<List<CategoriaItem>>($"api/Categorias/seccion/{rubro}");
 
+            if (categorias != null && categorias.Count > 0)
+                CategoriaPicker.ItemsSource = categorias.Select(c => c.Nombre).ToList();
+            else
+                CategoriaPicker.ItemsSource = new List<string> { "Sin categorías" };
+        }
+        catch
+        {
+            CategoriaPicker.ItemsSource = new List<string> { "Error al cargar" };
+        }
+
+        CategoriaPicker.Title = "Categoría";
         CategoriaPicker.SelectedItem = null;
     }
 
@@ -40,7 +48,7 @@ public partial class RegistroClientePage : ContentPage
             return;
         }
 
-        var client = new HttpClient { BaseAddress = new Uri("http://192.168.100.9:5191/") };
+        var client = new HttpClient { BaseAddress = new Uri("https://clickya-production.up.railway.app/") };
 
         try
         {
@@ -93,7 +101,7 @@ public partial class RegistroClientePage : ContentPage
                     var tecnicoCreado = await response.Content.ReadFromJsonAsync<TecnicoRegistrado>();
                     if (tecnicoCreado != null && !string.IsNullOrEmpty(tecnicoCreado.Token))
                     {
-                        var dashboardUrl = $"http://192.168.100.9:5175/Tecnico/Dashboard?token={tecnicoCreado.Token}";
+                        var dashboardUrl = $"https://clickya-production.up.railway.app/Tecnico/Dashboard?token={tecnicoCreado.Token}";
                         var mensaje = $"Hola {tecnicoCreado.Nombre}! 👋 Bienvenido a ClickYa.\n\nTu panel de control es este link, guardalo:\n\n{dashboardUrl}";
                         var waUrl = $"https://wa.me/54{WhatsappEntry.Text.Trim()}?text={Uri.EscapeDataString(mensaje)}";
                         await Launcher.OpenAsync(waUrl);
@@ -104,7 +112,7 @@ public partial class RegistroClientePage : ContentPage
                     var comercioCreado = await response.Content.ReadFromJsonAsync<ComercioRegistrado>();
                     if (comercioCreado != null && !string.IsNullOrEmpty(comercioCreado.Token))
                     {
-                        var dashboardUrl = $"http://192.168.100.9:5175/Comercio/Dashboard?token={comercioCreado.Token}";
+                        var dashboardUrl = $"https://clickya-production.up.railway.app/Comercio/Dashboard?token={comercioCreado.Token}";
                         var mensaje = $"Hola {comercioCreado.Nombre}! 👋 Bienvenido a ClickYa.\n\nTu panel de control:\n{dashboardUrl}\n\nEntrá con tu email y contraseña desde la app.";
                         var waUrl = $"https://wa.me/54{WhatsappEntry.Text.Trim()}?text={Uri.EscapeDataString(mensaje)}";
                         await Launcher.OpenAsync(waUrl);
@@ -142,10 +150,10 @@ public class TecnicoRegistrado
     public string Nombre { get; set; } = "";
     public string Token { get; set; } = "";
 }
-
 public class ComercioRegistrado
 {
     public string Token { get; set; } = "";
     public int ComercioId { get; set; }
     public string Nombre { get; set; } = "";
 }
+

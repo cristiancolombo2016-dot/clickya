@@ -10,7 +10,7 @@ namespace ClickYa.Views;
 
 public partial class HeladoModalPage : ContentPage
 {
-    private const string BASE_URL = "http://192.168.100.9:5191";
+    private const string BASE_URL = "https://clickya-production.up.railway.app";
     private int _comercioId;
     private string _whatsApp;
     private int maxSabores = 3;

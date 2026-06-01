@@ -92,7 +92,7 @@ async function guardarDatosPerfil() {
         Latitud: latitud,
         Longitud: longitud
     };
-    fetch(`http://192.168.100.9:5191/api/Comercio/${cidPerfil}`, {
+    fetch(`https://clickya-production.up.railway.app/api/Comercio/${cidPerfil}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(perfil)
@@ -108,7 +108,7 @@ async function guardarDatosPerfil() {
 
 function cargarPerfil() {
     const cidCarga = window.clickyaComercioId || 1;
-    fetch(`http://192.168.100.9:5191/api/Comercio/${cidCarga}`)
+    fetch(`https://clickya-production.up.railway.app/api/Comercio/${cidCarga}`)
         .then(res => res.json())
         .then(perfil => {
             if (document.getElementById('inpNombre')) document.getElementById('inpNombre').value = perfil.nombre || '';
@@ -118,7 +118,7 @@ function cargarPerfil() {
             if (document.getElementById('inpUbicacion')) document.getElementById('inpUbicacion').value = perfil.ubicacion || '';
             if (document.getElementById('inpCorreo')) document.getElementById('inpCorreo').value = perfil.correo || '';
             if (perfil.logoUrl && document.getElementById('previewLogo'))
-                document.getElementById('previewLogo').src = "http://192.168.100.9:5191" + perfil.logoUrl + "?v=" + Date.now();
+                document.getElementById('previewLogo').src = "https://clickya-production.up.railway.app" + perfil.logoUrl + "?v=" + Date.now();
         })
         .catch(err => console.error("Error cargando perfil:", err));
 }

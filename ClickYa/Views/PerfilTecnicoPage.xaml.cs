@@ -3,7 +3,7 @@ namespace ClickYa.Views;
 [QueryProperty(nameof(TecnicoId), "id")]
 public partial class PerfilTecnicoPage : ContentPage
 {
-    private const string BASE_URL = "http://192.168.100.9:5191";
+    private const string BASE_URL = "https://clickya-production.up.railway.app";
     private string _whatsApp = "";
     public string TecnicoId
     {
@@ -101,7 +101,7 @@ public partial class PerfilTecnicoPage : ContentPage
         if (pub.Imagenes == null || pub.Imagenes.Count == 0) return;
 
         var imagenes = pub.Imagenes
-            .Select(i => "http://192.168.100.9:5191" + i)
+            .Select(i => "https://clickya-production.up.railway.app" + i)
             .ToList();
 
         await Shell.Current.GoToAsync(
@@ -132,6 +132,6 @@ public class PublicacionItem
     public string Descripcion { get; set; } = "";
     public List<string> Imagenes { get; set; } = new();
     public string PrimeraImagen => Imagenes.Count > 0
-        ? "http://192.168.100.9:5191" + Imagenes[0]
+        ? "https://clickya-production.up.railway.app" + Imagenes[0]
         : "";
 }

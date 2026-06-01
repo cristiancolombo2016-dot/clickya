@@ -15,7 +15,7 @@ namespace ClickYa.Services
         {
             _http = new HttpClient
             {
-                BaseAddress = new Uri("http://192.168.100.9:5191/")
+                BaseAddress = new Uri("https://clickya-production.up.railway.app/")
             };
         }
 

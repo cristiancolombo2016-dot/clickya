@@ -9,7 +9,7 @@ namespace ClickYa.Views;
 public partial class BarPage : ContentPage
 {
     private readonly ClickYaDataService _dataService = new();
-    private const string BASE_URL = "http://192.168.100.9:5191";
+    private const string BASE_URL = "https://clickya-production.up.railway.app";
 
     private string _whatsApp = "";
     private string _instagram = "";

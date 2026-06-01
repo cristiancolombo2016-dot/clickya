@@ -152,6 +152,54 @@
 
             </Grid>
 
+            <!-- FARMACIAS + CINE -->
+            <Grid ColumnDefinitions="*,*"
+      ColumnSpacing="10"
+      Margin="16,10,16,0"
+      HeightRequest="78">
+
+                <!-- FARMACIAS -->
+               
+                <Frame Grid.Column="0"
+       HeightRequest="49"
+       CornerRadius="22"
+       Padding="0"
+       HasShadow="False"
+       IsClippedToBounds="True"
+       BackgroundColor="Transparent">
+
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="AbrirFarmacias_Tapped"/>
+                    </Frame.GestureRecognizers>
+
+                    <Image Source="farmacias_turno.png"
+           Aspect="AspectFill"/>
+
+                </Frame>
+
+                <!-- CINE -->
+
+                <Frame Grid.Column="1"
+       TranslationY="-3"
+       HeightRequest="50"
+       CornerRadius="22"
+       Padding="0"
+       HasShadow="False"
+       IsClippedToBounds="True"
+       BackgroundColor="Transparent">
+
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer
+            Tapped="AbrirCine_Tapped"/>
+                    </Frame.GestureRecognizers>
+
+                    <Image
+        Source="cartelera_cine.png"
+       Aspect="AspectFill"/>
+
+                </Frame>
+
+            </Grid>
             <!-- DESTACADOS -->
             <Grid Margin="16,20,16,8" ColumnDefinitions="*,Auto">
                 <Label Text="Destacados de la Semana"

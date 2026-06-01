@@ -13,7 +13,7 @@ namespace ClickYa.Views
     {
         private System.Timers.Timer bannerTimer;
         private readonly ComerciosService _comercioService = new();
-        private const string BASE_URL = "http://192.168.100.9:5191";
+        private const string BASE_URL = "https://clickya-production.up.railway.app";
         private Location? _ubicacionUsuario;
         private List<CategoriaItem> _categorias = new();
         private List<Local> _todosLocales = new();
@@ -65,15 +65,23 @@ namespace ClickYa.Views
                 try
                 {
                     using var http = new System.Net.Http.HttpClient();
+
                     var banners = await http.GetFromJsonAsync<List<BannerDto>>(
                         $"{BASE_URL}/api/Banners/seccion/comidas");
-                    BannerComidas.ItemsSource = banners != null && banners.Count > 0
-                        ? banners.Select(b => $"{BASE_URL}{b.ImagenUrl}").ToList()
-                        : new List<string> { "banner1.png", "banner2.png" };
+
+                    var bannersReales = banners?
+                        .Where(b => !string.IsNullOrWhiteSpace(b.ImagenUrl))
+                        .Select(b => b.ImagenUrl.StartsWith("http")
+                            ? b.ImagenUrl
+                            : $"{BASE_URL}{b.ImagenUrl}")
+                        .ToList()
+                        ?? new List<string>();
+
+                    BannerComidas.ItemsSource = bannersReales;
                 }
                 catch
                 {
-                    BannerComidas.ItemsSource = new List<string> { "banner1.png", "banner2.png" };
+                    BannerComidas.ItemsSource = new List<string>();
                 }
 
                 // Promociones

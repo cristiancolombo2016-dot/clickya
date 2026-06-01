@@ -1,360 +1,570 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:ClickYa.Views"
+             xmlns:models="clr-namespace:ClickYa.Models"
              x:Class="ClickYa.Views.LocalPage"
-             BackgroundColor="#4B0082">
+             BackgroundColor="White"
+             Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,*">
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                <GradientStop Color="#4B0082" Offset="0.0"/>
-                <GradientStop Color="#B8008A" Offset="0.6"/>
-                <GradientStop Color="#FF3D3D" Offset="1.0"/>
-            </LinearGradientBrush>
-        </Grid.Background>
+    <Grid>
 
-        <!-- ================= BARRA SUPERIOR ================= -->
-        <Grid Grid.Row="0" Padding="15,12" ColumnDefinitions="*,Auto">
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="#4B0082" Offset="0.0"/>
-                    <GradientStop Color="#B8008A" Offset="0.6"/>
-                    <GradientStop Color="#FF3D3D" Offset="1.0"/>
-                </LinearGradientBrush>
-            </Grid.Background>
+        <!-- ═══ SCROLL PRINCIPAL ═══ -->
+        <ScrollView BackgroundColor="#F4F4F8">
+            <VerticalStackLayout Spacing="0">
 
-            <Label Text="" Grid.Column="0"/>
+                <!-- ══════════════════════════════════════
+                     HERO: portada + logo + info
+                ══════════════════════════════════════ -->
+                <Grid HeightRequest="300">
 
-            <!-- CARRITO -->
-            <Grid Grid.Column="1">
-                <Frame BackgroundColor="#FF9800"
-                       CornerRadius="20"
-                       Padding="8"
-                       HasShadow="False"
-                       HeightRequest="38"
-                       WidthRequest="38">
-
-                    <Image Source="icono_carrito.png"
-                           HeightRequest="20"
-                           WidthRequest="20">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="AbrirCarrito_Clicked"/>
-                        </Image.GestureRecognizers>
-                    </Image>
-                </Frame>
-
-                <Frame x:Name="BadgeCarrito"
-                       BackgroundColor="#FF3D3D"
-                       CornerRadius="10"
-                       HeightRequest="20"
-                       WidthRequest="20"
-                       Padding="0"
-                       HorizontalOptions="End"
-                       VerticalOptions="Start"
-                       TranslationX="7"
-                       TranslationY="-5"
-                       IsVisible="False"
-                       BorderColor="White">
-
-                    <Label x:Name="LblCantidadCarrito"
-                           Text="0"
-                           FontSize="12"
-                           TextColor="White"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
-                </Frame>
-            </Grid>
-        </Grid>
-
-        <!-- ================= CONTENIDO ================= -->
-        <ScrollView Grid.Row="1"
-                    Margin="0"
-                    Padding="0"
-                    BackgroundColor="#4B0082">
-
-            <VerticalStackLayout Spacing="0"
-                                 Padding="0"
-                                 BackgroundColor="#4B0082">
-
-                <!-- ================= HERO / PORTADA ================= -->
-                <Grid HeightRequest="260"
-                      Margin="0"
-                      Padding="0"
-                      IsClippedToBounds="True">
-
-                    <Grid.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#4B0082" Offset="0.0"/>
-                            <GradientStop Color="#B8008A" Offset="0.6"/>
-                            <GradientStop Color="#FF3D3D" Offset="1.0"/>
-                        </LinearGradientBrush>
-                    </Grid.Background>
-
-                    <!-- CONTENEDOR MULTIMEDIA -->
-                    <Grid x:Name="PortadaMediaContainer"
-                          BackgroundColor="Black">
-
+                    <!-- Portada -->
+                    <Grid x:Name="PortadaMediaContainer" BackgroundColor="#1A0030">
                         <Image x:Name="ImgPortada"
                                Aspect="AspectFill"
                                HorizontalOptions="Fill"
                                VerticalOptions="Fill"/>
                     </Grid>
 
-                    <!-- CAPA OSCURA -->
-                    <BoxView Color="Black"
-                             Opacity="0.22"/>
+                    <!-- Degradado oscuro -->
+                    <Grid>
+                        <Grid.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#22000000" Offset="0.0"/>
+                                <GradientStop Color="#DD000000" Offset="1.0"/>
+                            </LinearGradientBrush>
+                        </Grid.Background>
+                    </Grid>
 
-                    <!-- LOGO + INFO -->
+                    <!-- Logo + textos -->
                     <Grid VerticalOptions="End"
-                          Margin="18,0,18,18"
-                          ColumnDefinitions="110,*"
+                          Padding="16,0,16,18"
+                          ColumnDefinitions="114,*"
                           ColumnSpacing="14">
 
-                        <Frame WidthRequest="98"
-                               HeightRequest="98"
-                               CornerRadius="49"
-                               Padding="0"
-                               BackgroundColor="White"
-                               HasShadow="True"
-                               IsClippedToBounds="True">
+                        <!-- Logo cuadrado redondeado -->
+                        <Border WidthRequest="100"
+                                HeightRequest="100"
+                                StrokeThickness="2"
+                                Stroke="White"
+                                BackgroundColor="White">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="14"/>
+                            </Border.StrokeShape>
+                            <Image x:Name="ImgLogo" Aspect="AspectFill"/>
+                        </Border>
 
-                            <Image x:Name="ImgLogo"
-                                   Aspect="AspectFill"/>
-                        </Frame>
-
+                        <!-- Nombre + dirección + chips -->
                         <VerticalStackLayout Grid.Column="1"
                                              VerticalOptions="End"
-                                             Spacing="4">
+                                             Spacing="5">
 
                             <Label x:Name="LblNombre"
-                                   FontSize="24"
+                                   FontSize="22"
                                    FontAttributes="Bold"
                                    TextColor="White"
                                    LineBreakMode="TailTruncation"
                                    MaxLines="2"/>
 
-                            <!-- Se mantiene para que no rompa el .cs -->
-                            <Label x:Name="LblDireccion"
-                                   IsVisible="False"
-                                   FontSize="18"
-                                   TextColor="White"
-                                   LineBreakMode="TailTruncation"
-                                   MaxLines="1"/>
+                            <HorizontalStackLayout Spacing="4">
+                                <Label Text="📍"
+                                       FontSize="13"
+                                       VerticalOptions="Center"/>
+                                <Label x:Name="LblDireccion"
+                                       FontSize="13"
+                                       TextColor="#DDDDDD"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
 
-                            
+                            <FlexLayout x:Name="FlexChips"
+                                        Wrap="Wrap"
+                                        Direction="Row"
+                                        JustifyContent="Start"
+                                        AlignItems="Center"/>
+
+                            <!-- Requerido por .cs, no visible -->
+                            <Label x:Name="LblDescripcion"
+                                   IsVisible="False"
+                                   FontSize="12"
+                                   TextColor="#CCCCCC"/>
+
                         </VerticalStackLayout>
                     </Grid>
                 </Grid>
 
-                <!-- ================= CARD INFO ================= -->
-                <Frame Margin="16,14,16,0"
+                <!-- ══════════════════════════════════════
+                     CARD HORARIO
+                ══════════════════════════════════════ -->
+                <Frame Margin="12,14,12,0"
                        BackgroundColor="White"
-                       CornerRadius="18"
+                       CornerRadius="16"
                        HasShadow="True"
-                       Padding="0">
+                       Padding="14,12">
 
-                    <Grid ColumnDefinitions="*" ColumnSpacing="0">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
 
-                        <Grid Padding="10" Grid.Column="0">
-                            <VerticalStackLayout Spacing="2"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Center">
-                                <Label Text="🕒"
-       FontSize="24"
-       HorizontalOptions="Center"/>
-                                <Label Text="Horario"
-       FontSize="13"
-       FontAttributes="Bold"
-       TextColor="#4B0082"
-       HorizontalOptions="Center"/>
-                                <Label x:Name="LblHorario"
-       Text="Hoy abierto"
-       FontSize="13"
-       TextColor="#555"
-       HorizontalOptions="Center"
-       MaxLines="3"
-       LineBreakMode="TailTruncation"/>
-                                <Label x:Name="LblDescripcion"
-       FontSize="13"
-       TextColor="#555"
-       HorizontalOptions="Center"
-       MaxLines="5"
-       LineBreakMode="WordWrap"/>
-                            </VerticalStackLayout>
-                        </Grid>
+                        <!-- Ícono reloj -->
+                        <Border Grid.Column="0"
+                                WidthRequest="42"
+                                HeightRequest="42"
+                                BackgroundColor="#EDE7FF"
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="21"/>
+                            </Border.StrokeShape>
+                            <Label Text="🕒"
+                                   FontSize="20"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Border>
+
+                        <!-- Texto horario -->
+                        <VerticalStackLayout Grid.Column="1"
+                                             VerticalOptions="Center"
+                                             Spacing="1">
+                            <Label Text="Horario"
+                                   FontSize="13"
+                                   FontAttributes="Bold"
+                                   TextColor="#4B0082"/>
+                            <Label x:Name="LblHorario"
+                                   FontSize="13"
+                                   TextColor="#555"
+                                   LineBreakMode="WordWrap"
+                                   MaxLines="3"/>
+                        </VerticalStackLayout>
+
+                        <!-- Badge abierto -->
+                        <Border Grid.Column="2"
+                                x:Name="BadgeAbierto"
+                                BackgroundColor="#E8F5E9"
+                                Padding="10,5"
+                                StrokeThickness="0"
+                                VerticalOptions="Center">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+                            <HorizontalStackLayout Spacing="4">
+                                <Ellipse Fill="#4CAF50"
+                                         WidthRequest="8"
+                                         HeightRequest="8"
+                                         VerticalOptions="Center"/>
+                                <Label Text="Abierto ahora"
+                                       FontSize="11"
+                                       FontAttributes="Bold"
+                                       TextColor="#2E7D32"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </Border>
 
                     </Grid>
                 </Frame>
 
-                <!-- ================= BOTONES ================= -->
-                <Grid Margin="16,14,16,0"
-      ColumnDefinitions="*,*,*,*"
-      ColumnSpacing="10">
+                <!-- ══════════════════════════════════════
+                     CARD BOTONES
+                ══════════════════════════════════════ -->
+                <Frame Margin="12,10,12,0"
+                       BackgroundColor="White"
+                       CornerRadius="16"
+                       HasShadow="True"
+                       Padding="8,14">
 
-                    <Button Grid.Column="0"
-            ImageSource="icono_whatsapp.png"
-            BackgroundColor="#1FCB54"
-            CornerRadius="14"
-            HeightRequest="52"
-            Clicked="BtnWhatsApp_Clicked"/>
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="0">
 
-                    <Button Grid.Column="1"
-            ImageSource="icono_ubicacion.png"
-            BackgroundColor="#167BFF"
-            CornerRadius="14"
-            HeightRequest="52"
-            Clicked="BtnMaps_Clicked"/>
+                        <!-- WhatsApp -->
+                        <VerticalStackLayout Grid.Column="0"
+                                             HorizontalOptions="Center"
+                                             Spacing="6">
+                            <Border WidthRequest="54"
+                                    HeightRequest="54"
+                                    BackgroundColor="#1FCB54"
+                                    StrokeThickness="0"
+                                    HorizontalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="27"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="BtnWhatsApp_Clicked"/>
+                                </Border.GestureRecognizers>
+                                <Image Source="icono_whatsapp.png"
+                                       HeightRequest="26"
+                                       WidthRequest="26"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            <Label Text="WhatsApp"
+                                   FontSize="11"
+                                   TextColor="#333"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
 
-                    <Button Grid.Column="2"
-            ImageSource="icono_instagram.png"
-            BackgroundColor="#E1338E"
-            CornerRadius="14"
-            HeightRequest="52"
-            Clicked="BtnInstagram_Clicked"/>
+                        <!-- Ubicación -->
+                        <VerticalStackLayout Grid.Column="1"
+                                             HorizontalOptions="Center"
+                                             Spacing="6">
+                            <Border WidthRequest="54"
+                                    HeightRequest="54"
+                                    BackgroundColor="#167BFF"
+                                    StrokeThickness="0"
+                                    HorizontalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="27"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="BtnMaps_Clicked"/>
+                                </Border.GestureRecognizers>
+                                <Image Source="icono_ubicacion.png"
+                                       HeightRequest="26"
+                                       WidthRequest="26"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            <Label Text="Ubicación"
+                                   FontSize="11"
+                                   TextColor="#333"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
 
-                    <Button Grid.Column="3"
-            ImageSource="icono_compartir.png"
-            BackgroundColor="#E6B84D"
-            CornerRadius="14"
-            HeightRequest="52"
-            Clicked="BtnCompartir_Clicked"/>
-                </Grid>
-                
+                        <!-- Instagram -->
+                        <VerticalStackLayout Grid.Column="2"
+                                             HorizontalOptions="Center"
+                                             Spacing="6">
+                            <Border WidthRequest="54"
+                                    HeightRequest="54"
+                                    BackgroundColor="#E1338E"
+                                    StrokeThickness="0"
+                                    HorizontalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="27"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="BtnInstagram_Clicked"/>
+                                </Border.GestureRecognizers>
+                                <Image Source="icono_instagram.png"
+                                       HeightRequest="26"
+                                       WidthRequest="26"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            <Label Text="Instagram"
+                                   FontSize="11"
+                                   TextColor="#333"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
 
-                <!-- ================= TITULO PRODUCTOS ================= -->
-                <VerticalStackLayout Padding="16,18,16,8"
-                                     Spacing="2">
-                    <Label Text="Nuestros Productos"
+                        <!-- Compartir -->
+                        <VerticalStackLayout Grid.Column="3"
+                                             HorizontalOptions="Center"
+                                             Spacing="6">
+                            <Border WidthRequest="54"
+                                    HeightRequest="54"
+                                    BackgroundColor="#E6B84D"
+                                    StrokeThickness="0"
+                                    HorizontalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="27"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="BtnCompartir_Clicked"/>
+                                </Border.GestureRecognizers>
+                                <Image Source="icono_compartir.png"
+                                       HeightRequest="26"
+                                       WidthRequest="26"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
+                            <Label Text="Compartir"
+                                   FontSize="11"
+                                   TextColor="#333"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+
+                    </Grid>
+                </Frame>
+
+                <!-- ══════════════════════════════════════
+                     TÍTULO PRODUCTOS
+                ══════════════════════════════════════ -->
+                <Grid Margin="16,18,16,4" ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0"
+                           Text="Nuestros Productos"
                            FontSize="18"
                            FontAttributes="Bold"
-                           TextColor="White"/>
-                    <Label Text="Elegí lo que más te guste"
+                           TextColor="#1A1A2E"/>
+                    <Label Grid.Column="1"
+                           Text="Ver todos  ›"
                            FontSize="13"
-                           TextColor="#EEEEEE"/>
-                </VerticalStackLayout>
-                <!-- ================= HELADERIA ================= -->
+                           TextColor="#4B0082"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+                </Grid>
+
+                <!-- ══════════════════════════════════════
+                     HELADERÍA (especial)
+                ══════════════════════════════════════ -->
                 <VerticalStackLayout x:Name="LayoutHelados"
-                      IsVisible="False"
-                      Padding="20"
-                      Spacing="14">
-
+                                     IsVisible="False"
+                                     Padding="12,6,12,0"
+                                     Spacing="0">
                     <Frame BackgroundColor="White"
-            CornerRadius="20"
-            Padding="20"
-            HasShadow="True">
-
-                        <VerticalStackLayout Spacing="12">
+                           CornerRadius="18"
+                           Padding="16"
+                           HasShadow="True">
+                        <VerticalStackLayout Spacing="10">
                             <Image Source="helado_pote.png"
-                    HeightRequest="120"
-                    HorizontalOptions="Center">
+                                   HeightRequest="110"
+                                   HorizontalOptions="Center">
                                 <Image.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="AbrirHeladoModal_Tapped"/>
                                 </Image.GestureRecognizers>
                             </Image>
-
                             <Label Text="Armá tu helado"
-                    FontSize="22"
-                    FontAttributes="Bold"
-                    TextColor="#4B0082"
-                    HorizontalOptions="Center"/>
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="#4B0082"
+                                   HorizontalOptions="Center"/>
                         </VerticalStackLayout>
                     </Frame>
                 </VerticalStackLayout>
-                <!-- ================= PRODUCTOS ================= -->
-                <VerticalStackLayout x:Name="LayoutProductos"
-                                     IsVisible="True">
+
+                <!-- ══════════════════════════════════════
+                     PRODUCTOS AGRUPADOS
+                     GroupHeaderTemplate muestra el header
+                     + scroll horizontal de esa categoría.
+                     ItemTemplate invisible (altura 0).
+                ══════════════════════════════════════ -->
+                <VerticalStackLayout x:Name="LayoutProductos" IsVisible="True">
 
                     <CollectionView x:Name="ListaProductos"
-                                    Margin="0,0,0,30"
-                                    SelectionMode="None">
+                                    IsGrouped="True"
+                                    SelectionMode="None"
+                                    Margin="0,4,0,30">
 
+                        <CollectionView.GroupHeaderTemplate>
+                            <DataTemplate x:DataType="views:GrupoProductos">
+                                <VerticalStackLayout Spacing="0">
+
+                                    <!-- Cabecera de categoría -->
+                                    <Grid Padding="16,14,16,8"
+                                          ColumnDefinitions="Auto,*,Auto"
+                                          ColumnSpacing="10">
+
+                                        <Border Grid.Column="0"
+                                                WidthRequest="36"
+                                                HeightRequest="36"
+                                                BackgroundColor="#EDE7FF"
+                                                StrokeThickness="0">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="18"/>
+                                            </Border.StrokeShape>
+                                            <Label Text="🛍️"
+                                                   FontSize="17"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Nombre}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="#1A1A2E"
+                                               VerticalOptions="Center"/>
+
+                                        <Label Grid.Column="2"
+                                               Text="Ver todos"
+                                               FontSize="13"
+                                               TextColor="#4B0082"
+                                               FontAttributes="Bold"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
+
+                                    <!-- Scroll horizontal de productos -->
+                                    <CollectionView ItemsSource="{Binding .}"
+                                                    HeightRequest="200"
+                                                    SelectionMode="None">
+                                        <CollectionView.ItemsLayout>
+                                            <LinearItemsLayout Orientation="Horizontal"
+                                                               ItemSpacing="10"/>
+                                        </CollectionView.ItemsLayout>
+                                        <CollectionView.Header>
+                                            <BoxView WidthRequest="6" Color="Transparent"/>
+                                        </CollectionView.Header>
+                                        <CollectionView.Footer>
+                                            <BoxView WidthRequest="6" Color="Transparent"/>
+                                        </CollectionView.Footer>
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate x:DataType="models:Articulo">
+
+                                                <!-- Tarjeta producto -->
+                                                <Frame WidthRequest="140"
+                                                       HeightRequest="190"
+                                                       Padding="0"
+                                                       CornerRadius="14"
+                                                       BackgroundColor="White"
+                                                       HasShadow="True">
+                                                    <Frame.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="OnProductoTapped"
+                                                                              CommandParameter="{Binding}"/>
+                                                    </Frame.GestureRecognizers>
+
+                                                    <VerticalStackLayout Spacing="0">
+
+                                                        <!-- Imagen -->
+                                                        <Grid HeightRequest="95"
+                                                              BackgroundColor="#F0F0F0">
+                                                            <Image Aspect="AspectFill">
+                                                                <Image.Source>
+                                                                    <UriImageSource Uri="{Binding imagen}"/>
+                                                                </Image.Source>
+                                                            </Image>
+                                                        </Grid>
+
+                                                        <!-- Nombre + precio + botón -->
+                                                        <Grid Padding="8,7,8,8"
+                                                              RowDefinitions="Auto,Auto"
+                                                              RowSpacing="4">
+
+                                                            <Label Grid.Row="0"
+                                                                   Text="{Binding nombre}"
+                                                                   FontSize="13"
+                                                                   FontAttributes="Bold"
+                                                                   TextColor="#222"
+                                                                   LineBreakMode="TailTruncation"
+                                                                   MaxLines="2"/>
+
+                                                            <Grid Grid.Row="1"
+                                                                  ColumnDefinitions="*,Auto">
+
+                                                                <Label Grid.Column="0"
+                                                                       Text="{Binding precio, StringFormat='$ {0:N0}'}"
+                                                                       FontSize="15"
+                                                                       FontAttributes="Bold"
+                                                                       TextColor="#4B0082"
+                                                                       VerticalOptions="Center"/>
+
+                                                                <Border Grid.Column="1"
+                                                                        WidthRequest="32"
+                                                                        HeightRequest="32"
+                                                                        BackgroundColor="#FF9800"
+                                                                        StrokeThickness="0"
+                                                                        HorizontalOptions="End">
+                                                                    <Border.StrokeShape>
+                                                                        <RoundRectangle CornerRadius="16"/>
+                                                                    </Border.StrokeShape>
+                                                                    <Border.GestureRecognizers>
+                                                                        <TapGestureRecognizer Tapped="AgregarCarrito_Tapped"
+                                                                                              CommandParameter="{Binding}"/>
+                                                                    </Border.GestureRecognizers>
+                                                                    <Label Text="+"
+                                                                           FontSize="22"
+                                                                           FontAttributes="Bold"
+                                                                           TextColor="White"
+                                                                           HorizontalOptions="Center"
+                                                                           VerticalOptions="Center"
+                                                                           Margin="0,-2,0,0"/>
+                                                                </Border>
+
+                                                            </Grid>
+                                                        </Grid>
+
+                                                    </VerticalStackLayout>
+                                                </Frame>
+
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.GroupHeaderTemplate>
+
+                        <!-- Ítems invisibles (se muestran en el GroupHeader) -->
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Frame Margin="16,6"
-                                       Padding="0"
-                                       CornerRadius="16"
-                                       BackgroundColor="White"
-                                       HasShadow="True">
-
-                                    <!-- 👇 AGREGAR ESTO -->
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="OnProductoTapped"
-                              CommandParameter="{Binding}" />
-                                    </Frame.GestureRecognizers>
-
-                                    <Grid ColumnDefinitions="118,*,Auto"
-                                          ColumnSpacing="0"
-                                          MinimumHeightRequest="108">
-
-                                        <!-- IMAGEN -->
-                                        <Grid Grid.Column="0"
-                                              WidthRequest="118"
-                                              HeightRequest="108"
-                                              BackgroundColor="#F2F2F2"
-                                              IsClippedToBounds="True">
-                                            <Image Aspect="AspectFill">
-                                                <Image.Source>
-                                                    <UriImageSource Uri="{Binding imagen}" />
-                                                </Image.Source>
-                                            </Image>
-                                        </Grid>
-
-                                        <!-- INFO -->
-                                        <VerticalStackLayout Grid.Column="1"
-                                                             Padding="14,12,10,12"
-                                                             Spacing="5"
-                                                             VerticalOptions="Center">
-
-                                            <Label Text="{Binding nombre}"
-                                                   FontSize="17"
-                                                   FontAttributes="Bold"
-                                                   TextColor="#333"
-                                                   LineBreakMode="TailTruncation"
-                                                   MaxLines="2"/>
-
-                                            <Label Text="Disponible en este local"
-                                                   FontSize="12"
-                                                   TextColor="#777"
-                                                   LineBreakMode="TailTruncation"
-                                                   MaxLines="1"/>
-
-                                            <Label Text="{Binding precio, StringFormat='$ {0}'}"
-                                                   FontSize="18"
-                                                   FontAttributes="Bold"
-                                                   TextColor="#4B0082"/>
-                                        </VerticalStackLayout>
-
-                                        <!-- BOTON CARRITO -->
-                                        <VerticalStackLayout Grid.Column="2"
-                                                             Padding="0,0,14,0"
-                                                             VerticalOptions="Center">
-
-                                            <Frame BackgroundColor="#FF9800"
-                                                   CornerRadius="22"
-                                                   Padding="11"
-                                                   HasShadow="False">
-
-                                                <Frame.GestureRecognizers>
-                                                    <TapGestureRecognizer Tapped="AgregarCarrito_Tapped"
-                                                                          CommandParameter="{Binding}" />
-                                                </Frame.GestureRecognizers>
-
-                                                <Image Source="icono_carrito.png"
-                                                       HeightRequest="22"
-                                                       WidthRequest="22"/>
-                                            </Frame>
-                                        </VerticalStackLayout>
-
-                                    </Grid>
-                                </Frame>
+                                <BoxView HeightRequest="0" IsVisible="False"/>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
+
                     </CollectionView>
                 </VerticalStackLayout>
 
-               
-
             </VerticalStackLayout>
         </ScrollView>
+
+        <!-- ═══════════════════════════════════════════════
+             TOOLBAR FLOTANTE (sobre el hero)
+        ═══════════════════════════════════════════════ -->
+        <Grid VerticalOptions="Start"
+              Padding="12,44,12,10"
+              ColumnDefinitions="Auto,*,Auto">
+
+            <!-- Botón volver -->
+            <Border Grid.Column="0"
+                    WidthRequest="38"
+                    HeightRequest="38"
+                    BackgroundColor="#55000000"
+                    StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="19"/>
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackTapped"/>
+                </Border.GestureRecognizers>
+                <Label Text="‹"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       Margin="0,-2,0,0"/>
+            </Border>
+
+            <!-- Carrito -->
+            <Grid Grid.Column="2">
+                <Border WidthRequest="38"
+                        HeightRequest="38"
+                        BackgroundColor="#FF9800"
+                        StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="19"/>
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="AbrirCarrito_Clicked"/>
+                    </Border.GestureRecognizers>
+                    <Image Source="icono_carrito.png"
+                           HeightRequest="20"
+                           WidthRequest="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Border>
+
+                <!-- Badge cantidad -->
+                <Border x:Name="BadgeCarrito"
+                        WidthRequest="20"
+                        HeightRequest="20"
+                        BackgroundColor="#FF3D3D"
+                        Stroke="White"
+                        StrokeThickness="1.5"
+                        HorizontalOptions="End"
+                        VerticalOptions="Start"
+                        TranslationX="6"
+                        TranslationY="-6"
+                        IsVisible="False">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Border.StrokeShape>
+                    <Label x:Name="LblCantidadCarrito"
+                           Text="0"
+                           FontSize="11"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Border>
+            </Grid>
+
+        </Grid>
+
     </Grid>
 </ContentPage>

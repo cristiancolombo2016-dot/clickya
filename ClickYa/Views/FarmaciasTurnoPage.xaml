@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ClickYa.Views.FarmaciasTurnoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#070B16"
+    Shell.NavBarIsVisible="False">
+
+    <CollectionView x:Name="ListaFarmacias" SelectionMode="None">
+
+        <!-- TODO EL CONTENIDO DE ARRIBA VA EN EL HEADER -->
+        <CollectionView.Header>
+            <VerticalStackLayout Padding="18,24,18,0" Spacing="30">
+
+                <!-- BARRA SUPERIOR -->
+                <Grid HeightRequest="44">
+                    <Label Text="‹" FontSize="38" TextColor="White"
+           VerticalOptions="Center" HorizontalOptions="Start">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Volver_Tapped"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Image Source="logo_clickya.png"
+           HeightRequest="80"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"/>
+                </Grid>
+
+
+
+                <!-- INFO TURNO -->
+                <Frame CornerRadius="21" Padding="16" BackgroundColor="#101722"
+       BorderColor="#1D2C3A" HasShadow="False">
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="12">
+                            <Frame Padding="14,6" BackgroundColor="#182434"
+                   BorderColor="#2A3A4F" CornerRadius="14" HasShadow="False">
+                                <Label x:Name="LblGrupo" Text="EN TURNO" FontSize="15"
+                       FontAttributes="Bold" TextColor="#8AFFA5"/>
+                            </Frame>
+                            <Frame CornerRadius="18" Padding="12,8"
+                   BackgroundColor="#062A12" BorderColor="#00BFFF"
+                   HasShadow="False">
+                                <Label x:Name="LblGrupoLetra" Text="Grupo F" TextColor="#00BFFF"
+       FontSize="16" FontAttributes="Bold"/>
+                            </Frame>
+                        </HorizontalStackLayout>
+                        <Label Text="Vigente hasta mañana 08:30 hs"
+               TextColor="#AAB2C0" FontSize="15"
+               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+                <!-- MAPA MOCK -->
+               
+
+                <!-- FILTROS -->
+                <HorizontalStackLayout Spacing="10">
+                    <Frame x:Name="BtnEnTurno" CornerRadius="20" Padding="16,9" BackgroundColor="#079B2E" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="FiltroEnTurno_Tapped"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="En turno" TextColor="White" FontAttributes="Bold"/>
+                    </Frame>
+                    <Frame x:Name="BtnTodas" CornerRadius="20" Padding="16,9" BackgroundColor="#121A26"
+       BorderColor="#263244" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="FiltroTodas_Tapped"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="Todas" TextColor="#D8DDE8"/>
+                    </Frame>
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+        </CollectionView.Header>
+
+        <!-- ITEMS -->
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <VerticalStackLayout Padding="18,0,18,12" Spacing="0">
+
+                    <!-- CARD PRINCIPAL -->
+                    <Frame CornerRadius="18" Padding="8"
+       BackgroundColor="#101722" BorderColor="#243040" HasShadow="False">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="Farmacia_Tapped"
+                                                  CommandParameter="{Binding .}"/>
+                        </Frame.GestureRecognizers>
+                        <Grid ColumnDefinitions="72,*,Auto" ColumnSpacing="12">
+                            <Image Source="farmacias_logo.png"
+       WidthRequest="50" HeightRequest="50"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label Text="{Binding Nombre}" TextColor="White"
+                                       FontSize="18" FontAttributes="Bold"/>
+                                <Label Text="{Binding Estado}" FontSize="13">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label"
+                                                     Binding="{Binding Estado}"
+                                                     Value="🟢 En turno">
+                                            <Setter Property="TextColor" Value="#66FF88"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label"
+                                                     Binding="{Binding Estado}"
+                                                     Value="⚪ Fuera de turno">
+                                            <Setter Property="TextColor" Value="#8A94A6"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <Label Text="{Binding Direccion}"
+                                       TextColor="#AAB2C0" FontSize="14"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2" VerticalOptions="Center">
+                                <Label Text="{Binding Distancia}" TextColor="#29FF5A"
+                                       FontSize="15" FontAttributes="Bold"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Frame>
+
+                    <!-- PANEL EXPANDIBLE -->
+                    <Frame IsVisible="{Binding Expandida}"
+                           CornerRadius="0"
+                           Padding="14,10,14,14"
+                           BackgroundColor="#0D1520"
+                           BorderColor="#243040"
+                           HasShadow="False"
+                           Margin="0,-4,0,0">
+                        <VerticalStackLayout Spacing="8">
+
+                            <!-- CÓMO LLEGAR -->
+                            <Frame CornerRadius="14" Padding="14,12"
+                                   BackgroundColor="#182434" BorderColor="#2A3A4F" HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OpcionMaps_Tapped"
+                                                          CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                                <Grid ColumnDefinitions="40,*,Auto">
+                                    <Label Text="🗺️" FontSize="22" VerticalOptions="Center"/>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                        <Label Text="Cómo llegar" TextColor="White"
+                                               FontSize="15" FontAttributes="Bold"/>
+                                        <Label Text="Abrir en Google Maps"
+                                               TextColor="#8A94A6" FontSize="12"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2" Text="›" TextColor="#8A94A6"
+                                           FontSize="22" VerticalOptions="Center"/>
+                                </Grid>
+                            </Frame>
+
+                            <!-- LLAMAR -->
+                            <Frame CornerRadius="14" Padding="14,12"
+                                   BackgroundColor="#182434" BorderColor="#2A3A4F" HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OpcionLlamar_Tapped"
+                                                          CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                                <Grid ColumnDefinitions="40,*,Auto">
+                                    <Label Text="📞" FontSize="22" VerticalOptions="Center"/>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                        <Label Text="Llamar" TextColor="White"
+                                               FontSize="15" FontAttributes="Bold"/>
+                                        <Label Text="Llamar a la farmacia"
+                                               TextColor="#8A94A6" FontSize="12"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2" Text="›" TextColor="#8A94A6"
+                                           FontSize="22" VerticalOptions="Center"/>
+                                </Grid>
+                            </Frame>
+
+                            <!-- WHATSAPP -->
+                            <Frame CornerRadius="14" Padding="14,12"
+                                   BackgroundColor="#182434" BorderColor="#2A3A4F" HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OpcionWhatsApp_Tapped"
+                                                          CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                                <Grid ColumnDefinitions="40,*,Auto">
+                                    <Label Text="💬" FontSize="22" VerticalOptions="Center"/>
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                        <Label Text="WhatsApp" TextColor="White"
+                                               FontSize="15" FontAttributes="Bold"/>
+                                        <Label Text="Escribir por WhatsApp"
+                                               TextColor="#8A94A6" FontSize="12"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2" Text="›" TextColor="#8A94A6"
+                                           FontSize="22" VerticalOptions="Center"/>
+                                </Grid>
+                            </Frame>
+
+                            <!-- CANCELAR -->
+                            <Frame CornerRadius="14" Padding="14,12"
+       BackgroundColor="#0D1520" BorderColor="#1D2C3A"
+       HasShadow="False">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="Farmacia_Tapped"
+                              CommandParameter="{Binding .}"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="Cancelar" TextColor="#FF4444"
+           FontSize="15" FontAttributes="Bold"
+           HorizontalOptions="Center"/>
+                            </Frame>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                </VerticalStackLayout>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+
+        <!-- FOOTER -->
+        <CollectionView.Footer>
+            <Label Text="Información actualizada hace 5 min"
+                   TextColor="#AAB2C0" FontSize="12"
+                   HorizontalOptions="Center"
+                   Margin="0,8,0,24"/>
+        </CollectionView.Footer>
+
+    </CollectionView>
+
+</ContentPage>

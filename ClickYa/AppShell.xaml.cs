@@ -28,6 +28,7 @@ namespace ClickYa
             Routing.RegisterRoute("perfil-tecnico", typeof(PerfilTecnicoPage));
             Routing.RegisterRoute("galeria-pub", typeof(GaleriaPublicacionPage));
             Routing.RegisterRoute("buscador", typeof(BuscadorPage));
+            Routing.RegisterRoute("farmacias-turno", typeof(FarmaciasTurnoPage));
         }
     }
 }

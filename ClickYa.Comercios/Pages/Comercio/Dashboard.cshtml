@@ -133,6 +133,11 @@
         <textarea id="editDescripcion"></textarea>
         <label>Precio</label>
         <input type="text" id="editPrecio">
+        <label>Título de sección (opcional)</label>
+        <input type="text"
+               id="editSeccion"
+               maxlength="25"
+               placeholder="Ej: Bebidas · TV · Gamer">
         <div class="modal-actions">
             <button class="btn-danger" onclick="eliminarPublicacion()">Eliminar</button>
             <button class="btn-secondary" onclick="cerrarModalPublicacion()">Cancelar</button>
@@ -153,6 +158,11 @@
         <textarea id="addDescripcion"></textarea>
         <label>Precio</label>
         <input type="text" id="addPrecio">
+        <label>Título de sección (opcional)</label>
+        <input type="text"
+               id="addSeccion"
+               maxlength="25"
+               placeholder="Ej: Bebidas · TV · Gamer">
         <div class="modal-actions">
             <button class="btn-secondary" onclick="cerrarModalAgregar()">Cancelar</button>
             <button class="btn-primary" onclick="guardarNuevaPublicacionVisual()">Guardar</button>
@@ -162,7 +172,7 @@
 
 @section Scripts {
     <script>
-        const apiBase = "http://192.168.100.9:5191";
+        const apiBase = "https://clickya-production.up.railway.app";
         let comercioId = 1;
 
         async function inicializar() {
@@ -384,7 +394,12 @@
             formData.append("Precio", precio);
             formData.append("Rubro", rubro);
             formData.append("ComercioId", comercioId);
-            formData.append("DatosExtraJson", "{}");
+                    const seccion = document.getElementById("editSeccion")?.value || "";
+
+        formData.append("DatosExtraJson",
+        JSON.stringify({
+            seccion: seccion
+        }));
 
             fetch(`${apiBase}/api/Publicaciones/${id}`, { method: "PUT", body: formData })
                 .then(res => { if (!res.ok) throw new Error("Error al editar"); return res.json(); })
@@ -432,7 +447,12 @@
             formData.append("Precio", precio);
             formData.append("Rubro", rubro);
             formData.append("ComercioId", comercioId);
-            formData.append("DatosExtraJson", "{}");
+                    const seccion = document.getElementById("addSeccion")?.value || "";
+
+        formData.append("DatosExtraJson",
+        JSON.stringify({
+            seccion: seccion
+        }));
 
             fetch(`${apiBase}/api/Publicaciones`, { method: "POST", body: formData })
                 .then(res => { if (!res.ok) throw new Error("Error al guardar"); return res.json(); })
@@ -675,6 +695,11 @@
         }
 
     #editDescripcion {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    #addDescripcion {
         min-height: 120px;
         resize: vertical;
     }

@@ -20,7 +20,7 @@ namespace ClickYa.Views
 
     public partial class BuscadorPage : ContentPage
     {
-        private const string BASE_URL = "http://192.168.100.9:5191";
+        private const string BASE_URL = "https://clickya-production.up.railway.app";
         private readonly ComerciosService _comercioService = new();
         private Location? _ubicacionUsuario;
         private List<ResultadoBusqueda> _todosResultados = new();

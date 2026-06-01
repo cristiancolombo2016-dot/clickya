@@ -7,7 +7,7 @@ namespace ClickYa.Views;
 public partial class ServiciosCategoriasPage : ContentPage
 {
     private System.Timers.Timer? _bannerTimer;
-    private const string BASE_URL = "http://192.168.100.9:5191";
+    private const string BASE_URL = "https://clickya-production.up.railway.app";
     private List<BannerDto> _bannersServicio = new();
 
     public ObservableCollection<CategoriaServicio> Categorias { get; set; }

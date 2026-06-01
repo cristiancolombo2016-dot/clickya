@@ -12,7 +12,7 @@ namespace ClickYa.Views
     {
         private System.Timers.Timer bannerTimer;
         private readonly ComerciosService _comercioService = new();
-        private const string BASE_URL = "http://192.168.100.9:5191";
+        private const string BASE_URL = "https://clickya-production.up.railway.app";
         private Location? _ubicacionUsuario;
         private List<Local> _todasTiendas = new();
 

@@ -8,7 +8,7 @@ namespace ClickYa.Views
     public partial class TiendasListaPage : ContentPage
     {
         private readonly ComerciosService _comercioService = new();
-        private readonly string _baseUrl = "http://192.168.100.9:5191";
+        private readonly string _baseUrl = "https://clickya-production.up.railway.app";
         private Location? _ubicacionUsuario;
         public ObservableCollection<TiendaItemVM> Tiendas { get; } = new();
         private string _categoria = "";

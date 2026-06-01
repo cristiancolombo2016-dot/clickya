@@ -10,7 +10,7 @@ public partial class BaresPage : ContentPage
 {
     private System.Timers.Timer bannerTimer;
     private readonly ComerciosService _comercioService = new();
-    private const string BASE_URL = "http://192.168.100.9:5191";
+    private const string BASE_URL = "https://clickya-production.up.railway.app";
 
     public BaresPage()
     {

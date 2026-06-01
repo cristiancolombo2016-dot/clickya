@@ -25,7 +25,7 @@ namespace ClickYa.Views
         private System.Timers.Timer bannerTimer;
         private List<BannerDto> _bannersHome = new();
 
-        private const string BASE_URL = "http://192.168.100.9:5191";
+        private const string BASE_URL = "https://clickya-production.up.railway.app";
 
         public HomePage()
         {
@@ -207,6 +207,18 @@ namespace ClickYa.Views
         private async void AbrirBuscador_Tapped(object sender, TappedEventArgs e)
             => await Shell.Current.GoToAsync("buscador");
 
+        private async void AbrirFarmacias_Tapped(object sender, TappedEventArgs e)
+        {
+            await Shell.Current.GoToAsync("farmacias-turno");
+        }
+
+        private async void AbrirCine_Tapped(object sender, TappedEventArgs e)
+        {
+            await DisplayAlert(
+                "Cartelera",
+                "Próximamente disponible",
+                "OK");
+        }
         private async void Destacado_Tapped(object sender, TappedEventArgs e)
         {
             if (e.Parameter == null) return;
@@ -233,4 +245,5 @@ namespace ClickYa.Views
             bannerTimer?.Stop();
         }
     }
-}
+    
+    }

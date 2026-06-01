@@ -9,7 +9,7 @@ namespace ClickYa.Services
 {
     public class ClickYaDataService
     {
-        private readonly string baseUrl = "http://192.168.100.9:5191";
+        private readonly string baseUrl = "https://clickya-production.up.railway.app";
 
         public string BaseUrl => baseUrl;
 
@@ -32,8 +32,9 @@ namespace ClickYa.Services
                 var json = await client.GetStringAsync(url);
                 return JsonConvert.DeserializeObject<Local>(json, _settings);
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"ERROR API: {ex.Message}");
                 return null;
             }
         }
@@ -50,8 +51,9 @@ namespace ClickYa.Services
                 var json = await client.GetStringAsync(url);
                 return JsonConvert.DeserializeObject<List<Publicacion>>(json, _settings);
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"ERROR API: {ex.Message}");
                 return null;
             }
         }
@@ -68,8 +70,9 @@ namespace ClickYa.Services
                 var json = await client.GetStringAsync(url);
                 return JsonConvert.DeserializeObject<List<Local>>(json, _settings);
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"ERROR API: {ex.Message}");
                 return null;
             }
         }

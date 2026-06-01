@@ -151,52 +151,58 @@
 
             <!-- ================= GRID DE PRODUCTOS ================= -->
             <CollectionView ItemsSource="{Binding productos}"
-                            Margin="12,0,12,30">
+                IsGrouped="True"
+                Margin="12,0,12,30">
+
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding Titulo}"
+                   FontSize="16"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   Margin="4,16,0,8"/>
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
 
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical"
-                                     Span="2"
-                                     HorizontalItemSpacing="12"
-                                     VerticalItemSpacing="12"/>
+                         Span="2"
+                         HorizontalItemSpacing="12"
+                         VerticalItemSpacing="12"/>
                 </CollectionView.ItemsLayout>
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame Padding="0"
-                               CornerRadius="18"
-                               BackgroundColor="White"
-                               HasShadow="True"
-                               IsClippedToBounds="True">
-
+                   CornerRadius="18"
+                   BackgroundColor="White"
+                   HasShadow="True"
+                   IsClippedToBounds="True">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnProductoTapped"
-                                                      CommandParameter="{Binding .}"/>
+                                          CommandParameter="{Binding .}"/>
                             </Frame.GestureRecognizers>
-
                             <VerticalStackLayout Spacing="0">
-
                                 <Grid HeightRequest="140"
-                                      IsClippedToBounds="True"
-                                      BackgroundColor="#F2F2F2">
+                          IsClippedToBounds="True"
+                          BackgroundColor="#F2F2F2">
                                     <Image Source="{Binding ImagenPrincipal}"
-                                           Aspect="AspectFill"
-                                           HorizontalOptions="Fill"
-                                           VerticalOptions="Fill"/>
+                               Aspect="AspectFill"
+                               HorizontalOptions="Fill"
+                               VerticalOptions="Fill"/>
                                 </Grid>
-
                                 <VerticalStackLayout Padding="10,8,10,12" Spacing="4">
                                     <Label Text="{Binding Nombre}"
-                                           FontSize="13"
-                                           FontAttributes="Bold"
-                                           TextColor="#222"
-                                           MaxLines="2"
-                                           LineBreakMode="TailTruncation"/>
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="#222"
+                               MaxLines="2"
+                               LineBreakMode="TailTruncation"/>
                                     <Label Text="{Binding Precio, StringFormat='$ {0:N0}'}"
-                                           FontSize="15"
-                                           FontAttributes="Bold"
-                                           TextColor="#6A0DAD"/>
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="#6A0DAD"/>
                                 </VerticalStackLayout>
-
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>

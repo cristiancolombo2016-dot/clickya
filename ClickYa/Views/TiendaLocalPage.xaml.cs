@@ -101,6 +101,7 @@ namespace ClickYa.Views
                         Zona = zona,
                         Horario = horario,
                         Ingredientes = ingredientes,
+                        Seccion = ExtraerSeccion(p.DatosExtraJson),
                         Imagenes = p.ImagenesUrls != null && p.ImagenesUrls.Count > 0
                             ? p.ImagenesUrls.Select(url => url.StartsWith("http") ? url : _dataService.BaseUrl + url).ToList()
                             : new List<string> { string.IsNullOrWhiteSpace(p.ImagenUrl) ? "banner1.png" : (p.ImagenUrl.StartsWith("http") ? p.ImagenUrl : _dataService.BaseUrl + p.ImagenUrl) }
@@ -119,6 +120,9 @@ namespace ClickYa.Views
                 instagram = local.instagram,
                 ubicacion = local.ubicacion,
                 productos = productos
+    .GroupBy(p => string.IsNullOrWhiteSpace(p.Seccion) ? "Productos" : p.Seccion)
+    .Select(g => new GrupoProductosTienda(g.Key, g.ToList()))
+    .ToList()
             };
 
             if (!string.IsNullOrWhiteSpace(local.portadaUrl))
@@ -212,5 +216,27 @@ namespace ClickYa.Views
                 Text = $"Mirá {nombre} en ClickYa!\nWhatsApp: {whatsapp}"
             });
         }
+
+        private string ExtraerSeccion(string? json)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(json)) return "";
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                if (doc.RootElement.TryGetProperty("seccion", out var s))
+                    return s.GetString() ?? "";
+                return "";
+            }
+            catch { return ""; }
+        }
+    }  // cierre de TiendaLocalPage
+}      // cierre del namespace
+
+public class GrupoProductosTienda : List<ProductoTienda>
+{
+    public string Titulo { get; set; } = "";
+    public GrupoProductosTienda(string titulo, List<ProductoTienda> items) : base(items)
+    {
+        Titulo = titulo;
     }
 }
