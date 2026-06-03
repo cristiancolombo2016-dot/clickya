@@ -1,4 +1,6 @@
-﻿namespace ClickYa.Api.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ClickYa.Api.Models
 {
     public class PublicacionComercio
     {
@@ -12,5 +14,6 @@
         public List<string> ImagenesUrls { get; set; } = new();
         public string DatosExtraJson { get; set; } = "{}";
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
+        public DbSet<PublicacionComercio> PublicacionesComercios { get; set; }
     }
 }

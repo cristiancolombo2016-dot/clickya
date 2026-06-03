@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using ClickYa.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
 {
@@ -8,44 +8,34 @@ namespace ClickYa.Api.Controllers
     [Route("api/[controller]")]
     public class HeladeriaController : ControllerBase
     {
-        private string DataFolder => Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "data");
-        private string DataFile => Path.Combine(DataFolder, "heladerias.json");
+        private readonly AppDbContext _db;
 
-        private List<Heladeria> Leer()
+        public HeladeriaController(AppDbContext db)
         {
-            if (!Directory.Exists(DataFolder)) Directory.CreateDirectory(DataFolder);
-            if (!System.IO.File.Exists(DataFile)) System.IO.File.WriteAllText(DataFile, "[]");
-            var json = System.IO.File.ReadAllText(DataFile);
-            return JsonSerializer.Deserialize<List<Heladeria>>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                ?? new List<Heladeria>();
-        }
-
-        private void Guardar(List<Heladeria> lista)
-        {
-            if (!Directory.Exists(DataFolder)) Directory.CreateDirectory(DataFolder);
-            var json = JsonSerializer.Serialize(lista, new JsonSerializerOptions { WriteIndented = true });
-            System.IO.File.WriteAllText(DataFile, json);
+            _db = db;
         }
 
         [HttpGet("{comercioId}")]
-        public IActionResult Get(int comercioId)
+        public async Task<IActionResult> Get(int comercioId)
         {
-            var lista = Leer();
-            var h = lista.FirstOrDefault(x => x.ComercioId == comercioId);
+            var h = await _db.Heladerias
+                .Include(x => x.Sabores)
+                .FirstOrDefaultAsync(x => x.ComercioId == comercioId);
             if (h == null) return Ok(new Heladeria { ComercioId = comercioId });
             return Ok(h);
         }
 
         [HttpPut("{comercioId}")]
-        public IActionResult Put(int comercioId, [FromBody] Heladeria heladeria)
+        public async Task<IActionResult> Put(int comercioId, [FromBody] Heladeria heladeria)
         {
-            var lista = Leer();
-            var existente = lista.FirstOrDefault(x => x.ComercioId == comercioId);
+            var existente = await _db.Heladerias
+                .Include(x => x.Sabores)
+                .FirstOrDefaultAsync(x => x.ComercioId == comercioId);
+
             if (existente == null)
             {
                 heladeria.ComercioId = comercioId;
-                lista.Add(heladeria);
+                _db.Heladerias.Add(heladeria);
             }
             else
             {
@@ -54,7 +44,8 @@ namespace ClickYa.Api.Controllers
                 existente.PrecioMedio = heladeria.PrecioMedio;
                 existente.PrecioKilo = heladeria.PrecioKilo;
             }
-            Guardar(lista);
+
+            await _db.SaveChangesAsync();
             return Ok(heladeria);
         }
     }

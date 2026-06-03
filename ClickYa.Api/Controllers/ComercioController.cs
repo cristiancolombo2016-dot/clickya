@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using ClickYa.Api.Models;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
 {
@@ -10,58 +8,18 @@ namespace ClickYa.Api.Controllers
     [Route("api/[controller]")]
     public class ComercioController : ControllerBase
     {
-        private readonly string _filePathList;
+        private readonly AppDbContext _db;
         private readonly string _uploadsPath;
 
-        private static readonly JsonSerializerOptions JsonOptions = new()
+        public ComercioController(AppDbContext db, IWebHostEnvironment env)
         {
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true
-        };
-
-        public ComercioController(IWebHostEnvironment env)
-        {
-            _filePathList = Path.Combine(env.WebRootPath, "data", "comercios.json");
+            _db = db;
             _uploadsPath = Path.Combine(env.WebRootPath, "uploads");
-        }
-
-        private List<Comercio> LoadComercios()
-        {
-            if (!System.IO.File.Exists(_filePathList))
-                return new List<Comercio>();
-            var json = System.IO.File.ReadAllText(_filePathList);
-            if (string.IsNullOrWhiteSpace(json))
-                return new List<Comercio>();
-            var lista = JsonSerializer.Deserialize<List<Comercio>>(json, JsonOptions);
-            return lista ?? new List<Comercio>();
-        }
-
-        private void SaveComercios(List<Comercio> comercios)
-        {
-            var folder = Path.GetDirectoryName(_filePathList);
-            if (!string.IsNullOrEmpty(folder) && !Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-            var json = JsonSerializer.Serialize(comercios ?? new List<Comercio>(), JsonOptions);
-            System.IO.File.WriteAllText(_filePathList, json);
-        }
-
-        private Comercio? GetComercioPrincipal(List<Comercio> lista)
-        {
-            if (lista == null || lista.Count == 0) return null;
-            var c1 = lista.FirstOrDefault(x => x.Id == 1);
-            return c1 ?? lista[0];
-        }
-
-        private static int NextId(List<Comercio> lista)
-        {
-            if (lista == null || lista.Count == 0) return 1;
-            return lista.Max(x => x.Id) + 1;
         }
 
         private static (double lat, double lng) ExtraerCoordenadas(string ubicacion)
         {
-            if (string.IsNullOrWhiteSpace(ubicacion))
-                return (0, 0);
+            if (string.IsNullOrWhiteSpace(ubicacion)) return (0, 0);
             var match = System.Text.RegularExpressions.Regex.Match(
                 ubicacion, @"(-?\d+\.\d+),(-?\d+\.\d+)");
             if (match.Success &&
@@ -69,98 +27,55 @@ namespace ClickYa.Api.Controllers
                     System.Globalization.CultureInfo.InvariantCulture, out double lat) &&
                 double.TryParse(match.Groups[2].Value, System.Globalization.NumberStyles.Any,
                     System.Globalization.CultureInfo.InvariantCulture, out double lng))
-            {
                 return (lat, lng);
-            }
             return (0, 0);
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var lista = LoadComercios();
-            var comercio = GetComercioPrincipal(lista);
+            var comercio = await _db.Comercios.FirstOrDefaultAsync();
             if (comercio == null) return Ok(new Comercio());
             return Ok(comercio);
         }
 
         [HttpGet("todos")]
-        public IActionResult GetTodos()
+        public async Task<IActionResult> GetTodos()
         {
-            var lista = LoadComercios();
+            var lista = await _db.Comercios.ToListAsync();
             return Ok(lista);
         }
 
         [HttpGet("rubro/{rubro}")]
-        public IActionResult GetPorRubro(string rubro)
+        public async Task<IActionResult> GetPorRubro(string rubro)
         {
-            var lista = LoadComercios();
-            var filtrados = lista
-                .Where(x => (x.Rubro ?? "").ToLower() == rubro.ToLower())
-                .ToList();
-            return Ok(filtrados);
+            var lista = await _db.Comercios
+                .Where(x => x.Rubro.ToLower() == rubro.ToLower())
+                .ToListAsync();
+            return Ok(lista);
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var lista = LoadComercios();
-            var comercio = lista.FirstOrDefault(x => x.Id == id);
+            var comercio = await _db.Comercios.FindAsync(id);
             if (comercio == null) return NotFound("No existe el comercio.");
             return Ok(comercio);
         }
 
         [HttpGet("token/{token}")]
-        public IActionResult GetPorToken(string token)
+        public async Task<IActionResult> GetPorToken(string token)
         {
-            var lista = LoadComercios();
-            var comercio = lista.FirstOrDefault(x => x.Token == token);
+            var comercio = await _db.Comercios.FirstOrDefaultAsync(x => x.Token == token);
             if (comercio == null) return NotFound("Token inválido");
             return Ok(comercio);
         }
 
-        [HttpPut]
-        public IActionResult Put([FromBody] Comercio comercioNuevo)
-        {
-            if (comercioNuevo == null) return BadRequest();
-            var lista = LoadComercios();
-            if (lista.Count == 0)
-            {
-                comercioNuevo.Id = comercioNuevo.Id > 0 ? comercioNuevo.Id : 1;
-                lista.Add(comercioNuevo);
-                SaveComercios(lista);
-                return Ok(comercioNuevo);
-            }
-            var principal = GetComercioPrincipal(lista)!;
-            var idx = lista.FindIndex(x => x.Id == principal.Id);
-            if (idx < 0) idx = 0;
-            principal.Nombre = comercioNuevo.Nombre;
-            principal.Descripcion = comercioNuevo.Descripcion;
-            principal.WhatsApp = new string((comercioNuevo.WhatsApp ?? "").Where(char.IsDigit).ToArray());
-            principal.Instagram = string.IsNullOrWhiteSpace(comercioNuevo.Instagram)
-                ? comercioNuevo.Instagram
-                : comercioNuevo.Instagram.StartsWith("http")
-                    ? comercioNuevo.Instagram
-                    : "https://instagram.com/" + comercioNuevo.Instagram.Replace("@", "");
-            principal.Ubicacion = comercioNuevo.Ubicacion;
-            var coords = ExtraerCoordenadas(comercioNuevo.Ubicacion);
-            principal.Latitud = coords.lat;
-            principal.Longitud = coords.lng;
-            principal.Correo = comercioNuevo.Correo;
-            principal.Horarios = comercioNuevo.Horarios;
-            principal.Rubro = comercioNuevo.Rubro;
-            principal.Estado = comercioNuevo.Estado;
-            lista[idx] = principal;
-            SaveComercios(lista);
-            return Ok(principal);
-        }
-
         [HttpPut("{id:int}")]
-        public IActionResult PutById(int id, [FromBody] Comercio comercioNuevo)
+        public async Task<IActionResult> PutById(int id, [FromBody] Comercio comercioNuevo)
         {
             if (comercioNuevo == null) return BadRequest();
-            var lista = LoadComercios();
-            var comercio = lista.FirstOrDefault(x => x.Id == id);
+            var comercio = await _db.Comercios.FindAsync(id);
             if (comercio == null) return NotFound("No existe el comercio.");
             comercio.Nombre = comercioNuevo.Nombre;
             comercio.Descripcion = comercioNuevo.Descripcion;
@@ -174,51 +89,35 @@ namespace ClickYa.Api.Controllers
             comercio.Horarios = comercioNuevo.Horarios;
             comercio.Rubro = comercioNuevo.Rubro;
             comercio.Estado = comercioNuevo.Estado;
-            SaveComercios(lista); comercio.Rubro = comercioNuevo.Rubro;
-            comercio.Estado = comercioNuevo.Estado;
-            comercio.Latitud = comercioNuevo.Latitud;
-            comercio.Longitud = comercioNuevo.Longitud;
-            SaveComercios(lista);
+            await _db.SaveChangesAsync();
             return Ok(comercio);
-            
         }
 
         [HttpPost("crear")]
-        public IActionResult Crear([FromBody] Comercio nuevo)
+        public async Task<IActionResult> Crear([FromBody] Comercio nuevo)
         {
             if (nuevo == null) return BadRequest();
-            var lista = LoadComercios();
-            if (nuevo.Id <= 0)
-                nuevo.Id = NextId(lista);
-            if (lista.Any(x => x.Id == nuevo.Id))
-                return BadRequest("Ya existe un comercio con ese Id.");
             nuevo.WhatsApp = new string((nuevo.WhatsApp ?? "").Where(char.IsDigit).ToArray());
             if (!string.IsNullOrWhiteSpace(nuevo.Instagram) && !nuevo.Instagram.StartsWith("http"))
                 nuevo.Instagram = "https://instagram.com/" + nuevo.Instagram.Replace("@", "");
-            nuevo.Ubicacion = nuevo.Ubicacion;
             var coords = ExtraerCoordenadas(nuevo.Ubicacion);
             nuevo.Latitud = coords.lat;
             nuevo.Longitud = coords.lng;
-            lista.Add(nuevo);
-            SaveComercios(lista);
+            _db.Comercios.Add(nuevo);
+            await _db.SaveChangesAsync();
             return Ok(nuevo);
         }
 
         [HttpPost("{id:int}/portada")]
         public async Task<IActionResult> SubirPortadaPorId(int id, IFormFile archivo)
         {
-            if (archivo == null || archivo.Length == 0)
-                return BadRequest("Archivo inválido");
-            if (!Directory.Exists(_uploadsPath))
-                Directory.CreateDirectory(_uploadsPath);
+            if (archivo == null || archivo.Length == 0) return BadRequest("Archivo inválido");
+            if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
             var extension = Path.GetExtension(archivo.FileName).ToLower();
-            var esImagen = extension == ".jpg" || extension == ".jpeg" ||
-                extension == ".png" || extension == ".webp" || extension == ".jfif";
+            var esImagen = new[] { ".jpg", ".jpeg", ".png", ".webp", ".jfif" }.Contains(extension);
             var esVideo = extension == ".mp4";
-            if (!esImagen && !esVideo)
-                return BadRequest("Solo se permiten imágenes o videos MP4");
-            var lista = LoadComercios();
-            var comercio = lista.FirstOrDefault(x => x.Id == id);
+            if (!esImagen && !esVideo) return BadRequest("Solo se permiten imágenes o videos MP4");
+            var comercio = await _db.Comercios.FindAsync(id);
             if (comercio == null) return NotFound("No existe el comercio.");
             var nombreArchivo = $"{Guid.NewGuid()}{extension}";
             var rutaCompleta = Path.Combine(_uploadsPath, nombreArchivo);
@@ -226,51 +125,44 @@ namespace ClickYa.Api.Controllers
                 await archivo.CopyToAsync(stream);
             comercio.PortadaUrl = $"/uploads/{nombreArchivo}";
             comercio.PortadaTipo = esImagen ? "imagen" : "video";
-            SaveComercios(lista);
+            await _db.SaveChangesAsync();
             return Ok(comercio);
         }
 
         [HttpPost("{id:int}/logo")]
         public async Task<IActionResult> SubirLogoPorId(int id, IFormFile archivo)
         {
-            if (archivo == null || archivo.Length == 0)
-                return BadRequest("Archivo inválido");
-            if (!Directory.Exists(_uploadsPath))
-                Directory.CreateDirectory(_uploadsPath);
+            if (archivo == null || archivo.Length == 0) return BadRequest("Archivo inválido");
+            if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
             var extension = Path.GetExtension(archivo.FileName).ToLower();
-            var esImagen = extension == ".jpg" || extension == ".jpeg" ||
-               extension == ".png" || extension == ".webp" || extension == ".jfif";
-            if (!esImagen)
-                return BadRequest("El logo debe ser una imagen");
-            var lista = LoadComercios();
-            var comercio = lista.FirstOrDefault(x => x.Id == id);
+            var esImagen = new[] { ".jpg", ".jpeg", ".png", ".webp", ".jfif" }.Contains(extension);
+            if (!esImagen) return BadRequest("El logo debe ser una imagen");
+            var comercio = await _db.Comercios.FindAsync(id);
             if (comercio == null) return NotFound("No existe el comercio.");
             var nombreArchivo = $"{Guid.NewGuid()}{extension}";
             var rutaCompleta = Path.Combine(_uploadsPath, nombreArchivo);
             using (var stream = new FileStream(rutaCompleta, FileMode.Create))
                 await archivo.CopyToAsync(stream);
             comercio.LogoUrl = $"/uploads/{nombreArchivo}";
-            SaveComercios(lista);
+            await _db.SaveChangesAsync();
             return Ok(comercio);
         }
+
         [HttpPut("{id:int}/destacado")]
-        public IActionResult ToggleDestacado(int id, [FromBody] bool esDestacado)
+        public async Task<IActionResult> ToggleDestacado(int id, [FromBody] bool esDestacado)
         {
-            var lista = LoadComercios();
-            var comercio = lista.FirstOrDefault(x => x.Id == id);
+            var comercio = await _db.Comercios.FindAsync(id);
             if (comercio == null) return NotFound();
             comercio.EsDestacado = esDestacado;
-            SaveComercios(lista);
+            await _db.SaveChangesAsync();
             return Ok(comercio);
         }
 
         [HttpGet("destacados")]
-        public IActionResult GetDestacados()
+        public async Task<IActionResult> GetDestacados()
         {
-            var lista = LoadComercios();
-            var destacados = lista.Where(x => x.EsDestacado).ToList();
-            return Ok(destacados);
+            var lista = await _db.Comercios.Where(x => x.EsDestacado).ToListAsync();
+            return Ok(lista);
         }
     }
-
 }

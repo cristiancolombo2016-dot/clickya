@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using ClickYa.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
 {
@@ -8,69 +8,78 @@ namespace ClickYa.Api.Controllers
     [Route("api/[controller]")]
     public class TecnicoController : ControllerBase
     {
-        private string DataFolder => Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "data");
-        private string DataFile => Path.Combine(DataFolder, "tecnicos.json");
+        private readonly AppDbContext _db;
+        private readonly string _uploadsPath;
 
-        private List<Tecnico> Leer()
+        public TecnicoController(AppDbContext db, IWebHostEnvironment env)
         {
-            if (!Directory.Exists(DataFolder)) Directory.CreateDirectory(DataFolder);
-            if (!System.IO.File.Exists(DataFile)) System.IO.File.WriteAllText(DataFile, "[]");
-            var json = System.IO.File.ReadAllText(DataFile);
-            return JsonSerializer.Deserialize<List<Tecnico>>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                ?? new List<Tecnico>();
+            _db = db;
+            _uploadsPath = Path.Combine(env.WebRootPath, "uploads");
         }
 
-        private void Guardar(List<Tecnico> lista)
-        {
-            var json = JsonSerializer.Serialize(lista, new JsonSerializerOptions { WriteIndented = true });
-            System.IO.File.WriteAllText(DataFile, json);
-        }
         [HttpGet]
-        public IActionResult GetAll() => Ok(Leer());
+        public async Task<IActionResult> GetAll()
+        {
+            var lista = await _db.Tecnicos.ToListAsync();
+            return Ok(lista);
+        }
 
         [HttpGet("rubro/{rubro}")]
-        public IActionResult GetPorRubro(string rubro)
+        public async Task<IActionResult> GetPorRubro(string rubro)
         {
-            var lista = Leer().Where(t => t.Activo &&
-                t.Rubro.ToLower() == rubro.ToLower()).ToList();
+            var lista = await _db.Tecnicos
+                .Where(t => t.Activo && t.Rubro.ToLower() == rubro.ToLower())
+                .ToListAsync();
             return Ok(lista);
         }
 
         [HttpGet("categoria/{rubro}")]
-        public IActionResult GetPorCategoria(string rubro)
+        public async Task<IActionResult> GetPorCategoria(string rubro)
         {
-            var lista = Leer()
+            var lista = await _db.Tecnicos
                 .Where(t => t.Activo && t.Rubro.ToLower() == rubro.ToLower())
                 .OrderByDescending(t => t.EsPremium)
-                .ToList();
+                .ToListAsync();
             return Ok(lista);
         }
 
         [HttpGet("urgencias")]
-        public IActionResult GetUrgencias()
+        public async Task<IActionResult> GetUrgencias()
         {
-            var lista = Leer()
+            var lista = await _db.Tecnicos
                 .Where(t => t.Activo && t.EsPremium)
-                .ToList();
+                .ToListAsync();
             return Ok(lista);
         }
 
-        [HttpPost]
-        public IActionResult Crear([FromBody] Tecnico tecnico)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var lista = Leer();
-            tecnico.Id = lista.Count == 0 ? 1 : lista.Max(x => x.Id) + 1;
-            lista.Add(tecnico);
-            Guardar(lista);
+            var tecnico = await _db.Tecnicos.FindAsync(id);
+            if (tecnico == null) return NotFound();
+            return Ok(tecnico);
+        }
+
+        [HttpGet("token/{token}")]
+        public async Task<IActionResult> GetPorToken(string token)
+        {
+            var tecnico = await _db.Tecnicos.FirstOrDefaultAsync(t => t.Token == token);
+            if (tecnico == null) return NotFound();
+            return Ok(tecnico);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Crear([FromBody] Tecnico tecnico)
+        {
+            _db.Tecnicos.Add(tecnico);
+            await _db.SaveChangesAsync();
             return Ok(tecnico);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Editar(int id, [FromBody] Tecnico tecnico)
+        public async Task<IActionResult> Editar(int id, [FromBody] Tecnico tecnico)
         {
-            var lista = Leer();
-            var existente = lista.FirstOrDefault(x => x.Id == id);
+            var existente = await _db.Tecnicos.FindAsync(id);
             if (existente == null) return NotFound();
 
             existente.Nombre = tecnico.Nombre;
@@ -90,73 +99,50 @@ namespace ClickYa.Api.Controllers
             if (!string.IsNullOrWhiteSpace(tecnico.Token))
                 existente.Token = tecnico.Token;
 
-            Guardar(lista);
+            await _db.SaveChangesAsync();
             return Ok(existente);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Eliminar(int id)
+        public async Task<IActionResult> Eliminar(int id)
         {
-            var lista = Leer();
-            var existente = lista.FirstOrDefault(x => x.Id == id);
+            var existente = await _db.Tecnicos.FindAsync(id);
             if (existente == null) return NotFound();
-            lista.Remove(existente);
-            Guardar(lista);
+            _db.Tecnicos.Remove(existente);
+            await _db.SaveChangesAsync();
             return Ok();
         }
-        [HttpGet("{id:int}")]
-        public IActionResult GetById(int id)
-        {
-            var tecnico = Leer().FirstOrDefault(t => t.Id == id);
-            if (tecnico == null) return NotFound();
-            return Ok(tecnico);
-        }
+
         [HttpPost("{id}/portada")]
         public async Task<IActionResult> SubirPortada(int id, IFormFile archivo)
         {
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-
+            if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(archivo.FileName);
-            var filePath = Path.Combine(uploadsFolder, fileName);
+            var filePath = Path.Combine(_uploadsPath, fileName);
             using var stream = new FileStream(filePath, FileMode.Create);
             await archivo.CopyToAsync(stream);
 
-            var lista = Leer();
-            var existente = lista.FirstOrDefault(t => t.Id == id);
+            var existente = await _db.Tecnicos.FindAsync(id);
             if (existente == null) return NotFound();
             existente.FotoPortada = $"/uploads/{fileName}";
-            Guardar(lista);
-
+            await _db.SaveChangesAsync();
             return Ok(new { portadaUrl = existente.FotoPortada });
         }
 
         [HttpPost("{id}/logo")]
         public async Task<IActionResult> SubirLogo(int id, IFormFile archivo)
         {
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-
+            if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(archivo.FileName);
-            var filePath = Path.Combine(uploadsFolder, fileName);
+            var filePath = Path.Combine(_uploadsPath, fileName);
             using var stream = new FileStream(filePath, FileMode.Create);
             await archivo.CopyToAsync(stream);
 
-            var lista = Leer();
-            var existente = lista.FirstOrDefault(t => t.Id == id);
+            var existente = await _db.Tecnicos.FindAsync(id);
             if (existente == null) return NotFound();
             existente.Logo = $"/uploads/{fileName}";
-            Guardar(lista);
-
+            await _db.SaveChangesAsync();
             return Ok(new { logoUrl = existente.Logo });
-        }
-        [HttpGet("token/{token}")]
-        public IActionResult GetPorToken(string token)
-        {
-            var lista = Leer();
-            var tecnico = lista.FirstOrDefault(t => t.Token == token);
-            if (tecnico == null) return NotFound();
-            return Ok(tecnico);
         }
     }
 }

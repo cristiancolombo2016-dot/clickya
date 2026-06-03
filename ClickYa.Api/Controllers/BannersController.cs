@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using ClickYa.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
 {
@@ -8,47 +8,40 @@ namespace ClickYa.Api.Controllers
     [Route("api/[controller]")]
     public class BannersController : ControllerBase
     {
-        private static readonly object _lock = new();
+        private readonly AppDbContext _db;
+        private readonly string _uploadsPath;
 
-        private string DataFolder => Path.Combine(
-            Directory.GetCurrentDirectory(), "wwwroot", "data");
-
-        private string DataFile => Path.Combine(DataFolder, "banners.json");
-
-        private string UploadsFolder => Path.Combine(
-            Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-        private static readonly JsonSerializerOptions _opts = new()
+        public BannersController(AppDbContext db, IWebHostEnvironment env)
         {
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true
-        };
+            _db = db;
+            _uploadsPath = Path.Combine(env.WebRootPath, "uploads");
+        }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var lista = Leer();
-            var activos = lista.Where(b => b.Activo &&
-                b.Inicio.AddDays(b.Dias) >= DateTime.Now).ToList();
-            return Ok(activos);
+            var lista = await _db.Banners
+                .Where(b => b.Activo && b.Inicio.AddDays(b.Dias) >= DateTime.UtcNow)
+                .ToListAsync();
+            return Ok(lista);
         }
 
         [HttpGet("seccion/{seccion}")]
-        public IActionResult GetPorSeccion(string seccion)
+        public async Task<IActionResult> GetPorSeccion(string seccion)
         {
-            var lista = Leer();
-            var filtrados = lista
+            var lista = await _db.Banners
                 .Where(b => b.Activo &&
                        b.Seccion.ToLower() == seccion.ToLower() &&
-                       b.Inicio.AddDays(b.Dias) >= DateTime.Now)
-                .ToList();
-            return Ok(filtrados);
+                       b.Inicio.AddDays(b.Dias) >= DateTime.UtcNow)
+                .ToListAsync();
+            return Ok(lista);
         }
 
         [HttpGet("todos")]
-        public IActionResult GetTodos()
+        public async Task<IActionResult> GetTodos()
         {
-            return Ok(Leer());
+            var lista = await _db.Banners.ToListAsync();
+            return Ok(lista);
         }
 
         [HttpPost]
@@ -58,72 +51,40 @@ namespace ClickYa.Api.Controllers
             if (form.Imagen == null || form.Imagen.Length == 0)
                 return BadRequest("Falta imagen");
 
-            if (!Directory.Exists(UploadsFolder))
-                Directory.CreateDirectory(UploadsFolder);
+            if (!Directory.Exists(_uploadsPath))
+                Directory.CreateDirectory(_uploadsPath);
 
             var ext = Path.GetExtension(form.Imagen.FileName).ToLower();
             var fileName = $"{Guid.NewGuid()}{ext}";
-            var filePath = Path.Combine(UploadsFolder, fileName);
+            var filePath = Path.Combine(_uploadsPath, fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
                 await form.Imagen.CopyToAsync(stream);
 
-            var lista = Leer();
-
             var nuevo = new Banner
             {
-                Id = lista.Count == 0 ? 1 : lista.Max(x => x.Id) + 1,
                 Seccion = form.Seccion ?? "home",
                 ImagenUrl = $"/uploads/{fileName}",
                 LocalId = form.LocalId,
                 TecnicoId = form.TecnicoId,
                 Dias = form.Dias > 0 ? form.Dias : 7,
-                Inicio = DateTime.Now,
+                Inicio = DateTime.UtcNow,
                 Activo = true
             };
 
-            lista.Add(nuevo);
-            Guardar(lista);
-
+            _db.Banners.Add(nuevo);
+            await _db.SaveChangesAsync();
             return Ok(nuevo);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Eliminar(int id)
+        public async Task<IActionResult> Eliminar(int id)
         {
-            var lista = Leer();
-            var banner = lista.FirstOrDefault(x => x.Id == id);
+            var banner = await _db.Banners.FindAsync(id);
             if (banner == null) return NotFound();
-
-            lista.Remove(banner);
-            Guardar(lista);
-
+            _db.Banners.Remove(banner);
+            await _db.SaveChangesAsync();
             return Ok();
-        }
-
-        private List<Banner> Leer()
-        {
-            lock (_lock)
-            {
-                if (!Directory.Exists(DataFolder))
-                    Directory.CreateDirectory(DataFolder);
-
-                if (!System.IO.File.Exists(DataFile))
-                    System.IO.File.WriteAllText(DataFile, "[]");
-
-                var json = System.IO.File.ReadAllText(DataFile);
-                return JsonSerializer.Deserialize<List<Banner>>(json, _opts)
-                       ?? new List<Banner>();
-            }
-        }
-
-        private void Guardar(List<Banner> lista)
-        {
-            lock (_lock)
-            {
-                var json = JsonSerializer.Serialize(lista, _opts);
-                System.IO.File.WriteAllText(DataFile, json);
-            }
         }
     }
 

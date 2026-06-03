@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using ClickYa.Api.Models;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
 {
@@ -9,67 +8,50 @@ namespace ClickYa.Api.Controllers
     [Route("api/[controller]")]
     public class CategoriasController : ControllerBase
     {
-        private static readonly object _lock = new();
+        private readonly AppDbContext _db;
+        private readonly string _uploadsPath;
 
-        private string DataFolder => Path.Combine(
-            Directory.GetCurrentDirectory(), "wwwroot", "data");
-
-        private string DataFile => Path.Combine(DataFolder, "categorias.json");
-
-        private string UploadsFolder => Path.Combine(
-            Directory.GetCurrentDirectory(), "wwwroot", "uploads", "categorias");
-
-        private static readonly JsonSerializerOptions _opts = new()
+        public CategoriasController(AppDbContext db, IWebHostEnvironment env)
         {
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true
-        };
+            _db = db;
+            _uploadsPath = Path.Combine(env.WebRootPath, "uploads", "categorias");
+        }
 
         [HttpGet("seccion/{seccion}")]
-        public IActionResult GetPorSeccion(string seccion)
+        public async Task<IActionResult> GetPorSeccion(string seccion)
         {
-            var lista = Leer();
-
-            var filtradas = lista
-                .Where(c => c.Activo &&
-                            c.Seccion.ToLower() == seccion.ToLower())
+            var lista = await _db.Categorias
+                .Where(c => c.Activo && c.Seccion.ToLower() == seccion.ToLower())
                 .OrderBy(c => c.Orden)
-                .ToList();
-
-            return Ok(filtradas);
+                .ToListAsync();
+            return Ok(lista);
         }
 
         [HttpGet("todos")]
-        public IActionResult GetTodos()
+        public async Task<IActionResult> GetTodos()
         {
-            return Ok(Leer());
+            var lista = await _db.Categorias.ToListAsync();
+            return Ok(lista);
         }
 
         [HttpPost]
         [RequestSizeLimit(10_000_000)]
         public async Task<IActionResult> Crear([FromForm] CategoriaForm form)
         {
-            if (string.IsNullOrWhiteSpace(form.Nombre))
-                return BadRequest("Falta nombre");
+            if (string.IsNullOrWhiteSpace(form.Nombre)) return BadRequest("Falta nombre");
+            if (form.Icono == null || form.Icono.Length == 0) return BadRequest("Falta icono");
 
-            if (form.Icono == null || form.Icono.Length == 0)
-                return BadRequest("Falta icono");
-
-            if (!Directory.Exists(UploadsFolder))
-                Directory.CreateDirectory(UploadsFolder);
+            if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
 
             var ext = Path.GetExtension(form.Icono.FileName).ToLower();
             var fileName = $"{Guid.NewGuid()}{ext}";
-            var filePath = Path.Combine(UploadsFolder, fileName);
+            var filePath = Path.Combine(_uploadsPath, fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
                 await form.Icono.CopyToAsync(stream);
 
-            var lista = Leer();
-
             var nueva = new Categoria
             {
-                Id = lista.Count == 0 ? 1 : lista.Max(x => x.Id) + 1,
                 Seccion = form.Seccion ?? "comidas",
                 Nombre = form.Nombre,
                 IconoUrl = $"/uploads/categorias/{fileName}",
@@ -77,17 +59,16 @@ namespace ClickYa.Api.Controllers
                 Activo = true
             };
 
-            lista.Add(nueva);
-            Guardar(lista);
-
+            _db.Categorias.Add(nueva);
+            await _db.SaveChangesAsync();
             return Ok(nueva);
         }
+
         [HttpPut("{id}")]
         [RequestSizeLimit(10_000_000)]
         public async Task<IActionResult> Editar(int id, [FromForm] CategoriaForm form)
         {
-            var lista = Leer();
-            var existente = lista.FirstOrDefault(x => x.Id == id);
+            var existente = await _db.Categorias.FindAsync(id);
             if (existente == null) return NotFound();
 
             existente.Nombre = form.Nombre ?? existente.Nombre;
@@ -96,61 +77,27 @@ namespace ClickYa.Api.Controllers
 
             if (form.Icono != null && form.Icono.Length > 0)
             {
-                if (!Directory.Exists(UploadsFolder))
-                    Directory.CreateDirectory(UploadsFolder);
-
+                if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
                 var ext = Path.GetExtension(form.Icono.FileName).ToLower();
                 var fileName = $"{Guid.NewGuid()}{ext}";
-                var filePath = Path.Combine(UploadsFolder, fileName);
-
+                var filePath = Path.Combine(_uploadsPath, fileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                     await form.Icono.CopyToAsync(stream);
-
                 existente.IconoUrl = $"/uploads/categorias/{fileName}";
             }
 
-            Guardar(lista);
+            await _db.SaveChangesAsync();
             return Ok(existente);
         }
+
         [HttpDelete("{id}")]
-        public IActionResult Eliminar(int id)
+        public async Task<IActionResult> Eliminar(int id)
         {
-            var lista = Leer();
-            var categoria = lista.FirstOrDefault(x => x.Id == id);
-
-            if (categoria == null)
-                return NotFound();
-
-            lista.Remove(categoria);
-            Guardar(lista);
-
+            var categoria = await _db.Categorias.FindAsync(id);
+            if (categoria == null) return NotFound();
+            _db.Categorias.Remove(categoria);
+            await _db.SaveChangesAsync();
             return Ok();
-        }
-
-        private List<Categoria> Leer()
-        {
-            lock (_lock)
-            {
-                if (!Directory.Exists(DataFolder))
-                    Directory.CreateDirectory(DataFolder);
-
-                if (!System.IO.File.Exists(DataFile))
-                    System.IO.File.WriteAllText(DataFile, "[]");
-
-                var json = System.IO.File.ReadAllText(DataFile);
-
-                return JsonSerializer.Deserialize<List<Categoria>>(json, _opts)
-                       ?? new List<Categoria>();
-            }
-        }
-
-        private void Guardar(List<Categoria> lista)
-        {
-            lock (_lock)
-            {
-                var json = JsonSerializer.Serialize(lista, _opts);
-                System.IO.File.WriteAllText(DataFile, json);
-            }
         }
     }
 

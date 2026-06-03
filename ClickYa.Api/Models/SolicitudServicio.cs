@@ -1,4 +1,6 @@
-﻿namespace ClickYa.Api.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ClickYa.Api.Models
 {
     public class SolicitudServicio
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using ClickYa.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
 {
@@ -8,50 +8,42 @@ namespace ClickYa.Api.Controllers
     [Route("api/[controller]")]
     public class MensajeAdminController : ControllerBase
     {
-        private static readonly object _lock = new();
-        private string DataFolder => Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "data");
-        private string DataFile => Path.Combine(DataFolder, "mensajes_admin.json");
-        private static readonly JsonSerializerOptions _opts = new()
+        private readonly AppDbContext _db;
+
+        public MensajeAdminController(AppDbContext db)
         {
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true
-        };
+            _db = db;
+        }
 
         [HttpGet("activos")]
-        public IActionResult GetActivos()
+        public async Task<IActionResult> GetActivos()
         {
-            var lista = Leer().Where(m => m.Activo).ToList();
+            var lista = await _db.MensajesAdmin.Where(m => m.Activo).ToListAsync();
             return Ok(lista);
         }
 
         [HttpGet("tecnico/{tecnicoId}")]
-        public IActionResult GetParaTecnico(int tecnicoId)
+        public async Task<IActionResult> GetParaTecnico(int tecnicoId)
         {
-            var lista = Leer()
+            var lista = await _db.MensajesAdmin
                 .Where(m => m.Activo && (
                     m.Destino == "todos" ||
                     m.Destino == "tecnicos" ||
                     m.Destino == "servicios" ||
                     (m.Destino == "tecnico" && m.DestinoId == tecnicoId)
                 ))
-                .ToList();
+                .ToListAsync();
             return Ok(lista);
         }
 
         [HttpGet("comercio/{comercioId}")]
-        public IActionResult GetParaComercio(int comercioId)
+        public async Task<IActionResult> GetParaComercio(int comercioId)
         {
-            var pathComercios = Path.Combine(DataFolder, "comercios.json");
-            var comercios = System.IO.File.Exists(pathComercios)
-                ? JsonSerializer.Deserialize<List<Comercio>>(
-                    System.IO.File.ReadAllText(pathComercios), _opts) ?? new()
-                : new List<Comercio>();
-
-            var comercio = comercios.FirstOrDefault(c => c.Id == comercioId);
+            var comercio = await _db.Comercios.FindAsync(comercioId);
             var rubro = comercio?.Rubro?.ToLower() ?? "";
             var categoria = comercio?.Categoria?.ToLower() ?? "";
 
-            var lista = Leer()
+            var lista = await _db.MensajesAdmin
                 .Where(m => m.Activo && (
                     m.Destino == "todos" ||
                     m.Destino == "comercios" ||
@@ -61,52 +53,28 @@ namespace ClickYa.Api.Controllers
                     (m.Destino == "bares" && rubro.Contains("bar")) ||
                     (m.Destino == "heladerias" && categoria.Contains("helad"))
                 ))
-                .ToList();
-
+                .ToListAsync();
             return Ok(lista);
         }
 
         [HttpPost]
-        public IActionResult Crear([FromBody] MensajeAdmin mensaje)
+        public async Task<IActionResult> Crear([FromBody] MensajeAdmin mensaje)
         {
-            var lista = Leer();
-            mensaje.Id = lista.Count == 0 ? 1 : lista.Max(x => x.Id) + 1;
-            mensaje.Fecha = DateTime.Now;
+            mensaje.Fecha = DateTime.UtcNow;
             mensaje.Activo = true;
-            lista.Add(mensaje);
-            Guardar(lista);
+            _db.MensajesAdmin.Add(mensaje);
+            await _db.SaveChangesAsync();
             return Ok(mensaje);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Eliminar(int id)
+        public async Task<IActionResult> Eliminar(int id)
         {
-            var lista = Leer();
-            var m = lista.FirstOrDefault(x => x.Id == id);
-            if (m == null) return NotFound();
-            lista.Remove(m);
-            Guardar(lista);
+            var mensaje = await _db.MensajesAdmin.FindAsync(id);
+            if (mensaje == null) return NotFound();
+            _db.MensajesAdmin.Remove(mensaje);
+            await _db.SaveChangesAsync();
             return Ok();
-        }
-
-        private List<MensajeAdmin> Leer()
-        {
-            lock (_lock)
-            {
-                if (!Directory.Exists(DataFolder)) Directory.CreateDirectory(DataFolder);
-                if (!System.IO.File.Exists(DataFile)) System.IO.File.WriteAllText(DataFile, "[]");
-                return JsonSerializer.Deserialize<List<MensajeAdmin>>(
-                    System.IO.File.ReadAllText(DataFile), _opts) ?? new();
-            }
-        }
-
-        private void Guardar(List<MensajeAdmin> lista)
-        {
-            lock (_lock)
-            {
-                System.IO.File.WriteAllText(DataFile,
-                    JsonSerializer.Serialize(lista, _opts));
-            }
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using ClickYa.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
 {
@@ -8,82 +8,76 @@ namespace ClickYa.Api.Controllers
     [Route("api/[controller]")]
     public class SolicitudServicioController : ControllerBase
     {
-        private string DataFolder => Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "data");
-        private string DataFile => Path.Combine(DataFolder, "solicitudes_servicio.json");
-        private string UploadsFolder => Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        private readonly AppDbContext _db;
+        private readonly string _uploadsPath;
 
-        private List<SolicitudServicio> Leer()
+        public SolicitudServicioController(AppDbContext db, IWebHostEnvironment env)
         {
-            if (!Directory.Exists(DataFolder)) Directory.CreateDirectory(DataFolder);
-            if (!System.IO.File.Exists(DataFile)) System.IO.File.WriteAllText(DataFile, "[]");
-            var json = System.IO.File.ReadAllText(DataFile);
-            return JsonSerializer.Deserialize<List<SolicitudServicio>>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-                ?? new List<SolicitudServicio>();
-        }
-
-        private void Guardar(List<SolicitudServicio> lista)
-        {
-            var json = JsonSerializer.Serialize(lista, new JsonSerializerOptions { WriteIndented = true });
-            System.IO.File.WriteAllText(DataFile, json);
+            _db = db;
+            _uploadsPath = Path.Combine(env.WebRootPath, "uploads");
         }
 
         [HttpGet]
-        public IActionResult GetAll() => Ok(Leer().OrderByDescending(x => x.Fecha));
+        public async Task<IActionResult> GetAll()
+        {
+            var lista = await _db.SolicitudesServicio
+                .OrderByDescending(x => x.Fecha)
+                .ToListAsync();
+            return Ok(lista);
+        }
 
         [HttpGet("rubro/{rubro}")]
-        public IActionResult GetPorRubro(string rubro)
+        public async Task<IActionResult> GetPorRubro(string rubro)
         {
-            var lista = Leer().Where(s => s.Rubro.ToLower() == rubro.ToLower())
-                .OrderByDescending(x => x.Fecha).ToList();
+            var lista = await _db.SolicitudesServicio
+                .Where(s => s.Rubro.ToLower() == rubro.ToLower())
+                .OrderByDescending(x => x.Fecha)
+                .ToListAsync();
             return Ok(lista);
         }
 
         [HttpPost]
         [RequestSizeLimit(20_000_000)]
-        public async Task<IActionResult> Crear([FromForm] string rubro,
+        public async Task<IActionResult> Crear(
+            [FromForm] string rubro,
             [FromForm] string descripcion,
             [FromForm] string whatsAppCliente,
             IFormFile? imagen)
         {
-            if (!Directory.Exists(UploadsFolder)) Directory.CreateDirectory(UploadsFolder);
-
             var imagenUrl = "";
             if (imagen != null && imagen.Length > 0)
             {
+                if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
                 var ext = Path.GetExtension(imagen.FileName).ToLower();
                 var fileName = $"{Guid.NewGuid()}{ext}";
-                var filePath = Path.Combine(UploadsFolder, fileName);
+                var filePath = Path.Combine(_uploadsPath, fileName);
                 using var stream = new FileStream(filePath, FileMode.Create);
                 await imagen.CopyToAsync(stream);
                 imagenUrl = $"/uploads/{fileName}";
             }
 
-            var lista = Leer();
             var nueva = new SolicitudServicio
             {
-                Id = lista.Count == 0 ? 1 : lista.Max(x => x.Id) + 1,
                 Rubro = rubro,
                 Descripcion = descripcion,
                 WhatsAppCliente = whatsAppCliente,
                 ImagenUrl = imagenUrl,
-                Fecha = DateTime.Now,
+                Fecha = DateTime.UtcNow,
                 Estado = "Pendiente"
             };
 
-            lista.Add(nueva);
-            Guardar(lista);
+            _db.SolicitudesServicio.Add(nueva);
+            await _db.SaveChangesAsync();
             return Ok(nueva);
         }
 
         [HttpPut("{id}/estado")]
-        public IActionResult CambiarEstado(int id, [FromBody] string estado)
+        public async Task<IActionResult> CambiarEstado(int id, [FromBody] string estado)
         {
-            var lista = Leer();
-            var solicitud = lista.FirstOrDefault(x => x.Id == id);
+            var solicitud = await _db.SolicitudesServicio.FindAsync(id);
             if (solicitud == null) return NotFound();
             solicitud.Estado = estado;
-            Guardar(lista);
+            await _db.SaveChangesAsync();
             return Ok(solicitud);
         }
     }

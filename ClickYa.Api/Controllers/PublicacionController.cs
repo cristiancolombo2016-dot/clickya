@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using ClickYa.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
 {
@@ -8,38 +8,38 @@ namespace ClickYa.Api.Controllers
     [Route("api/[controller]")]
     public class PublicacionController : ControllerBase
     {
-        private static readonly object _lock = new();
-        private string DataFolder => Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "data");
-        private string DataFile => Path.Combine(DataFolder, "publicaciones.json");
-        private string TecnicosFile => Path.Combine(DataFolder, "tecnicos.json");
-        private string UploadsFolder => Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        private readonly AppDbContext _db;
+        private readonly string _uploadsPath;
 
-        private static readonly JsonSerializerOptions _opts = new()
+        public PublicacionController(AppDbContext db, IWebHostEnvironment env)
         {
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true
-        };
+            _db = db;
+            _uploadsPath = Path.Combine(env.WebRootPath, "uploads");
+        }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(Leer().OrderByDescending(x => x.FechaCreacion));
+            var lista = await _db.Publicaciones
+                .OrderByDescending(x => x.FechaCreacion)
+                .ToListAsync();
+            return Ok(lista);
         }
 
         [HttpGet("tecnico/{tecnicoId}")]
-        public IActionResult GetPorTecnico(int tecnicoId)
+        public async Task<IActionResult> GetPorTecnico(int tecnicoId)
         {
-            var lista = Leer()
+            var lista = await _db.Publicaciones
                 .Where(x => x.TecnicoId == tecnicoId)
                 .OrderByDescending(x => x.FechaCreacion)
-                .ToList();
+                .ToListAsync();
             return Ok(lista);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var pub = Leer().FirstOrDefault(x => x.Id == id);
+            var pub = await _db.Publicaciones.FindAsync(id);
             if (pub == null) return NotFound();
             return Ok(pub);
         }
@@ -48,26 +48,24 @@ namespace ClickYa.Api.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Crear([FromQuery] string token, [FromForm] PublicacionForm form)
         {
-            var tecnico = ObtenerTecnicoPorToken(token);
+            var tecnico = await _db.Tecnicos.FirstOrDefaultAsync(t => t.Token == token && t.Activo);
             if (tecnico == null) return Unauthorized("Token inválido");
             if (string.IsNullOrWhiteSpace(form.Titulo)) return BadRequest("Falta título");
 
             int maxImagenes = tecnico.EsPremium ? 20 : 8;
             var imagenesUrls = await GuardarImagenes(form.Imagenes, maxImagenes);
 
-            var lista = Leer();
             var nueva = new Publicacion
             {
-                Id = lista.Count == 0 ? 1 : lista.Max(x => x.Id) + 1,
                 TecnicoId = tecnico.Id,
                 Titulo = form.Titulo,
                 Descripcion = form.Descripcion ?? "",
                 Imagenes = imagenesUrls,
-                FechaCreacion = DateTime.Now
+                FechaCreacion = DateTime.UtcNow
             };
 
-            lista.Add(nueva);
-            Guardar(lista);
+            _db.Publicaciones.Add(nueva);
+            await _db.SaveChangesAsync();
             return Ok(nueva);
         }
 
@@ -75,11 +73,11 @@ namespace ClickYa.Api.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Editar(int id, [FromQuery] string token, [FromForm] PublicacionForm form)
         {
-            var tecnico = ObtenerTecnicoPorToken(token);
+            var tecnico = await _db.Tecnicos.FirstOrDefaultAsync(t => t.Token == token && t.Activo);
             if (tecnico == null) return Unauthorized("Token inválido");
 
-            var lista = Leer();
-            var existente = lista.FirstOrDefault(x => x.Id == id && x.TecnicoId == tecnico.Id);
+            var existente = await _db.Publicaciones
+                .FirstOrDefaultAsync(x => x.Id == id && x.TecnicoId == tecnico.Id);
             if (existente == null) return NotFound();
 
             existente.Titulo = form.Titulo ?? existente.Titulo;
@@ -91,69 +89,41 @@ namespace ClickYa.Api.Controllers
                 existente.Imagenes = await GuardarImagenes(form.Imagenes, maxImagenes);
             }
 
-            Guardar(lista);
+            await _db.SaveChangesAsync();
             return Ok(existente);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Eliminar(int id, [FromQuery] string token)
+        public async Task<IActionResult> Eliminar(int id, [FromQuery] string token)
         {
-            var tecnico = ObtenerTecnicoPorToken(token);
+            var tecnico = await _db.Tecnicos.FirstOrDefaultAsync(t => t.Token == token && t.Activo);
             if (tecnico == null) return Unauthorized("Token inválido");
 
-            var lista = Leer();
-            var existente = lista.FirstOrDefault(x => x.Id == id && x.TecnicoId == tecnico.Id);
+            var existente = await _db.Publicaciones
+                .FirstOrDefaultAsync(x => x.Id == id && x.TecnicoId == tecnico.Id);
             if (existente == null) return NotFound();
 
-            lista.Remove(existente);
-            Guardar(lista);
+            _db.Publicaciones.Remove(existente);
+            await _db.SaveChangesAsync();
             return Ok();
-        }
-
-        private Tecnico? ObtenerTecnicoPorToken(string token)
-        {
-            if (!System.IO.File.Exists(TecnicosFile)) return null;
-            var tecnicos = JsonSerializer.Deserialize<List<Tecnico>>(
-                System.IO.File.ReadAllText(TecnicosFile), _opts) ?? new();
-            return tecnicos.FirstOrDefault(t => t.Token == token && t.Activo);
         }
 
         private async Task<List<string>> GuardarImagenes(List<IFormFile>? imagenes, int max)
         {
             var urls = new List<string>();
             if (imagenes == null || imagenes.Count == 0) return urls;
-            if (!Directory.Exists(UploadsFolder)) Directory.CreateDirectory(UploadsFolder);
+            if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
 
             foreach (var imagen in imagenes.Take(max))
             {
                 if (imagen.Length == 0) continue;
                 var fileName = Guid.NewGuid() + Path.GetExtension(imagen.FileName);
-                var filePath = Path.Combine(UploadsFolder, fileName);
+                var filePath = Path.Combine(_uploadsPath, fileName);
                 using var stream = new FileStream(filePath, FileMode.Create);
                 await imagen.CopyToAsync(stream);
                 urls.Add($"/uploads/{fileName}");
             }
             return urls;
-        }
-
-        private List<Publicacion> Leer()
-        {
-            lock (_lock)
-            {
-                if (!Directory.Exists(DataFolder)) Directory.CreateDirectory(DataFolder);
-                if (!System.IO.File.Exists(DataFile)) System.IO.File.WriteAllText(DataFile, "[]");
-                return JsonSerializer.Deserialize<List<Publicacion>>(
-                    System.IO.File.ReadAllText(DataFile), _opts) ?? new();
-            }
-        }
-
-        private void Guardar(List<Publicacion> lista)
-        {
-            lock (_lock)
-            {
-                System.IO.File.WriteAllText(DataFile,
-                    JsonSerializer.Serialize(lista, _opts));
-            }
         }
     }
 
