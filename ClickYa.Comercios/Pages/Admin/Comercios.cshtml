@@ -138,6 +138,19 @@
         padding: 18px 22px;
         color: #6b7280;
     }
+
+    /* ===== LINK DE ACCESO (botón corto, no rompe en celular) ===== */
+    .cy-acceso {
+        display: inline-block;
+        margin-top: 8px;
+        background: #5b0bb5;
+        color: #fff;
+        padding: 6px 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+    }
 </style>
 
 <div class="cy-wrap">
@@ -185,8 +198,8 @@
                                 <br />
                                 <a href="https://alert-kindness-production-90e4.up.railway.app/Comercio/Dashboard?token=@c.Token"
                                    target="_blank"
-                                   style="font-size:12px;color:#5b0bb5;word-break:normal;overflow-wrap:anywhere;">
-                                    https://alert-kindness-production-90e4.up.railway.app/Comercio/Dashboard?token=@c.Token
+                                   class="cy-acceso">
+                                    🔗 Abrir dashboard
                                 </a>
                                 <br />
                                 <a href="https://wa.me/@c.Telefono?text=Hola%20@Uri.EscapeDataString(c.Nombre ?? " ")!%20Tu%20comercio%20fue%20aprobado%20en%20ClickYa%20%F0%9F%8E%89%0AEntrá%20a%20tu%20dashboard%20acá%3A%20https%3A%2F%2Falert-kindness-production-90e4.up.railway.app%2FComercio%2FDashboard%3Ftoken%3D@c.Token"
