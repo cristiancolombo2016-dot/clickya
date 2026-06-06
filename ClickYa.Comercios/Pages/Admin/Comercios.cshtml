@@ -151,6 +151,19 @@
         font-weight: 700;
         text-decoration: none;
     }
+
+    /* ===== CELULAR: apilar la tarjeta para que no se pisen los botones ===== */
+    @@media (max-width: 640px) {
+        .cy-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .cy-actions {
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+    }
 </style>
 
 <div class="cy-wrap">
@@ -212,13 +225,6 @@
                     </div>
 
                     <div class="cy-actions">
-
-                        <!-- VER (ya tenés ComercioDetalle.cshtml) -->
-                        <a class="btn btn-ver"
-                           asp-page="/Admin/ComercioDetalle"
-                           asp-route-id="@c.Id">
-                            Ver
-                        </a>
 
                         <!-- CONFIABLE (usa tu OnPostAprobarAsync) -->
                         @if (estado != "CONFIABLE")
