@@ -1,0 +1,166 @@
+﻿@page
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Reportes – ClickYa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: #F2F3F5;
+        }
+
+        .admin-header {
+            background: #fff;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .admin-header h2 {
+                margin: 0;
+                font-size: 18px;
+                color: #4B0082;
+            }
+
+            .admin-header a {
+                font-size: 14px;
+                color: #4B0082;
+                text-decoration: none;
+            }
+
+        .admin-container {
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .reporte-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 18px 20px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            margin-bottom: 14px;
+            border-left: 4px solid #E53935;
+        }
+
+            .reporte-card h3 {
+                margin: 0 0 6px 0;
+                font-size: 16px;
+                color: #1A1A2E;
+            }
+
+        .reporte-motivo {
+            display: inline-block;
+            background: #FDECEA;
+            color: #C62828;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .reporte-fecha {
+            font-size: 12px;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        .btn-eliminar {
+            background: #E53935;
+            color: #fff;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .vacio {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="admin-header">
+        <a href="/Admin/Index">‹ Volver</a>
+        <h2>🚩 Reportes</h2>
+        <div></div>
+    </header>
+
+    <main class="admin-container">
+        <div id="listaReportes">
+            <div class="vacio">Cargando reportes...</div>
+        </div>
+    </main>
+
+    <script>
+        const API = "https://clickya-production.up.railway.app";
+
+        async function cargarReportes() {
+            const cont = document.getElementById("listaReportes");
+            try {
+                const res = await fetch(`${API}/api/Reportes`);
+                const lista = await res.json();
+
+                if (!lista || lista.length === 0) {
+                    cont.innerHTML = '<div class="vacio">✅ No hay reportes pendientes.</div>';
+                    return;
+                }
+
+                cont.innerHTML = "";
+                lista.forEach(r => {
+                    const fecha = new Date(r.createdAt).toLocaleDateString("es-AR", {
+                        day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
+                    });
+                    const card = document.createElement("div");
+                    card.className = "reporte-card";
+                    card.innerHTML = `
+                        <span class="reporte-motivo">${escapeHtml(r.motivo)}</span>
+                        <h3>${escapeHtml(r.nombreComercio)}</h3>
+                        ${r.detalle ? `<p style="margin:4px 0;color:#555;font-size:14px;">${escapeHtml(r.detalle)}</p>` : ""}
+                        <div class="reporte-fecha">📅 ${fecha} · Comercio ID: ${r.comercioId}</div>
+                        <button class="btn-eliminar" onclick="eliminarReporte(${r.id})">🗑 Eliminar</button>
+                    `;
+                    cont.appendChild(card);
+                });
+            } catch (e) {
+                cont.innerHTML = '<div class="vacio">Error al cargar los reportes.</div>';
+            }
+        }
+
+        async function eliminarReporte(id) {
+            if (!confirm("¿Eliminar este reporte?")) return;
+            try {
+                await fetch(`${API}/api/Reportes/${id}`, { method: "DELETE" });
+                cargarReportes();
+            } catch (e) {
+                alert("No se pudo eliminar.");
+            }
+        }
+
+        function escapeHtml(str) {
+            return (str ?? "").toString()
+                .replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+        }
+
+        cargarReportes();
+    </script>
+
+</body>
+</html>
