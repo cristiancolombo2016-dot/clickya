@@ -17,5 +17,6 @@ namespace ClickYa.Api
         public DbSet<SolicitudUrgencia> Urgencias { get; set; }
         public DbSet<PublicacionComercio> PublicacionesComercios { get; set; }
         public DbSet<SolicitudServicio> SolicitudesServicio { get; set; }
+        public DbSet<Reporte> Reportes { get; set; }
     }
 }
