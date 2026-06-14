@@ -520,9 +520,32 @@
                        Margin="0,-2,0,0"/>
             </Border>
 
-            <!-- Carrito -->
-            <Grid Grid.Column="2">
+            <!-- Puntitos + Carrito -->
+            <HorizontalStackLayout Grid.Column="2" Spacing="10">
+
+                <!-- Tres puntitos (reportar) -->
                 <Border WidthRequest="38"
+                        HeightRequest="38"
+                        BackgroundColor="#55000000"
+                        StrokeThickness="0"
+                        VerticalOptions="Center">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="19"/>
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnReportarTapped"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="⋮"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Border>
+
+                <!-- Carrito -->
+                <Grid>
+                    <Border WidthRequest="38"
                         HeightRequest="38"
                         BackgroundColor="#FF9800"
                         StrokeThickness="0">
@@ -554,17 +577,18 @@
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="10"/>
                     </Border.StrokeShape>
-                    <Label x:Name="LblCantidadCarrito"
+                        <Label x:Name="LblCantidadCarrito"
                            Text="0"
                            FontSize="11"
                            FontAttributes="Bold"
                            TextColor="White"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"/>
-                </Border>
-            </Grid>
+                    </Border>
+                </Grid>
+
+            </HorizontalStackLayout>
 
         </Grid>
-
     </Grid>
 </ContentPage>
