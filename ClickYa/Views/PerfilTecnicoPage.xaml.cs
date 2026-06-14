@@ -83,8 +83,23 @@ public partial class PerfilTecnicoPage : ContentPage
         => await Navigation.PopAsync();
     private async void OnWhatsAppTapped(object sender, EventArgs e)
     {
-        var url = $"https://wa.me/54{_whatsApp}";
-        await Launcher.OpenAsync(url);
+        if (string.IsNullOrWhiteSpace(_whatsApp)) return;
+
+        // Limpia el número y arma el formato WhatsApp Argentina: 549 + caracteristica + numero
+        var soloNumeros = new string(_whatsApp.Where(char.IsDigit).ToArray());
+
+        if (soloNumeros.StartsWith("0"))
+            soloNumeros = soloNumeros.Substring(1);
+
+        string numeroFinal;
+        if (soloNumeros.StartsWith("549"))
+            numeroFinal = soloNumeros;
+        else if (soloNumeros.StartsWith("54"))
+            numeroFinal = "549" + soloNumeros.Substring(2);
+        else
+            numeroFinal = "549" + soloNumeros;
+
+        await Launcher.OpenAsync($"https://wa.me/{numeroFinal}");
     }
     private async void OnCompartirTapped(object sender, EventArgs e)
     {

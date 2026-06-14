@@ -31,6 +31,7 @@ namespace ClickYa.Views
         {
             InitializeComponent();
             CargarHomeDesdeApi();
+            _ = CargarProximoFeriado();
         }
 
         private void CargarDatosTemporales()
@@ -244,6 +245,41 @@ namespace ClickYa.Views
             base.OnDisappearing();
             bannerTimer?.Stop();
         }
+
+        private async Task CargarProximoFeriado()
+        {
+    try
+    {
+        using var http = new HttpClient();
+        var lista = await http.GetFromJsonAsync<List<FeriadoApi>>(
+            "https://date.nager.at/api/v3/PublicHolidays/2026/AR");
+
+        if (lista == null) return;
+
+        var hoy = DateTime.Today;
+        var proximo = lista.FirstOrDefault(f => DateTime.Parse(f.Date) >= hoy);
+
+        if (proximo == null) return;
+
+        var fecha = DateTime.Parse(proximo.Date);
+        var diasRestantes = (fecha - hoy).Days;
+
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            LblFeriadoTitulo.Text = $"Próximo feriado: {fecha.Day} de {fecha.ToString("MMMM")}";
+            LblFeriadoSub.Text = diasRestantes == 0 ? "¡Es hoy!" :
+                                 diasRestantes == 1 ? "¡Es mañana!" :
+                                 $"En {diasRestantes} días · {proximo.LocalName}";
+        });
     }
-    
-    }
+    catch { }
+}
+
+        private async void AbrirFeriados_Tapped(object sender, TappedEventArgs e)
+                    => await Shell.Current.GoToAsync("feriados");
+
+    }  // cierre de HomePage
+
+   
+
+}  // cierre del namespace

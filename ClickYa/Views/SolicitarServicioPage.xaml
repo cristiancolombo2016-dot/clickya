@@ -3,92 +3,192 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="ClickYa.Views.SolicitarServicioPage"
-    BackgroundColor="#F7F7FA"
+    BackgroundColor="#0A0A1A"
     Shell.NavBarIsVisible="False">
 
     <ScrollView>
-        <VerticalStackLayout Padding="24" Spacing="20">
+        <VerticalStackLayout Padding="20" Spacing="16">
 
             <!-- HEADER -->
-            <Grid ColumnDefinitions="Auto,*">
-                <Label Text="‹" FontSize="38" TextColor="#111"
-                       VerticalOptions="Center">
+            <Grid ColumnDefinitions="Auto,*" Margin="0,16,0,0">
+                <Label Text="‹" FontSize="38" TextColor="White" VerticalOptions="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnVolverTapped"/>
                     </Label.GestureRecognizers>
                 </Label>
-                <Label x:Name="LblRubro" Grid.Column="1"
-                       Text="Solicitar servicio"
-                       FontSize="22" FontAttributes="Bold"
-                       TextColor="#111" VerticalOptions="Center"
-                       Margin="12,0,0,0"/>
+                <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0" VerticalOptions="Center">
+                    <Label x:Name="LblRubro" Text="Solicitar servicio"
+                           FontSize="22" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="Urgencias 24hs" FontSize="13" TextColor="#FF2E88"/>
+                </VerticalStackLayout>
             </Grid>
+
+            <!-- TÉCNICOS DISPONIBLES -->
+            <Label Text="Técnicos disponibles" FontSize="16"
+                   FontAttributes="Bold" TextColor="White" Margin="0,8,0,0"/>
+
+            <CollectionView x:Name="ListaTecnicos" SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="18" Padding="14"
+                               BackgroundColor="#1A1A2E" BorderColor="#2A2A3E"
+                               HasShadow="False">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTecnicoSeleccionado"
+                                                      CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid ColumnDefinitions="64,*,Auto">
+
+                                <!-- FOTO -->
+                                <Frame WidthRequest="56" HeightRequest="56"
+                                       CornerRadius="28" Padding="0"
+                                       HasShadow="False" IsClippedToBounds="True"
+                                       BackgroundColor="#2A2A4E">
+                                    <Image Source="{Binding FotoUrl}"
+                                           Aspect="AspectFill"/>
+                                </Frame>
+
+                                <!-- INFO -->
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Margin="12,0,0,0"
+                                                     VerticalOptions="Center"
+                                                     Spacing="4">
+                                    <Label Text="{Binding Nombre}"
+                                           FontSize="15" FontAttributes="Bold"
+                                           TextColor="White"/>
+                                    <Label Text="{Binding Rubro}"
+                                           FontSize="12" TextColor="#888"/>
+                                    <HorizontalStackLayout Spacing="2">
+                                        <Label Text="⭐" FontSize="12"/>
+                                        <Label Text="{Binding Estrellas}"
+                                               FontSize="12" TextColor="#FFD700"
+                                               FontAttributes="Bold"/>
+                                        <Label Text="{Binding TotalReseñas, StringFormat='({0})'}"
+                                               FontSize="11" TextColor="#666"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+
+                                <!-- ESTADO -->
+                                <VerticalStackLayout Grid.Column="2"
+                                                     VerticalOptions="Center"
+                                                     HorizontalOptions="End"
+                                                     Spacing="6">
+                                    <Frame Padding="8,4" CornerRadius="10"
+                                           BackgroundColor="#0D2B1A" HasShadow="False">
+                                        <Label Text="● Disponible"
+                                               FontSize="11" FontAttributes="Bold"
+                                               TextColor="#22C55E"/>
+                                    </Frame>
+                                    <Label Text="Contactar →"
+                                           FontSize="11" TextColor="#FF2E88"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="End"/>
+                                </VerticalStackLayout>
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label x:Name="LblSinTecnicos"
+                   Text="No hay técnicos disponibles para este rubro en este momento."
+                   FontSize="14" TextColor="#888"
+                   HorizontalTextAlignment="Center"
+                   IsVisible="False"
+                   Margin="0,20,0,0"/>
+
+            <!-- SEPARADOR -->
+            <BoxView HeightRequest="1" BackgroundColor="#2A2A3E" Margin="0,8,0,8"/>
 
             <!-- FOTO DEL PROBLEMA -->
             <Label Text="Foto del problema" FontSize="16"
-                   FontAttributes="Bold" TextColor="#333"/>
-
+                   FontAttributes="Bold" TextColor="White"/>
             <Frame x:Name="FrameFoto"
-                   HeightRequest="200"
+                   HeightRequest="180"
                    CornerRadius="18"
                    Padding="0"
-                   BackgroundColor="#E8E8E8"
-                   HasShadow="False">
+                   BackgroundColor="#1A1A2E"
+                   HasShadow="False"
+                   BorderColor="#2A2A3E">
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnTomarFotoTapped"/>
                 </Frame.GestureRecognizers>
                 <Grid>
-                    <Label Text="📷 Tocá para agregar una foto"
-                           FontSize="16" TextColor="#888"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
-                    <Image x:Name="ImgFoto"
-                           Aspect="AspectFill"
-                           IsVisible="False"/>
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
+                        <Label Text="📷" FontSize="32" HorizontalOptions="Center"/>
+                        <Label Text="Tocá para agregar una foto"
+                               FontSize="14" TextColor="#555"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                    <Image x:Name="ImgFoto" Aspect="AspectFill" IsVisible="False"/>
                 </Grid>
             </Frame>
 
             <!-- DESCRIPCIÓN -->
             <Label Text="Describí el problema" FontSize="16"
-                   FontAttributes="Bold" TextColor="#333"/>
-
+                   FontAttributes="Bold" TextColor="White"/>
             <Frame CornerRadius="16" Padding="16"
-                   BackgroundColor="White" HasShadow="False"
-                   BorderColor="#DDD">
+                   BackgroundColor="#1A1A2E" HasShadow="False"
+                   BorderColor="#2A2A3E">
                 <Editor x:Name="EditorDescripcion"
                         Placeholder="Ej: Se me cortó la luz en toda la casa..."
-                        HeightRequest="120"
-                        TextColor="#111111"
-                        FontSize="16"
+                        PlaceholderColor="#555"
+                        HeightRequest="100"
+                        TextColor="White"
+                        FontSize="15"
                         BackgroundColor="Transparent"/>
             </Frame>
 
             <!-- WHATSAPP -->
             <Label Text="Tu WhatsApp" FontSize="16"
-                   FontAttributes="Bold" TextColor="#333"/>
-
+                   FontAttributes="Bold" TextColor="White"/>
             <Frame CornerRadius="16" Padding="16,0"
-                   HeightRequest="58" BackgroundColor="White"
-                   HasShadow="False" BorderColor="#DDD">
+                   HeightRequest="54" BackgroundColor="#1A1A2E"
+                   HasShadow="False" BorderColor="#2A2A3E">
                 <Entry x:Name="EntryWhatsApp"
                        Placeholder="Ej: 5493364612832"
+                       PlaceholderColor="#555"
                        Keyboard="Telephone"
-                        TextColor="#111111"
-                       FontSize="16"
+                       TextColor="White"
+                       FontSize="15"
                        BackgroundColor="Transparent"/>
             </Frame>
 
+            <!-- TÉCNICO SELECCIONADO -->
+            <Frame x:Name="CardTecnicoSeleccionado"
+                   CornerRadius="16" Padding="14"
+                   BackgroundColor="#0D2B1A"
+                   BorderColor="#22C55E"
+                   HasShadow="False"
+                   IsVisible="False">
+                <Grid ColumnDefinitions="44,*">
+                    <Label Text="✅" FontSize="24" VerticalOptions="Center"/>
+                    <VerticalStackLayout Grid.Column="1" Margin="10,0,0,0" VerticalOptions="Center">
+                        <Label x:Name="LblTecnicoSeleccionado"
+                               Text="" FontSize="14"
+                               FontAttributes="Bold" TextColor="White"/>
+                        <Label Text="Técnico seleccionado"
+                               FontSize="12" TextColor="#22C55E"/>
+                    </VerticalStackLayout>
+                </Grid>
+            </Frame>
+
             <!-- BOTÓN ENVIAR -->
-            <Button Text="Enviar solicitud"
+            <Button x:Name="BtnEnviar"
+                    Text="Enviar solicitud"
                     BackgroundColor="#5C0BBF"
                     TextColor="White"
-                    FontSize="18"
+                    FontSize="17"
                     FontAttributes="Bold"
                     CornerRadius="18"
-                    HeightRequest="58"
+                    HeightRequest="56"
+                    Margin="0,8,0,24"
                     Clicked="OnEnviarTapped"/>
 
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

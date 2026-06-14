@@ -102,6 +102,8 @@ namespace ClickYa.Views
                         Horario = horario,
                         Ingredientes = ingredientes,
                         Seccion = ExtraerSeccion(p.DatosExtraJson),
+                        WhatsAppTienda = local.whatsApp ?? "",
+                        NombreTienda = local.nombre ?? "",
                         Imagenes = p.ImagenesUrls != null && p.ImagenesUrls.Count > 0
                             ? p.ImagenesUrls.Select(url => url.StartsWith("http") ? url : _dataService.BaseUrl + url).ToList()
                             : new List<string> { string.IsNullOrWhiteSpace(p.ImagenUrl) ? "banner1.png" : (p.ImagenUrl.StartsWith("http") ? p.ImagenUrl : _dataService.BaseUrl + p.ImagenUrl) }
@@ -167,7 +169,22 @@ namespace ClickYa.Views
                 .ToString();
 
             if (string.IsNullOrWhiteSpace(telefono)) return;
-            await Launcher.OpenAsync($"https://wa.me/{telefono}");
+
+            // Limpia el número y arma el formato WhatsApp Argentina: 549 + caracteristica + numero
+            var soloNumeros = new string(telefono.Where(char.IsDigit).ToArray());
+
+            if (soloNumeros.StartsWith("0"))
+                soloNumeros = soloNumeros.Substring(1);
+
+            string numeroFinal;
+            if (soloNumeros.StartsWith("549"))
+                numeroFinal = soloNumeros;
+            else if (soloNumeros.StartsWith("54"))
+                numeroFinal = "549" + soloNumeros.Substring(2);
+            else
+                numeroFinal = "549" + soloNumeros;
+
+            await Launcher.OpenAsync($"https://wa.me/{numeroFinal}");
         }
 
         private async void OnInstagramClicked(object sender, EventArgs e)

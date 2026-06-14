@@ -10,6 +10,29 @@ public partial class RegistroClientePage : ContentPage
         InitializeComponent();
         RubroPicker.SelectedIndexChanged += OnRubroChanged;
     }
+
+    // Limpia el número y lo arma en formato WhatsApp Argentina: 549 + caracteristica + numero
+    private string ArmarWhatsApp(string numeroIngresado)
+    {
+        // Saca todo lo que no sea dígito (espacios, guiones, paréntesis, +)
+        var soloNumeros = new string(numeroIngresado.Where(char.IsDigit).ToArray());
+
+        // Saca el 0 inicial si lo pusieron (ej: 0336...)
+        if (soloNumeros.StartsWith("0"))
+            soloNumeros = soloNumeros.Substring(1);
+
+        // Saca el 15 si quedó después de la caracteristica (caso 336 15 xxxx)
+        // (solo si el numero es largo y tiene 15 en la posición típica)
+        // Por simplicidad: si empieza con 54 ya viene con país, lo dejamos
+        if (soloNumeros.StartsWith("549"))
+            return soloNumeros;
+        if (soloNumeros.StartsWith("54"))
+            return "549" + soloNumeros.Substring(2);
+
+        // Caso normal: el comercio puso caracteristica + numero (ej: 3364612832)
+        return "549" + soloNumeros;
+    }
+
     private async void OnRubroChanged(object sender, EventArgs e)
     {
         if (RubroPicker.SelectedItem == null) return;
@@ -96,14 +119,16 @@ public partial class RegistroClientePage : ContentPage
 
             if (response.IsSuccessStatusCode)
             {
+                var numeroWhatsApp = ArmarWhatsApp(WhatsappEntry.Text.Trim());
+
                 if (esServicio)
                 {
                     var tecnicoCreado = await response.Content.ReadFromJsonAsync<TecnicoRegistrado>();
                     if (tecnicoCreado != null && !string.IsNullOrEmpty(tecnicoCreado.Token))
                     {
-                        var dashboardUrl = $"https://clickya-production.up.railway.app/Tecnico/Dashboard?token={tecnicoCreado.Token}";
+                        var dashboardUrl = $"https://alert-kindness-production-90e4.up.railway.app/Tecnico/Dashboard?token={tecnicoCreado.Token}";
                         var mensaje = $"Hola {tecnicoCreado.Nombre}! 👋 Bienvenido a ClickYa.\n\nTu panel de control es este link, guardalo:\n\n{dashboardUrl}";
-                        var waUrl = $"https://wa.me/54{WhatsappEntry.Text.Trim()}?text={Uri.EscapeDataString(mensaje)}";
+                        var waUrl = $"https://wa.me/{numeroWhatsApp}?text={Uri.EscapeDataString(mensaje)}";
                         await Launcher.OpenAsync(waUrl);
                     }
                 }
@@ -112,9 +137,9 @@ public partial class RegistroClientePage : ContentPage
                     var comercioCreado = await response.Content.ReadFromJsonAsync<ComercioRegistrado>();
                     if (comercioCreado != null && !string.IsNullOrEmpty(comercioCreado.Token))
                     {
-                        var dashboardUrl = $"https://clickya-production.up.railway.app/Comercio/Dashboard?token={comercioCreado.Token}";
+                        var dashboardUrl = $"https://alert-kindness-production-90e4.up.railway.app/Comercio/Dashboard?token={comercioCreado.Token}";
                         var mensaje = $"Hola {comercioCreado.Nombre}! 👋 Bienvenido a ClickYa.\n\nTu panel de control:\n{dashboardUrl}\n\nEntrá con tu email y contraseña desde la app.";
-                        var waUrl = $"https://wa.me/54{WhatsappEntry.Text.Trim()}?text={Uri.EscapeDataString(mensaje)}";
+                        var waUrl = $"https://wa.me/{numeroWhatsApp}?text={Uri.EscapeDataString(mensaje)}";
                         await Launcher.OpenAsync(waUrl);
                     }
                 }
@@ -156,4 +181,3 @@ public class ComercioRegistrado
     public int ComercioId { get; set; }
     public string Nombre { get; set; } = "";
 }
-

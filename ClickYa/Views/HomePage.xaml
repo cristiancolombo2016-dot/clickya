@@ -86,6 +86,40 @@
                 </Grid>
             </Frame>
 
+            <!-- PRÓXIMO FERIADO -->
+            <Frame x:Name="CardFeriado"
+       Margin="16,12,16,0"
+       CornerRadius="16"
+       Padding="14,12"
+       HasShadow="False"
+       BackgroundColor="#1A1A2E"
+       BorderColor="#2A2A3E">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="AbrirFeriados_Tapped"/>
+                </Frame.GestureRecognizers>
+                <Grid ColumnDefinitions="48,*,Auto">
+                    <Frame WidthRequest="44" HeightRequest="44"
+               CornerRadius="22" BackgroundColor="#2A2A4E"
+               Padding="0" HasShadow="False">
+                        <Label Text="🗓" FontSize="22"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"/>
+                    </Frame>
+                    <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0"
+                             VerticalOptions="Center" Spacing="2">
+                        <Label x:Name="LblFeriadoTitulo"
+                   Text="Cargando feriado..."
+                   FontSize="14" FontAttributes="Bold"
+                   TextColor="White"/>
+                        <Label x:Name="LblFeriadoSub"
+                   Text=""
+                   FontSize="12" TextColor="#888"/>
+                    </VerticalStackLayout>
+                    <Label Grid.Column="2" Text="›"
+               FontSize="22" TextColor="#FF2E88"
+               VerticalOptions="Center"/>
+                </Grid>
+            </Frame>
             <!-- CATEGORÍAS -->
             <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10"
                   Margin="16,16,16,0" RowDefinitions="Auto">
@@ -178,7 +212,6 @@
                 </Frame>
 
                 <!-- CINE -->
-
                 <Frame Grid.Column="1"
        TranslationY="-3"
        HeightRequest="50"
@@ -187,19 +220,26 @@
        HasShadow="False"
        IsClippedToBounds="True"
        BackgroundColor="Transparent">
-
                     <Frame.GestureRecognizers>
-                        <TapGestureRecognizer
-            Tapped="AbrirCine_Tapped"/>
+                        <TapGestureRecognizer Tapped="AbrirCine_Tapped"/>
                     </Frame.GestureRecognizers>
-
-                    <Image
-        Source="cartelera_cine.png"
-       Aspect="AspectFill"/>
-
+                    <Grid>
+                        <Image Source="cartelera_cine.png" Aspect="AspectFill"/>
+                        <Label Text="PRÓXIMAMENTE"
+               BackgroundColor="#CC0000"
+               TextColor="White"
+               FontSize="9"
+               FontAttributes="Bold"
+               Padding="20,4"
+               Rotation="-30"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               Opacity="0.92"/>
+                    </Grid>
                 </Frame>
 
             </Grid>
+
             <!-- DESTACADOS -->
             <Grid Margin="16,20,16,8" ColumnDefinitions="*,Auto">
                 <Label Text="Destacados de la Semana"

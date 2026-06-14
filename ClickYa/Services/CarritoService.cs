@@ -11,6 +11,8 @@ namespace ClickYa.Services
 
         // 👉 Local actual del carrito
         private string? _localActual;
+        public string? WhatsAppLocal { get; private set; }
+        public string? NombreLocal => _localActual;
 
         public ObservableCollection<Articulo> Items { get; private set; } = new();
 
@@ -19,7 +21,7 @@ namespace ClickYa.Services
         // ==========================
         // DEFINIR LOCAL ACTUAL
         // ==========================
-        public void SetLocal(string localId)
+        public void SetLocal(string localId, string? whatsApp = null)
         {
             // Si cambio de local → carrito nuevo
             if (_localActual != localId)
@@ -27,6 +29,7 @@ namespace ClickYa.Services
                 _localActual = localId;
                 Items.Clear();
             }
+            WhatsAppLocal = whatsApp;
         }
 
         // ==========================

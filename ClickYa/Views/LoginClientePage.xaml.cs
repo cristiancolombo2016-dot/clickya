@@ -1,26 +1,21 @@
 using Microsoft.Maui.Controls;
 using System.Net.Http.Json;
-
 namespace ClickYa.Views;
-
 public partial class LoginClientePage : ContentPage
 {
     private bool _passwordVisible = false;
-    private const string API = "http://192.168.100.9:5191";
-
+    private const string API = "https://clickya-production.up.railway.app";
     public LoginClientePage()
     {
         InitializeComponent();
         ActualizarIconoPassword();
     }
-
     private void OnTogglePasswordVisibility(object sender, EventArgs e)
     {
         _passwordVisible = !_passwordVisible;
         PasswordEntry.IsPassword = !_passwordVisible;
         ActualizarIconoPassword();
     }
-
     private void ActualizarIconoPassword()
     {
         TogglePasswordIcon.Source = new FontImageSource
@@ -31,18 +26,15 @@ public partial class LoginClientePage : ContentPage
             Color = Color.FromArgb("#6A1B9A")
         };
     }
-
     private async void OnLoginClicked(object sender, EventArgs e)
     {
         var email = EmailEntry.Text?.Trim();
         var password = PasswordEntry.Text;
-
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
             await DisplayAlert("Error", "Ingresá tu email y contraseña.", "OK");
             return;
         }
-
         try
         {
             using var http = new HttpClient();
@@ -51,13 +43,12 @@ public partial class LoginClientePage : ContentPage
                 Email = email,
                 Password = password
             });
-
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadFromJsonAsync<LoginResponse>();
                 if (data != null && !string.IsNullOrEmpty(data.Token))
                 {
-                    var dashboardUrl = $"http://192.168.100.9:5175/Comercio/Dashboard?token={data.Token}";
+                    var dashboardUrl = $"https://alert-kindness-production-90e4.up.railway.app/Comercio/Dashboard?token={data.Token}";
                     await Launcher.OpenAsync(dashboardUrl);
                 }
             }
@@ -71,13 +62,11 @@ public partial class LoginClientePage : ContentPage
             await DisplayAlert("Error", ex.Message, "OK");
         }
     }
-
     private async void OnRegisterClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(RegistroClientePage));
     }
 }
-
 public class LoginResponse
 {
     public string Token { get; set; } = "";

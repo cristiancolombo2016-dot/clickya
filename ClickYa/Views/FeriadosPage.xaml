@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClickYa.Views.FeriadosPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F4F4F4">
+
+    <CollectionView x:Name="ListaFeriados" SelectionMode="None">
+
+        <CollectionView.Header>
+            <VerticalStackLayout Padding="20,40,20,10" Spacing="4">
+                <Label Text="🗓 Feriados Argentina"
+                       FontSize="26"
+                       FontAttributes="Bold"
+                       TextColor="#222"/>
+                <Label Text="2026"
+                       FontSize="16"
+                       TextColor="#888"/>
+            </VerticalStackLayout>
+        </CollectionView.Header>
+
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Grid Padding="20,6,20,6">
+                    <Frame CornerRadius="16"
+                           Padding="16"
+                           HasShadow="False"
+                           BackgroundColor="{Binding Color}">
+                        <Grid ColumnDefinitions="60,*,Auto">
+
+                            <!-- FECHA -->
+                            <VerticalStackLayout Grid.Column="0"
+                                                 HorizontalOptions="Center"
+                                                 VerticalOptions="Center"
+                                                 Spacing="0">
+                                <Label Text="{Binding Dia}"
+                                       FontSize="22"
+                                       FontAttributes="Bold"
+                                       TextColor="{Binding TextColor}"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding Mes}"
+                                       FontSize="12"
+                                       TextColor="{Binding TextColor}"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding DiaSemana}"
+                                       FontSize="11"
+                                       TextColor="{Binding TextColor}"
+                                       HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+
+                            <!-- NOMBRE -->
+                            <VerticalStackLayout Grid.Column="1"
+                                                 Margin="14,0,0,0"
+                                                 VerticalOptions="Center"
+                                                 Spacing="4">
+                                <Label Text="{Binding Nombre}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{Binding TextColor}"
+                                       LineBreakMode="WordWrap"/>
+                                <Label Text="{Binding Tipo}"
+                                       FontSize="11"
+                                       TextColor="{Binding TextColor}"
+                                       Opacity="0.7"/>
+                            </VerticalStackLayout>
+
+                            <!-- BADGE HOY/PRÓXIMO -->
+                            <Label Grid.Column="2"
+                                   Text="{Binding Badge}"
+                                   FontSize="11"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   BackgroundColor="#7C3AED"
+                                   Padding="8,4"
+                                   IsVisible="{Binding TieneBadge}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                    </Frame>
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+
+        <CollectionView.Footer>
+            <Label Text="Fuente: Nager.Date / Ministerio del Interior"
+                   FontSize="11"
+                   TextColor="#AAA"
+                   HorizontalOptions="Center"
+                   Margin="0,8,0,24"/>
+        </CollectionView.Footer>
+
+    </CollectionView>
+
+</ContentPage>

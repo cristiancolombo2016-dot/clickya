@@ -56,6 +56,12 @@
     <ShellContent
         Title="Acceso comercio"
         ContentTemplate="{DataTemplate local:LoginClientePage}" />
+
+    <!-- FERIADOS -->
+    <ShellContent
+    Title="Feriados 2026"
+    Route="feriados"
+    ContentTemplate="{DataTemplate local:FeriadosPage}" />
     <!-- CONTACTO -->
     <ShellContent
     Title="Contacto"

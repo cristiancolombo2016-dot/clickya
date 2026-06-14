@@ -74,7 +74,7 @@ public partial class LocalPage : ContentPage
         if (_local == null)
             return;
 
-        CarritoService.Instancia.SetLocal(_local.nombre);
+        CarritoService.Instancia.SetLocal(_local.nombre, _local.whatsApp);
 
         var baseUrl = _dataService.BaseUrl;
 
@@ -237,8 +237,23 @@ public partial class LocalPage : ContentPage
     // ============================================
     private async void BtnWhatsApp_Clicked(object sender, EventArgs e)
     {
-        if (!string.IsNullOrWhiteSpace(_local?.whatsApp))
-            await Launcher.OpenAsync(_local.whatsApp);
+        if (string.IsNullOrWhiteSpace(_local?.whatsApp)) return;
+
+        // Limpia el número y arma el formato WhatsApp Argentina: 549 + caracteristica + numero
+        var soloNumeros = new string(_local.whatsApp.Where(char.IsDigit).ToArray());
+
+        if (soloNumeros.StartsWith("0"))
+            soloNumeros = soloNumeros.Substring(1);
+
+        string numeroFinal;
+        if (soloNumeros.StartsWith("549"))
+            numeroFinal = soloNumeros;
+        else if (soloNumeros.StartsWith("54"))
+            numeroFinal = "549" + soloNumeros.Substring(2);
+        else
+            numeroFinal = "549" + soloNumeros;
+
+        await Launcher.OpenAsync($"https://wa.me/{numeroFinal}");
     }
 
     private async void BtnMaps_Clicked(object sender, EventArgs e)

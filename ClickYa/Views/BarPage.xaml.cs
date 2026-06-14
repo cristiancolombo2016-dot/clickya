@@ -117,11 +117,25 @@ public partial class BarPage : ContentPage
 
     private async void OnVolverTapped(object sender, TappedEventArgs e)
         => await Navigation.PopAsync();
-
     private async void OnWhatsAppClicked(object sender, EventArgs e)
     {
-        if (!string.IsNullOrWhiteSpace(_whatsApp))
-            await Launcher.Default.OpenAsync($"https://wa.me/{_whatsApp}");
+        if (string.IsNullOrWhiteSpace(_whatsApp)) return;
+
+        // Limpia el número y arma el formato WhatsApp Argentina: 549 + caracteristica + numero
+        var soloNumeros = new string(_whatsApp.Where(char.IsDigit).ToArray());
+
+        if (soloNumeros.StartsWith("0"))
+            soloNumeros = soloNumeros.Substring(1);
+
+        string numeroFinal;
+        if (soloNumeros.StartsWith("549"))
+            numeroFinal = soloNumeros;
+        else if (soloNumeros.StartsWith("54"))
+            numeroFinal = "549" + soloNumeros.Substring(2);
+        else
+            numeroFinal = "549" + soloNumeros;
+
+        await Launcher.Default.OpenAsync($"https://wa.me/{numeroFinal}");
     }
 
     private async void OnInstagramClicked(object sender, EventArgs e)

@@ -70,7 +70,7 @@
                     <!-- WHATSAPP -->
                     <Entry
                         x:Name="WhatsappEntry"
-                        Placeholder="WhatsApp de contacto"
+                       Placeholder="WhatsApp: característica sin 0 + número (ej: 3364612832)"
                         Keyboard="Telephone"
                         BackgroundColor="#F6F6F6"
                         TextColor="#222"

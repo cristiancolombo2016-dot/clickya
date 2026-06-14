@@ -22,6 +22,8 @@ public class ProductoTienda
     public string Ingredientes { get; set; } = "";
   
     public string Seccion { get; set; } = "";  // ← agregá esta línea
+    public string WhatsAppTienda { get; set; } = "";
+    public string NombreTienda { get; set; } = "";
 
     // =========================
     // PROPIEDADES DE AYUDA (UI)

@@ -2,6 +2,7 @@
 using Microsoft.Maui.Controls;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ClickYa.Views
 {
@@ -95,8 +96,33 @@ namespace ClickYa.Views
             if (BindingContext is not ProductoTienda producto)
                 return;
 
-            string msg = $"Hola! Quiero consultar por {producto.Nombre}";
-            string url = $"https://wa.me/?text={Uri.EscapeDataString(msg)}";
+            // Si la tienda no tiene WhatsApp cargado, avisamos y no mandamos nada
+            if (string.IsNullOrWhiteSpace(producto.WhatsAppTienda))
+            {
+                await DisplayAlert("Sin WhatsApp",
+                    "Este comercio todavía no cargó su WhatsApp. Probá contactándolo desde su perfil.",
+                    "OK");
+                return;
+            }
+
+            // Armamos el mensaje con el nombre de la tienda
+            string saludo = string.IsNullOrWhiteSpace(producto.NombreTienda)
+                ? $"Hola! Quiero consultar por {producto.Nombre}"
+                : $"Hola {producto.NombreTienda}! Quiero consultar por {producto.Nombre}";
+
+            // Limpiamos el número y armamos el formato WhatsApp Argentina: 549 + numero
+            var soloNumeros = new string(producto.WhatsAppTienda.Where(char.IsDigit).ToArray());
+            if (soloNumeros.StartsWith("0"))
+                soloNumeros = soloNumeros.Substring(1);
+            string numeroFinal;
+            if (soloNumeros.StartsWith("549"))
+                numeroFinal = soloNumeros;
+            else if (soloNumeros.StartsWith("54"))
+                numeroFinal = "549" + soloNumeros.Substring(2);
+            else
+                numeroFinal = "549" + soloNumeros;
+
+            string url = $"https://wa.me/{numeroFinal}?text={Uri.EscapeDataString(saludo)}";
             await Launcher.OpenAsync(url);
         }
     }

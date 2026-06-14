@@ -6,9 +6,10 @@
 
     <ContentPage.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#2D0060" Offset="0.0"/>
-            <GradientStop Color="#6A0DAD" Offset="0.4"/>
-            <GradientStop Color="#9B1FD1" Offset="0.7"/>
+            <GradientStop Color="#15173A" Offset="0.0"/>
+            <GradientStop Color="#2A1F6B" Offset="0.30"/>
+            <GradientStop Color="#5B1F9E" Offset="0.58"/>
+            <GradientStop Color="#A01E7E" Offset="0.82"/>
             <GradientStop Color="#C2185B" Offset="1.0"/>
         </LinearGradientBrush>
     </ContentPage.Background>
@@ -23,30 +24,30 @@
                        Aspect="AspectFill"
                        HorizontalOptions="Fill"
                        VerticalOptions="Fill"/>
-                <Frame BackgroundColor="#20C45A"
+                <Frame BackgroundColor="#1D9E75"
                        CornerRadius="14"
                        Padding="12,4"
                        HasShadow="True"
                        HorizontalOptions="Start"
                        VerticalOptions="Start"
                        Margin="16,16,0,0">
-                    <Label Text="● Activo"
-                           FontSize="12"
+                    <Label Text="● ACTIVO"
+                           FontSize="11"
                            FontAttributes="Bold"
                            TextColor="White"/>
                 </Frame>
             </Grid>
 
             <!-- ================= LOGO FLOTANTE ================= -->
-            <Frame WidthRequest="92"
-                   HeightRequest="92"
-                   CornerRadius="46"
+            <Frame WidthRequest="78"
+                   HeightRequest="78"
+                   CornerRadius="22"
                    BackgroundColor="White"
                    BorderColor="Transparent"
                    Padding="3"
                    HasShadow="True"
                    HorizontalOptions="Center"
-                   Margin="0,-46,0,0">
+                   Margin="0,-39,0,0">
                 <Image x:Name="ImgLogo" Aspect="AspectFill">
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnLogoTapped"/>
@@ -56,159 +57,182 @@
 
             <!-- ================= NOMBRE + CIUDAD ================= -->
             <Label Text="{Binding nombre}"
-                   FontSize="24"
+                   FontSize="22"
                    FontAttributes="Bold"
                    TextColor="White"
                    HorizontalTextAlignment="Center"
-                   Margin="16,12,16,2"/>
+                   Margin="16,10,16,2"/>
 
             <Label Text="{Binding direccion}"
-                   FontSize="14"
-                   TextColor="#DDBBFF"
+                   FontSize="13"
+                   TextColor="#C9B8E8"
                    HorizontalTextAlignment="Center"
                    Margin="16,0,16,0"/>
 
-            <!-- ================= BOTONES ================= -->
+            <!-- ================= BOTONES (vidrio) ================= -->
             <Grid ColumnDefinitions="*,*,*,*"
-      ColumnSpacing="10"
-      Margin="20,18,20,24">
+                  ColumnSpacing="9"
+                  Margin="18,18,18,22">
 
                 <!-- WhatsApp -->
                 <Frame Grid.Column="0"
-                       BackgroundColor="#25D366"
-                       CornerRadius="18"
+                       BackgroundColor="#33FFFFFF"
+                       BorderColor="#55FFFFFF"
+                       CornerRadius="16"
                        Padding="0"
-                       HasShadow="True"
-                       HeightRequest="68">
+                       HasShadow="False"
+                       HeightRequest="70">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnWhatsAppClicked"/>
                     </Frame.GestureRecognizers>
-                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="icono_whatsapp.png" HeightRequest="28" WidthRequest="28" HorizontalOptions="Center"/>
+                    <VerticalStackLayout Spacing="5" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="icono_whatsapp.png" HeightRequest="26" WidthRequest="26" HorizontalOptions="Center"/>
                         <Label Text="Chat" FontSize="11" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
                 </Frame>
 
                 <!-- Ubicación -->
                 <Frame Grid.Column="1"
-                       BackgroundColor="#167BFF"
-                       CornerRadius="18"
+                       BackgroundColor="#33FFFFFF"
+                       BorderColor="#55FFFFFF"
+                       CornerRadius="16"
                        Padding="0"
-                       HasShadow="True"
-                       HeightRequest="68">
+                       HasShadow="False"
+                       HeightRequest="70">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnUbicacionClicked"/>
                     </Frame.GestureRecognizers>
-                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="icono_ubicacion.png" HeightRequest="28" WidthRequest="28" HorizontalOptions="Center"/>
+                    <VerticalStackLayout Spacing="5" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="icono_ubicacion.png" HeightRequest="26" WidthRequest="26" HorizontalOptions="Center"/>
                         <Label Text="Ver mapa" FontSize="11" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
                 </Frame>
 
                 <!-- Instagram -->
                 <Frame Grid.Column="2"
-                       BackgroundColor="#E1338E"
-                       CornerRadius="18"
+                       BackgroundColor="#33FFFFFF"
+                       BorderColor="#55FFFFFF"
+                       CornerRadius="16"
                        Padding="0"
-                       HasShadow="True"
-                       HeightRequest="68">
+                       HasShadow="False"
+                       HeightRequest="70">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnInstagramClicked"/>
                     </Frame.GestureRecognizers>
-                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="icono_instagram.png" HeightRequest="28" WidthRequest="28" HorizontalOptions="Center"/>
+                    <VerticalStackLayout Spacing="5" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="icono_instagram.png" HeightRequest="26" WidthRequest="26" HorizontalOptions="Center"/>
                         <Label Text="Instagram" FontSize="11" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
                 </Frame>
+
                 <!-- Compartir -->
                 <Frame Grid.Column="3"
-       BackgroundColor="#E6B84D"
-       CornerRadius="18"
-       Padding="0"
-       HasShadow="True"
-       HeightRequest="68">
+                       BackgroundColor="#33FFFFFF"
+                       BorderColor="#55FFFFFF"
+                       CornerRadius="16"
+                       Padding="0"
+                       HasShadow="False"
+                       HeightRequest="70">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnCompartirClicked"/>
                     </Frame.GestureRecognizers>
-                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="icono_compartir.png" HeightRequest="28" WidthRequest="28" HorizontalOptions="Center"/>
+                    <VerticalStackLayout Spacing="5" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="icono_compartir.png" HeightRequest="26" WidthRequest="26" HorizontalOptions="Center"/>
                         <Label Text="Compartir" FontSize="11" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
                 </Frame>
 
             </Grid>
 
-            <!-- ================= TITULO PRODUCTOS ================= -->
-            <VerticalStackLayout Padding="16,4,16,10" Spacing="2">
-                <Label Text="Productos"
-                       FontSize="20"
-                       FontAttributes="Bold"
-                       TextColor="White"/>
-                <Label Text="Encontrá lo que buscás"
-                       FontSize="13"
-                       TextColor="#DDBBFF"/>
-            </VerticalStackLayout>
+            <!-- ================= HOJA BLANCA DE PRODUCTOS ================= -->
+            <Frame BackgroundColor="#F7F8FC"
+                   CornerRadius="24"
+                   Padding="0"
+                   HasShadow="False"
+                   Margin="0,4,0,0">
+                <VerticalStackLayout Spacing="0" Padding="16,20,16,24">
 
-            <!-- ================= GRID DE PRODUCTOS ================= -->
-            <CollectionView ItemsSource="{Binding productos}"
-                IsGrouped="True"
-                Margin="12,0,12,30">
+                    <!-- TITULO PRODUCTOS -->
+                    <Label Text="Productos"
+                           FontSize="19"
+                           FontAttributes="Bold"
+                           TextColor="#15173A"/>
+                    <Label Text="Encontrá lo que buscás"
+                           FontSize="13"
+                           TextColor="#8A8AA0"
+                           Margin="0,2,0,14"/>
 
-                <CollectionView.GroupHeaderTemplate>
-                    <DataTemplate>
-                        <Label Text="{Binding Titulo}"
-                   FontSize="16"
-                   FontAttributes="Bold"
-                   TextColor="White"
-                   Margin="4,16,0,8"/>
-                    </DataTemplate>
-                </CollectionView.GroupHeaderTemplate>
+                    <!-- GRID DE PRODUCTOS -->
+                    <CollectionView ItemsSource="{Binding productos}"
+                        IsGrouped="True">
 
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical"
-                         Span="2"
-                         HorizontalItemSpacing="12"
-                         VerticalItemSpacing="12"/>
-                </CollectionView.ItemsLayout>
-
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Padding="0"
-                   CornerRadius="18"
-                   BackgroundColor="White"
-                   HasShadow="True"
-                   IsClippedToBounds="True">
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnProductoTapped"
-                                          CommandParameter="{Binding .}"/>
-                            </Frame.GestureRecognizers>
-                            <VerticalStackLayout Spacing="0">
-                                <Grid HeightRequest="140"
-                          IsClippedToBounds="True"
-                          BackgroundColor="#F2F2F2">
-                                    <Image Source="{Binding ImagenPrincipal}"
-                               Aspect="AspectFill"
-                               HorizontalOptions="Fill"
-                               VerticalOptions="Fill"/>
+                        <CollectionView.GroupHeaderTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="Auto,*" Margin="0,16,0,8" ColumnSpacing="8">
+                                    <BoxView Grid.Column="0"
+                                             WidthRequest="4"
+                                             HeightRequest="18"
+                                             Color="#C2185B"
+                                             CornerRadius="2"
+                                             VerticalOptions="Center"/>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Titulo}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="#15173A"
+                                           VerticalOptions="Center"/>
                                 </Grid>
-                                <VerticalStackLayout Padding="10,8,10,12" Spacing="4">
-                                    <Label Text="{Binding Nombre}"
-                               FontSize="13"
-                               FontAttributes="Bold"
-                               TextColor="#222"
-                               MaxLines="2"
-                               LineBreakMode="TailTruncation"/>
-                                    <Label Text="{Binding Precio, StringFormat='$ {0:N0}'}"
-                               FontSize="15"
-                               FontAttributes="Bold"
-                               TextColor="#6A0DAD"/>
-                                </VerticalStackLayout>
-                            </VerticalStackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                            </DataTemplate>
+                        </CollectionView.GroupHeaderTemplate>
 
-            </CollectionView>
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical"
+                                 Span="2"
+                                 HorizontalItemSpacing="11"
+                                 VerticalItemSpacing="11"/>
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Padding="0"
+                           CornerRadius="16"
+                           BackgroundColor="White"
+                           HasShadow="True"
+                           IsClippedToBounds="True">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnProductoTapped"
+                                                  CommandParameter="{Binding .}"/>
+                                    </Frame.GestureRecognizers>
+                                    <VerticalStackLayout Spacing="0">
+                                        <Grid HeightRequest="140"
+                                  IsClippedToBounds="True"
+                                  BackgroundColor="#ECE9F5">
+                                            <Image Source="{Binding ImagenPrincipal}"
+                                       Aspect="AspectFill"
+                                       HorizontalOptions="Fill"
+                                       VerticalOptions="Fill"/>
+                                        </Grid>
+                                        <VerticalStackLayout Padding="11,9,11,13" Spacing="4">
+                                            <Label Text="{Binding Nombre}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="#15173A"
+                                       MaxLines="2"
+                                       LineBreakMode="TailTruncation"/>
+                                            <Label Text="{Binding Precio, StringFormat='$ {0:N0}'}"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="#C2185B"/>
+                                        </VerticalStackLayout>
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </Frame>
 
         </VerticalStackLayout>
     </ScrollView>

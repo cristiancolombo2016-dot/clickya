@@ -91,18 +91,43 @@ namespace ClickYa.Views
                 return;
             }
 
-            string mensaje = "Hola, quiero hacer este pedido:\n\n";
+            // Si el local no tiene WhatsApp cargado, avisamos y no mandamos nada
+            var whatsAppLocal = CarritoService.Instancia.WhatsAppLocal;
+            if (string.IsNullOrWhiteSpace(whatsAppLocal))
+            {
+                await DisplayAlert("Sin WhatsApp",
+                    "Este comercio todavía no cargó su WhatsApp. Probá contactándolo desde su perfil.",
+                    "OK");
+                return;
+            }
 
+            // Armamos el mensaje con el nombre del local
+            var nombreLocal = CarritoService.Instancia.NombreLocal;
+            string saludo = string.IsNullOrWhiteSpace(nombreLocal)
+                ? "Hola! Quiero hacer este pedido:"
+                : $"Hola {nombreLocal}! Quiero hacer este pedido:";
+
+            string mensaje = saludo + "\n\n";
             foreach (var item in CarritoService.Instancia.Items)
             {
                 mensaje += $"• {item.nombre} x{item.cantidad} - ${item.precio * item.cantidad}\n";
             }
-
             int total = CarritoService.Instancia.Items.Sum(i => i.precio * i.cantidad);
             mensaje += $"\nTOTAL: ${total}";
 
-            string url = $"https://wa.me/5493364000000?text={Uri.EscapeDataString(mensaje)}";
+            // Limpiamos el número y armamos el formato WhatsApp Argentina: 549 + numero
+            var soloNumeros = new string(whatsAppLocal.Where(char.IsDigit).ToArray());
+            if (soloNumeros.StartsWith("0"))
+                soloNumeros = soloNumeros.Substring(1);
+            string numeroFinal;
+            if (soloNumeros.StartsWith("549"))
+                numeroFinal = soloNumeros;
+            else if (soloNumeros.StartsWith("54"))
+                numeroFinal = "549" + soloNumeros.Substring(2);
+            else
+                numeroFinal = "549" + soloNumeros;
 
+            string url = $"https://wa.me/{numeroFinal}?text={Uri.EscapeDataString(mensaje)}";
             await Launcher.OpenAsync(url);
         }
     }
