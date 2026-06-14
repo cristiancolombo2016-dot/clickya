@@ -237,14 +237,22 @@
             <div class="local-preview">
 
                 <div class="local-portada">
-                    <img id="imgPortada" src="/images/1.jfif" />
+                    <img id="imgPortada" src="" style="display:none" />
+                    <div id="portadaPlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#ECECF1;color:#9A9AA5;gap:6px">
+                        <span style="font-size:30px">🖼️</span>
+                        <span style="font-size:14px;font-weight:500">Subí la portada de tu perfil</span>
+                    </div>
                     <button class="btn-edit" onclick="document.getElementById('inputPortada').click()">📷 Cambiar portada</button>
                     <input type="file" id="inputPortada" accept="image/*" hidden />
                 </div>
 
                 <div class="local-info">
                     <div class="local-logo">
-                        <img id="imgLogo" src="/images/logo_clickya.png" onclick="document.getElementById('inputLogo').click()" style="cursor:pointer" title="Click para cambiar logo" />
+                        <img id="imgLogo" src="" onclick="document.getElementById('inputLogo').click()" style="cursor:pointer;display:none" title="Click para cambiar logo" />
+                        <div id="logoPlaceholder" onclick="document.getElementById('inputLogo').click()" style="position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border-radius:50%;overflow:hidden;background:#F0EEF6" title="Click para subir logo">
+                            <img src="/images/logo_clickya.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.18">
+                            <span style="position:relative;font-size:11px;font-weight:600;color:#7c3aed;text-align:center;line-height:1.2">Subí tu<br>logo</span>
+                        </div>
                         <input type="file" id="inputLogo" accept="image/*" hidden />
                     </div>
                     <div class="local-data">
@@ -377,8 +385,16 @@
                 document.getElementById('txtLinks').innerHTML = links.join('');
 
                 if (tecnico.esPremium) document.getElementById('badgePremium').style.display = 'inline-block';
-                if (tecnico.fotoPortada) document.getElementById('imgPortada').src = API + tecnico.fotoPortada;
-                if (tecnico.logo) document.getElementById('imgLogo').src = API + tecnico.logo;
+                if (tecnico.fotoPortada) {
+                    document.getElementById('imgPortada').src = API + tecnico.fotoPortada;
+                    document.getElementById('imgPortada').style.display = 'block';
+                    document.getElementById('portadaPlaceholder').style.display = 'none';
+                }
+                if (tecnico.logo) {
+                    document.getElementById('imgLogo').src = API + tecnico.logo;
+                    document.getElementById('imgLogo').style.display = 'block';
+                    document.getElementById('logoPlaceholder').style.display = 'none';
+                }
 
                 document.getElementById('inpNombre').value = tecnico.nombre || '';
                 document.getElementById('inpDireccion').value = tecnico.direccion || '';
@@ -406,9 +422,11 @@
                     const formData = new FormData();
                     formData.append('archivo', file);
                     const res = await fetch(`${API}/api/Tecnico/${tecnico.id}/portada`, { method: 'POST', body: formData });
-                    if (res.ok) {
+                   if (res.ok) {
                         const data = await res.json();
                         document.getElementById('imgPortada').src = API + data.portadaUrl + '?t=' + Date.now();
+                        document.getElementById('imgPortada').style.display = 'block';
+                        document.getElementById('portadaPlaceholder').style.display = 'none';
                     }
                 });
 
@@ -421,6 +439,8 @@
                     if (res.ok) {
                         const data = await res.json();
                         document.getElementById('imgLogo').src = API + data.logoUrl + '?t=' + Date.now();
+                        document.getElementById('imgLogo').style.display = 'block';
+                        document.getElementById('logoPlaceholder').style.display = 'none';
                     }
                 });
 
