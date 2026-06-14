@@ -23,7 +23,14 @@
         VerticalOptions="Start" HorizontalOptions="Start"
         Clicked="OnVolverTapped"/>
 
-                
+                <!-- TRES PUNTITOS (REPORTAR) -->
+                <Button Text="⋮" FontSize="30" TextColor="White"
+        BackgroundColor="Transparent"
+        Margin="0,44,8,0"
+        VerticalOptions="Start" HorizontalOptions="End"
+        Clicked="OnReportarTapped"/>
+
+
             </Grid>
 
             <!-- INFO PRINCIPAL -->
@@ -68,26 +75,66 @@
                     <Label x:Name="LblUbicacion"
        FontSize="16" TextColor="#4B0082"
        IsVisible="False"/>
-                    <!-- BOTÓN WHATSAPP -->
-                    <Button x:Name="BtnWhatsApp"
-                            Text="📲 Contactar por WhatsApp"
-                            BackgroundColor="#25D366"
-                            TextColor="White"
-                            FontSize="16"
-                            FontAttributes="Bold"
-                            CornerRadius="16"
-                            HeightRequest="52"
-                            Margin="0,8,0,0"
-                            Clicked="OnWhatsAppTapped"/>
-                    <Button Text="🔗 Compartir perfil"
-        BackgroundColor="#4B0082"
-        TextColor="White"
-        FontSize="15"
-        FontAttributes="Bold"
-        CornerRadius="16"
-        HeightRequest="48"
-        Margin="0,6,0,0"
-        Clicked="OnCompartirTapped"/>
+                    <!-- FILA DE BOTONES (estilo Comidas) -->
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="0" Margin="0,12,0,0">
+
+                        <!-- WhatsApp (siempre) -->
+                        <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" Spacing="6">
+                            <Frame WidthRequest="54" HeightRequest="54" CornerRadius="27"
+                                   Padding="0" BackgroundColor="#1FCB54" BorderColor="Transparent"
+                                   HasShadow="False" HorizontalOptions="Center">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnWhatsAppTapped"/>
+                                </Frame.GestureRecognizers>
+                                <Image Source="icono_whatsapp.png" HeightRequest="26" WidthRequest="26"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Frame>
+                            <Label Text="WhatsApp" FontSize="11" TextColor="#333" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+
+                        <!-- Ubicación (solo si tiene) -->
+                        <VerticalStackLayout x:Name="BtnUbicacionBox" Grid.Column="1" HorizontalOptions="Center" Spacing="6" IsVisible="False">
+                            <Frame WidthRequest="54" HeightRequest="54" CornerRadius="27"
+                                   Padding="0" BackgroundColor="#167BFF" BorderColor="Transparent"
+                                   HasShadow="False" HorizontalOptions="Center">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnUbicacionTapped"/>
+                                </Frame.GestureRecognizers>
+                                <Image Source="icono_ubicacion.png" HeightRequest="26" WidthRequest="26"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Frame>
+                            <Label Text="Ubicación" FontSize="11" TextColor="#333" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+
+                        <!-- Instagram (solo si tiene) -->
+                        <VerticalStackLayout x:Name="BtnInstagramBox" Grid.Column="2" HorizontalOptions="Center" Spacing="6" IsVisible="False">
+                            <Frame WidthRequest="54" HeightRequest="54" CornerRadius="27"
+                                   Padding="0" BackgroundColor="#E1338E" BorderColor="Transparent"
+                                   HasShadow="False" HorizontalOptions="Center">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnInstagramTapped"/>
+                                </Frame.GestureRecognizers>
+                                <Image Source="icono_instagram.png" HeightRequest="26" WidthRequest="26"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Frame>
+                            <Label Text="Instagram" FontSize="11" TextColor="#333" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+
+                        <!-- Compartir (siempre) -->
+                        <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" Spacing="6">
+                            <Frame WidthRequest="54" HeightRequest="54" CornerRadius="27"
+                                   Padding="0" BackgroundColor="#E6B84D" BorderColor="Transparent"
+                                   HasShadow="False" HorizontalOptions="Center">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnCompartirTapped"/>
+                                </Frame.GestureRecognizers>
+                                <Image Source="icono_compartir.png" HeightRequest="26" WidthRequest="26"
+                                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Frame>
+                            <Label Text="Compartir" FontSize="11" TextColor="#333" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+
+                    </Grid>
 
                 </VerticalStackLayout>
             </Frame>

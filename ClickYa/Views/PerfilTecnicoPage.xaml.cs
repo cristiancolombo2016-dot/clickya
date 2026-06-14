@@ -5,6 +5,10 @@ public partial class PerfilTecnicoPage : ContentPage
 {
     private const string BASE_URL = "https://clickya-production.up.railway.app";
     private string _whatsApp = "";
+    private string _instagram = "";
+    private string _ubicacion = "";
+    private int _idTecnico = 0;
+    private string _nombreTecnico = "";
     public string TecnicoId
     {
         set => CargarPerfil(value);
@@ -25,41 +29,23 @@ public partial class PerfilTecnicoPage : ContentPage
             var tecnico = JsonSerializer.Deserialize<TecnicoPerfilDto>(jsonTecnico, opciones);
             if (tecnico == null) return;
             _whatsApp = tecnico.WhatsApp;
+            _instagram = tecnico.Instagram ?? "";
+            _ubicacion = tecnico.Ubicacion ?? "";
+            _idTecnico = tecnico.Id;
+            _nombreTecnico = tecnico.Nombre;
             LblNombre.Text = tecnico.Nombre;
             LblRubro.Text = tecnico.Rubro;
+
             LblDireccion.Text = string.IsNullOrEmpty(tecnico.Direccion)
                 ? "" : "📍 " + tecnico.Direccion;
             LblDescripcion.Text = tecnico.Descripcion;
-            if (!string.IsNullOrEmpty(tecnico.Instagram))
-            {
-                LblInstagram.Text = "📷 " + tecnico.Instagram;
-                LblInstagram.IsVisible = true;
-                LblInstagram.GestureRecognizers.Add(new TapGestureRecognizer
-                {
-                    Command = new Command(async () =>
-                    {
-                        var ig = tecnico.Instagram.Replace("@", "").Trim();
-                        await Launcher.OpenAsync($"https://instagram.com/{ig}");
-                    })
-                });
-            }
 
-            if (!string.IsNullOrEmpty(tecnico.Ubicacion))
-            {
-                LblUbicacion.Text = "📍 Ver en Google Maps";
-                LblUbicacion.IsVisible = true;
-                LblUbicacion.GestureRecognizers.Add(new TapGestureRecognizer
-                {
-                    Command = new Command(async () =>
-                    {
-                        var ubicacion = tecnico.Ubicacion;
-                        if (!ubicacion.StartsWith("http"))
-                            ubicacion = $"https://maps.google.com/?q={Uri.EscapeDataString(ubicacion)}";
-                        await Launcher.OpenAsync(ubicacion);
-                    })
-                });
-            }
-           ;
+            // Mostrar botón Instagram solo si tiene
+            BtnInstagramBox.IsVisible = !string.IsNullOrWhiteSpace(_instagram);
+
+            // Mostrar botón Ubicación solo si tiene
+            BtnUbicacionBox.IsVisible = !string.IsNullOrWhiteSpace(_ubicacion);
+
             if (!string.IsNullOrEmpty(tecnico.FotoPortada))
                 ImgPortada.Source = ImageSource.FromUri(new Uri(BASE_URL + tecnico.FotoPortada));
             if (!string.IsNullOrEmpty(tecnico.Logo))
@@ -101,6 +87,26 @@ public partial class PerfilTecnicoPage : ContentPage
 
         await Launcher.OpenAsync($"https://wa.me/{numeroFinal}");
     }
+    private async void OnInstagramTapped(object sender, EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(_instagram)) return;
+
+        var ig = _instagram.StartsWith("http")
+            ? _instagram
+            : $"https://instagram.com/{_instagram.Replace("@", "").Trim()}";
+
+        await Launcher.OpenAsync(ig);
+    }
+    private async void OnUbicacionTapped(object sender, EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(_ubicacion)) return;
+
+        var ubicacion = _ubicacion;
+        if (!ubicacion.StartsWith("http"))
+            ubicacion = $"https://maps.google.com/?q={Uri.EscapeDataString(ubicacion)}";
+
+        await Launcher.OpenAsync(ubicacion);
+    }
     private async void OnCompartirTapped(object sender, EventArgs e)
     {
         await Share.RequestAsync(new ShareTextRequest
@@ -121,6 +127,59 @@ public partial class PerfilTecnicoPage : ContentPage
 
         await Shell.Current.GoToAsync(
             $"galeria-pub?titulo={Uri.EscapeDataString(pub.Titulo)}&imgs={Uri.EscapeDataString(string.Join(",", imagenes))}");
+    }
+
+    // ============================================
+    // REPORTAR TÉCNICO
+    // ============================================
+    private async void OnReportarTapped(object sender, EventArgs e)
+    {
+        if (_idTecnico == 0) return;
+
+        // Menú de opciones (estilo Instagram)
+        string accion = await DisplayActionSheet(
+            "Opciones", "Cancelar", null, "🚩 Reportar técnico");
+
+        if (accion != "🚩 Reportar técnico") return;
+
+        // Elegir el motivo del reporte
+        string motivo = await DisplayActionSheet(
+            "¿Por qué querés reportar este técnico?", "Cancelar", null,
+            "Contenido inapropiado",
+            "Información falsa o engañosa",
+            "Estafa o fraude",
+            "No existe / cerró",
+            "Otro");
+
+        if (string.IsNullOrWhiteSpace(motivo) || motivo == "Cancelar") return;
+
+        // Enviar el reporte a la API
+        try
+        {
+            var reporte = new
+            {
+                comercioId = _idTecnico,
+                nombreComercio = _nombreTecnico,
+                motivo = motivo,
+                detalle = ""
+            };
+
+            var json = JsonSerializer.Serialize(reporte);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            using var http = new HttpClient();
+            var resp = await http.PostAsync($"{BASE_URL}/api/Reportes", content);
+
+            if (resp.IsSuccessStatusCode)
+                await DisplayAlert("Gracias", "Tu reporte fue enviado. Lo vamos a revisar.", "OK");
+            else
+                await DisplayAlert("Error", "No se pudo enviar el reporte. Intentá de nuevo.", "OK");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("ERROR reporte: " + ex.Message);
+            await DisplayAlert("Error", "No se pudo enviar el reporte. Revisá tu conexión.", "OK");
+        }
     }
 }
 

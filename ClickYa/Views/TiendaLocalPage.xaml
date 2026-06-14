@@ -36,6 +36,27 @@
                            FontAttributes="Bold"
                            TextColor="White"/>
                 </Frame>
+                <!-- ================= TRES PUNTITOS (REPORTAR) ================= -->
+                <Frame WidthRequest="38"
+                       HeightRequest="38"
+                       CornerRadius="19"
+                       Padding="0"
+                       BackgroundColor="#55000000"
+                       BorderColor="Transparent"
+                       HasShadow="False"
+                       HorizontalOptions="End"
+                       VerticalOptions="Start"
+                       Margin="0,16,16,0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnReportarTapped"/>
+                    </Frame.GestureRecognizers>
+                    <Label Text="⋮"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
             </Grid>
 
             <!-- ================= LOGO FLOTANTE ================= -->

@@ -246,7 +246,65 @@ namespace ClickYa.Views
             }
             catch { return ""; }
         }
+        // ============================================
+        // REPORTAR COMERCIO
+        // ============================================
+        private async void OnReportarTapped(object sender, EventArgs e)
+        {
+            if (idLocal == 0) return;
+
+            var nombre = BindingContext?.GetType()
+                .GetProperty("nombre")?
+                .GetValue(BindingContext)?
+                .ToString() ?? "";
+
+            // Menú de opciones (estilo Instagram)
+            string accion = await DisplayActionSheet(
+                "Opciones", "Cancelar", null, "🚩 Reportar comercio");
+
+            if (accion != "🚩 Reportar comercio") return;
+
+            // Elegir el motivo del reporte
+            string motivo = await DisplayActionSheet(
+                "¿Por qué querés reportar este comercio?", "Cancelar", null,
+                "Contenido inapropiado",
+                "Información falsa o engañosa",
+                "Estafa o fraude",
+                "No existe / cerró",
+                "Otro");
+
+            if (string.IsNullOrWhiteSpace(motivo) || motivo == "Cancelar") return;
+
+            // Enviar el reporte a la API
+            try
+            {
+                var reporte = new
+                {
+                    comercioId = idLocal,
+                    nombreComercio = nombre,
+                    motivo = motivo,
+                    detalle = ""
+                };
+
+                var json = System.Text.Json.JsonSerializer.Serialize(reporte);
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                using var http = new HttpClient();
+                var resp = await http.PostAsync($"{_dataService.BaseUrl}/api/Reportes", content);
+
+                if (resp.IsSuccessStatusCode)
+                    await DisplayAlert("Gracias", "Tu reporte fue enviado. Lo vamos a revisar.", "OK");
+                else
+                    await DisplayAlert("Error", "No se pudo enviar el reporte. Intentá de nuevo.", "OK");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ERROR reporte: " + ex.Message);
+                await DisplayAlert("Error", "No se pudo enviar el reporte. Revisá tu conexión.", "OK");
+            }
+        }
     }  // cierre de TiendaLocalPage
+
 }      // cierre del namespace
 
 public class GrupoProductosTienda : List<ProductoTienda>

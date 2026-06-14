@@ -11,6 +11,7 @@ public partial class BarPage : ContentPage
     private readonly ClickYaDataService _dataService = new();
     private const string BASE_URL = "https://clickya-production.up.railway.app";
 
+    private int _idLocal = 0;
     private string _whatsApp = "";
     private string _instagram = "";
     private string _ubicacion = "";
@@ -57,6 +58,7 @@ public partial class BarPage : ContentPage
             var local = await _dataService.ObtenerLocalAsync(id);
             if (local == null) return;
 
+            _idLocal = id;
             _whatsApp = local.whatsApp ?? "";
             _instagram = local.instagram ?? "";
             _ubicacion = local.ubicacion ?? "";
@@ -117,6 +119,7 @@ public partial class BarPage : ContentPage
 
     private async void OnVolverTapped(object sender, TappedEventArgs e)
         => await Navigation.PopAsync();
+
     private async void OnWhatsAppClicked(object sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(_whatsApp)) return;
@@ -164,6 +167,7 @@ public partial class BarPage : ContentPage
             Text = $"{_nombre}\nhttps://clickya.com"
         });
     }
+
     private async void OnPublicacionTapped(object sender, EventArgs e)
     {
         if (sender is not Image img) return;
@@ -204,6 +208,59 @@ public partial class BarPage : ContentPage
         var imagenes = Galeria.ToList();
         await Shell.Current.GoToAsync(
             $"galeria-pub?titulo={Uri.EscapeDataString(_nombre)}&imgs={Uri.EscapeDataString(string.Join(",", imagenes))}");
+    }
+
+    // ============================================
+    // REPORTAR COMERCIO
+    // ============================================
+    private async void OnReportarTapped(object sender, EventArgs e)
+    {
+        if (_idLocal == 0) return;
+
+        // Menú de opciones (estilo Instagram)
+        string accion = await DisplayActionSheet(
+            "Opciones", "Cancelar", null, "🚩 Reportar comercio");
+
+        if (accion != "🚩 Reportar comercio") return;
+
+        // Elegir el motivo del reporte
+        string motivo = await DisplayActionSheet(
+            "¿Por qué querés reportar este comercio?", "Cancelar", null,
+            "Contenido inapropiado",
+            "Información falsa o engañosa",
+            "Estafa o fraude",
+            "No existe / cerró",
+            "Otro");
+
+        if (string.IsNullOrWhiteSpace(motivo) || motivo == "Cancelar") return;
+
+        // Enviar el reporte a la API
+        try
+        {
+            var reporte = new
+            {
+                comercioId = _idLocal,
+                nombreComercio = _nombre,
+                motivo = motivo,
+                detalle = ""
+            };
+
+            var json = System.Text.Json.JsonSerializer.Serialize(reporte);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            using var http = new HttpClient();
+            var resp = await http.PostAsync($"{BASE_URL}/api/Reportes", content);
+
+            if (resp.IsSuccessStatusCode)
+                await DisplayAlert("Gracias", "Tu reporte fue enviado. Lo vamos a revisar.", "OK");
+            else
+                await DisplayAlert("Error", "No se pudo enviar el reporte. Intentá de nuevo.", "OK");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("ERROR reporte: " + ex.Message);
+            await DisplayAlert("Error", "No se pudo enviar el reporte. Revisá tu conexión.", "OK");
+        }
     }
 }
 

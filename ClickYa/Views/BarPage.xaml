@@ -10,7 +10,7 @@
         <VerticalStackLayout Spacing="0">
 
             <!-- BARRA SUPERIOR -->
-            
+
             <Grid HeightRequest="60">
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -26,6 +26,19 @@
                     </Label>
                     <Label Text="" FontSize="24" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
+
+                <!-- Tres puntitos (reportar) -->
+                <Label Text="⋮"
+                       FontSize="30"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       VerticalOptions="Center"
+                       HorizontalOptions="End"
+                       Margin="0,0,20,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnReportarTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
             </Grid>
 
             <!-- PORTADA Y LOGO -->
