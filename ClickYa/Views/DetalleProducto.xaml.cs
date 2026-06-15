@@ -31,7 +31,7 @@ public partial class DetalleProducto : ContentPage
         ImgProducto.Source = _producto.imagen;
         LblNombre.Text = _producto.nombre;
         LblPrecio.Text = $"${_producto.precio}";
-        LblDescripcion.Text = "Descripción del producto… (desde JSON próximamente)";
+        LblDescripcion.Text = "";
     }
 
     // BOTÓN WHATSAPP

@@ -293,12 +293,7 @@
                            FontSize="18"
                            FontAttributes="Bold"
                            TextColor="#1A1A2E"/>
-                    <Label Grid.Column="1"
-                           Text="Ver todos  ›"
-                           FontSize="13"
-                           TextColor="#4B0082"
-                           FontAttributes="Bold"
-                           VerticalOptions="Center"/>
+                   
                 </Grid>
 
                 <!-- ══════════════════════════════════════
@@ -308,28 +303,40 @@
                                      IsVisible="False"
                                      Padding="12,6,12,0"
                                      Spacing="0">
-                    <Frame BackgroundColor="White"
-                           CornerRadius="18"
-                           Padding="16"
-                           HasShadow="True">
-                        <VerticalStackLayout Spacing="10">
-                            <Image Source="helado_pote.png"
-                                   HeightRequest="110"
-                                   HorizontalOptions="Center">
-                                <Image.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="AbrirHeladoModal_Tapped"/>
-                                </Image.GestureRecognizers>
-                            </Image>
-                            <Label Text="Armá tu helado"
-                                   FontSize="20"
-                                   FontAttributes="Bold"
-                                   TextColor="#4B0082"
-                                   HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
-                    </Frame>
+                    <Frame CornerRadius="18"
+                           Padding="0"
+                           HasShadow="True"
+                           IsClippedToBounds="True"
+                           BackgroundColor="White">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="AbrirHeladoModal_Tapped"/>
+                        </Frame.GestureRecognizers>
+                        <VerticalStackLayout Spacing="0">
+
+                            <!-- Imagen ocupa todo el ancho, proporción 3:2 -->
+                <Image Source="helado_pote.png"
+                                   Aspect="AspectFill"
+                                   HeightRequest="220"
+                                   HorizontalOptions="Fill"/>
+
+                <!-- Texto debajo -->
+                <VerticalStackLayout Padding="0,12,0,14" Spacing="2">
+                    <Label Text="Armá tu helado 🍦"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="#4B0082"
+                                       HorizontalOptions="Center"/>
+                    <Label Text="Elegí tus sabores favoritos"
+                                       FontSize="13"
+                                       TextColor="#8A8AA0"
+                                       HorizontalOptions="Center"/>
                 </VerticalStackLayout>
 
-                <!-- ══════════════════════════════════════
+            </VerticalStackLayout>
+            </Frame>
+            </VerticalStackLayout>
+
+            <!-- ══════════════════════════════════════
                      PRODUCTOS AGRUPADOS
                      GroupHeaderTemplate muestra el header
                      + scroll horizontal de esa categoría.
@@ -359,10 +366,7 @@
                                             <Border.StrokeShape>
                                                 <RoundRectangle CornerRadius="18"/>
                                             </Border.StrokeShape>
-                                            <Label Text="🛍️"
-                                                   FontSize="17"
-                                                   HorizontalOptions="Center"
-                                                   VerticalOptions="Center"/>
+                                           
                                         </Border>
 
                                         <Label Grid.Column="1"
@@ -372,12 +376,7 @@
                                                TextColor="#1A1A2E"
                                                VerticalOptions="Center"/>
 
-                                        <Label Grid.Column="2"
-                                               Text="Ver todos"
-                                               FontSize="13"
-                                               TextColor="#4B0082"
-                                               FontAttributes="Bold"
-                                               VerticalOptions="Center"/>
+                                       
                                     </Grid>
 
                                     <!-- Scroll horizontal de productos -->
@@ -412,9 +411,11 @@
                                                     <VerticalStackLayout Spacing="0">
 
                                                         <!-- Imagen -->
-                                                        <Grid HeightRequest="95"
-                                                              BackgroundColor="#F0F0F0">
-                                                            <Image Aspect="AspectFill">
+                                                        <Grid HeightRequest="110"
+                                                              BackgroundColor="White">
+                                                            <Image Aspect="AspectFill"
+                                                                   HorizontalOptions="Fill"
+                                                                   VerticalOptions="Fill">
                                                                 <Image.Source>
                                                                     <UriImageSource Uri="{Binding imagen}"/>
                                                                 </Image.Source>

@@ -19,8 +19,8 @@
                 </Grid.Background>
 
                 <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                    <Label Text="Armá tu helado 🍦" FontSize="24" FontAttributes="Bold" TextColor="White"/>
-                    <Image Source="helado_pote.png" HeightRequest="80"/>
+                    <Label Text="Armá tu helado " FontSize="24" FontAttributes="Bold" TextColor="White"/>
+                    <Image Source="helado_pote.png" HeightRequest="90"/>
                 </VerticalStackLayout>
             </Grid>
 

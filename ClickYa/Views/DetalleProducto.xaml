@@ -10,9 +10,9 @@
         <VerticalStackLayout Spacing="0" Padding="0">
 
             <!-- IMAGEN GRANDE -->
-            <Grid HeightRequest="300" IsClippedToBounds="True">
+            <Grid HeightRequest="300" IsClippedToBounds="True" BackgroundColor="White">
                 <Image x:Name="ImgProducto"
-                       Aspect="AspectFill"
+                       Aspect="AspectFit"
                        HorizontalOptions="Fill"
                        VerticalOptions="Fill"/>
 
