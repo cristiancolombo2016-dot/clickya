@@ -54,7 +54,7 @@
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="Banner_Tapped"/>
                                 </Frame.GestureRecognizers>
-                                <Image Source="{Binding}" Aspect="AspectFill"/>
+                                <Image Source="{Binding}" Aspect="AspectFit"/>
                             </Frame>
                         </DataTemplate>
                     </CarouselView.ItemTemplate>

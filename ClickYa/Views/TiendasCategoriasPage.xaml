@@ -34,7 +34,7 @@
                                 <DataTemplate>
                                     <Frame HeightRequest="240" CornerRadius="0" Padding="0"
                                            HasShadow="True" IsClippedToBounds="True" BackgroundColor="Black">
-                                        <Image Source="{Binding}" Aspect="AspectFill" HeightRequest="240"
+                                        <Image Source="{Binding}" Aspect="AspectFit" HeightRequest="240"
                                                HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                                     </Frame>
                                 </DataTemplate>

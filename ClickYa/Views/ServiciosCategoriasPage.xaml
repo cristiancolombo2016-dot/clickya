@@ -30,7 +30,6 @@
                         </CarouselView.ItemTemplate>
                     </CarouselView>
                 </Grid>
-
                 <IndicatorView x:Name="indicadores"
                                IndicatorColor="#FFFFFF33"
                                SelectedIndicatorColor="#E040FB"
