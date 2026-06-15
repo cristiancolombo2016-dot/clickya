@@ -230,6 +230,7 @@
                         <VerticalStackLayout Grid.Column="2"
                                              HorizontalOptions="Center"
                                              Spacing="6">
+                            
                             <Border WidthRequest="54"
                                     HeightRequest="54"
                                     BackgroundColor="#E1338E"

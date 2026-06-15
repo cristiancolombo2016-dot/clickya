@@ -194,7 +194,11 @@ namespace ClickYa.Views
                 .GetValue(BindingContext)?
                 .ToString();
 
-            if (string.IsNullOrWhiteSpace(insta)) return;
+            if (string.IsNullOrWhiteSpace(insta))
+            {
+                await DisplayAlert("Instagram", "Este comercio no cargó su Instagram.", "OK");
+                return;
+            }
 
             if (!insta.StartsWith("http"))
                 insta = $"https://instagram.com/{insta.Replace("@", "").Trim()}";

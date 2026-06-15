@@ -78,59 +78,71 @@
                     <!-- FILA DE BOTONES (estilo Comidas) -->
                     <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="0" Margin="0,12,0,0">
 
-                        <!-- WhatsApp (siempre) -->
+                        <!-- WhatsApp -->
                         <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" Spacing="6">
-                            <Frame WidthRequest="54" HeightRequest="54" CornerRadius="27"
-                                   Padding="0" BackgroundColor="#1FCB54" BorderColor="Transparent"
-                                   HasShadow="False" HorizontalOptions="Center">
-                                <Frame.GestureRecognizers>
+                            <Border WidthRequest="54" HeightRequest="54"
+                                    BackgroundColor="#1FCB54" StrokeThickness="0"
+                                    HorizontalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="27"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnWhatsAppTapped"/>
-                                </Frame.GestureRecognizers>
+                                </Border.GestureRecognizers>
                                 <Image Source="icono_whatsapp.png" HeightRequest="26" WidthRequest="26"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Frame>
+                            </Border>
                             <Label Text="WhatsApp" FontSize="11" TextColor="#333" HorizontalOptions="Center"/>
                         </VerticalStackLayout>
 
-                        <!-- Ubicación (solo si tiene) -->
-                        <VerticalStackLayout x:Name="BtnUbicacionBox" Grid.Column="1" HorizontalOptions="Center" Spacing="6" IsVisible="False">
-                            <Frame WidthRequest="54" HeightRequest="54" CornerRadius="27"
-                                   Padding="0" BackgroundColor="#167BFF" BorderColor="Transparent"
-                                   HasShadow="False" HorizontalOptions="Center">
-                                <Frame.GestureRecognizers>
+                        <!-- Ubicación -->
+                        <VerticalStackLayout x:Name="BtnUbicacionBox" Grid.Column="1" HorizontalOptions="Center" Spacing="6">
+                            <Border WidthRequest="54" HeightRequest="54"
+                                    BackgroundColor="#167BFF" StrokeThickness="0"
+                                    HorizontalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="27"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnUbicacionTapped"/>
-                                </Frame.GestureRecognizers>
+                                </Border.GestureRecognizers>
                                 <Image Source="icono_ubicacion.png" HeightRequest="26" WidthRequest="26"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Frame>
+                            </Border>
                             <Label Text="Ubicación" FontSize="11" TextColor="#333" HorizontalOptions="Center"/>
                         </VerticalStackLayout>
 
-                        <!-- Instagram (solo si tiene) -->
-                        <VerticalStackLayout x:Name="BtnInstagramBox" Grid.Column="2" HorizontalOptions="Center" Spacing="6" IsVisible="False">
-                            <Frame WidthRequest="54" HeightRequest="54" CornerRadius="27"
-                                   Padding="0" BackgroundColor="#E1338E" BorderColor="Transparent"
-                                   HasShadow="False" HorizontalOptions="Center">
-                                <Frame.GestureRecognizers>
+                        <!-- Instagram -->
+                        <VerticalStackLayout x:Name="BtnInstagramBox" Grid.Column="2" HorizontalOptions="Center" Spacing="6">
+                            <Border WidthRequest="54" HeightRequest="54"
+                                    BackgroundColor="#E1338E" StrokeThickness="0"
+                                    HorizontalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="27"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnInstagramTapped"/>
-                                </Frame.GestureRecognizers>
+                                </Border.GestureRecognizers>
                                 <Image Source="icono_instagram.png" HeightRequest="26" WidthRequest="26"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Frame>
+                            </Border>
                             <Label Text="Instagram" FontSize="11" TextColor="#333" HorizontalOptions="Center"/>
                         </VerticalStackLayout>
 
-                        <!-- Compartir (siempre) -->
+                        <!-- Compartir -->
                         <VerticalStackLayout Grid.Column="3" HorizontalOptions="Center" Spacing="6">
-                            <Frame WidthRequest="54" HeightRequest="54" CornerRadius="27"
-                                   Padding="0" BackgroundColor="#E6B84D" BorderColor="Transparent"
-                                   HasShadow="False" HorizontalOptions="Center">
-                                <Frame.GestureRecognizers>
+                            <Border WidthRequest="54" HeightRequest="54"
+                                    BackgroundColor="#E6B84D" StrokeThickness="0"
+                                    HorizontalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="27"/>
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnCompartirTapped"/>
-                                </Frame.GestureRecognizers>
+                                </Border.GestureRecognizers>
                                 <Image Source="icono_compartir.png" HeightRequest="26" WidthRequest="26"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
-                            </Frame>
+                            </Border>
                             <Label Text="Compartir" FontSize="11" TextColor="#333" HorizontalOptions="Center"/>
                         </VerticalStackLayout>
 

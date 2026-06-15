@@ -40,12 +40,6 @@ public partial class PerfilTecnicoPage : ContentPage
                 ? "" : "📍 " + tecnico.Direccion;
             LblDescripcion.Text = tecnico.Descripcion;
 
-            // Mostrar botón Instagram solo si tiene
-            BtnInstagramBox.IsVisible = !string.IsNullOrWhiteSpace(_instagram);
-
-            // Mostrar botón Ubicación solo si tiene
-            BtnUbicacionBox.IsVisible = !string.IsNullOrWhiteSpace(_ubicacion);
-
             if (!string.IsNullOrEmpty(tecnico.FotoPortada))
                 ImgPortada.Source = ImageSource.FromUri(new Uri(BASE_URL + tecnico.FotoPortada));
             if (!string.IsNullOrEmpty(tecnico.Logo))
@@ -89,7 +83,11 @@ public partial class PerfilTecnicoPage : ContentPage
     }
     private async void OnInstagramTapped(object sender, EventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(_instagram)) return;
+        if (string.IsNullOrWhiteSpace(_instagram))
+        {
+            await DisplayAlert("Instagram", "Este técnico no cargó su Instagram.", "OK");
+            return;
+        }
 
         var ig = _instagram.StartsWith("http")
             ? _instagram
@@ -99,7 +97,11 @@ public partial class PerfilTecnicoPage : ContentPage
     }
     private async void OnUbicacionTapped(object sender, EventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(_ubicacion)) return;
+        if (string.IsNullOrWhiteSpace(_ubicacion))
+        {
+            await DisplayAlert("Ubicación", "Este técnico no cargó su ubicación.", "OK");
+            return;
+        }
 
         var ubicacion = _ubicacion;
         if (!ubicacion.StartsWith("http"))

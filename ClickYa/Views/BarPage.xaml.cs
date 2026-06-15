@@ -143,7 +143,11 @@ public partial class BarPage : ContentPage
 
     private async void OnInstagramClicked(object sender, EventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(_instagram)) return;
+        if (string.IsNullOrWhiteSpace(_instagram))
+        {
+            await DisplayAlert("Instagram", "Este comercio no cargó su Instagram.", "OK");
+            return;
+        }
 
         var url = _instagram.StartsWith("http")
             ? _instagram

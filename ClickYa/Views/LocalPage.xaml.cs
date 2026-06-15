@@ -264,7 +264,11 @@ public partial class LocalPage : ContentPage
 
     private async void BtnInstagram_Clicked(object sender, EventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(_local?.instagram)) return;
+        if (string.IsNullOrWhiteSpace(_local?.instagram))
+        {
+            await DisplayAlert("Instagram", "Este comercio no cargó su Instagram.", "OK");
+            return;
+        }
 
         var url = _local.instagram.StartsWith("http")
             ? _local.instagram
