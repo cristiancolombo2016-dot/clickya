@@ -11,12 +11,12 @@ namespace ClickYa.Api.Controllers
     public class CategoriasController : ControllerBase
     {
         private readonly AppDbContext _db;
-        private readonly string _uploadsPath;
+        private readonly SafeImageStorage _images;
 
-        public CategoriasController(AppDbContext db, IWebHostEnvironment env)
+        public CategoriasController(AppDbContext db, SafeImageStorage images)
         {
             _db = db;
-            _uploadsPath = Path.Combine(env.WebRootPath, "uploads", "categorias");
+            _images = images;
         }
 
         [HttpGet("seccion/{seccion}")]
@@ -40,38 +40,33 @@ namespace ClickYa.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = SecurityDefaults.AdminRole)]
-        [RequestSizeLimit(10_000_000)]
+        [RequestSizeLimit(12_000_000)]
         public async Task<IActionResult> Crear([FromForm] CategoriaForm form)
         {
             if (string.IsNullOrWhiteSpace(form.Nombre)) return BadRequest("Falta nombre");
             if (form.Icono == null || form.Icono.Length == 0) return BadRequest("Falta icono");
 
-            if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
-
-            var ext = Path.GetExtension(form.Icono.FileName).ToLower();
-            var fileName = $"{Guid.NewGuid()}{ext}";
-            var filePath = Path.Combine(_uploadsPath, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-                await form.Icono.CopyToAsync(stream);
+            var iconoUrl = await _images.SaveAsync(form.Icono, "categorias");
+            if (iconoUrl == null) return BadRequest("El ícono debe ser JPG, PNG o WEBP y pesar hasta 10 MB.");
 
             var nueva = new Categoria
             {
                 Seccion = form.Seccion ?? "comidas",
                 Nombre = form.Nombre,
-                IconoUrl = $"/uploads/categorias/{fileName}",
+                IconoUrl = iconoUrl,
                 Orden = form.Orden,
                 Activo = true
             };
 
             _db.Categorias.Add(nueva);
-            await _db.SaveChangesAsync();
+            try { await _db.SaveChangesAsync(); }
+            catch { _images.Delete(iconoUrl); throw; }
             return Ok(nueva);
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = SecurityDefaults.AdminRole)]
-        [RequestSizeLimit(10_000_000)]
+        [RequestSizeLimit(12_000_000)]
         public async Task<IActionResult> Editar(int id, [FromForm] CategoriaForm form)
         {
             var existente = await _db.Categorias.FindAsync(id);
@@ -83,13 +78,12 @@ namespace ClickYa.Api.Controllers
 
             if (form.Icono != null && form.Icono.Length > 0)
             {
-                if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
-                var ext = Path.GetExtension(form.Icono.FileName).ToLower();
-                var fileName = $"{Guid.NewGuid()}{ext}";
-                var filePath = Path.Combine(_uploadsPath, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                    await form.Icono.CopyToAsync(stream);
-                existente.IconoUrl = $"/uploads/categorias/{fileName}";
+                var iconoUrl = await _images.SaveAsync(form.Icono, "categorias");
+                if (iconoUrl == null) return BadRequest("El ícono debe ser JPG, PNG o WEBP y pesar hasta 10 MB.");
+                existente.IconoUrl = iconoUrl;
+                try { await _db.SaveChangesAsync(); }
+                catch { _images.Delete(iconoUrl); throw; }
+                return Ok(existente);
             }
 
             await _db.SaveChangesAsync();
@@ -102,8 +96,15 @@ namespace ClickYa.Api.Controllers
         {
             var categoria = await _db.Categorias.FindAsync(id);
             if (categoria == null) return NotFound();
+            if (await _db.Tecnicos.AnyAsync(t => t.CategoriaId == id) ||
+                await _db.Urgencias.AnyAsync(u => u.CategoriaId == id))
+                return Conflict("La categoría está asociada a técnicos o urgencias y no puede eliminarse.");
             _db.Categorias.Remove(categoria);
-            await _db.SaveChangesAsync();
+            try { await _db.SaveChangesAsync(); }
+            catch (DbUpdateException)
+            {
+                return Conflict("La categoría está en uso y no puede eliminarse.");
+            }
             return Ok();
         }
     }

@@ -465,6 +465,39 @@ namespace ClickYa.Api.Migrations
                     b.ToTable("SolicitudesServicio");
                 });
 
+            modelBuilder.Entity("ClickYa.Api.Models.CalificacionServicio", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("integer");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Comentario").HasColumnType("text");
+                    b.Property<int>("Estrellas").HasColumnType("integer");
+                    b.Property<DateTime>("FechaCreacion").HasColumnType("timestamp with time zone");
+                    b.Property<int>("TecnicoId").HasColumnType("integer");
+                    b.Property<int>("UrgenciaId").HasColumnType("integer");
+                    b.HasKey("Id");
+                    b.HasIndex("TecnicoId");
+                    b.HasIndex("UrgenciaId").IsUnique();
+                    b.ToTable("CalificacionesServicio", t => t.HasCheckConstraint(
+                        "CK_CalificacionesServicio_Estrellas", "\"Estrellas\" BETWEEN 1 AND 5"));
+                });
+
+            modelBuilder.Entity("ClickYa.Api.Models.OfertaUrgencia", b =>
+                {
+                    b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("integer");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Disponibilidad").IsRequired().HasColumnType("text");
+                    b.Property<DateTime>("FechaCreacion").HasColumnType("timestamp with time zone");
+                    b.Property<string>("Mensaje").IsRequired().HasColumnType("text");
+                    b.Property<decimal>("PrecioEstimado").HasPrecision(12, 2).HasColumnType("numeric(12,2)");
+                    b.Property<int>("TecnicoId").HasColumnType("integer");
+                    b.Property<int>("UrgenciaId").HasColumnType("integer");
+                    b.HasKey("Id");
+                    b.HasIndex("TecnicoId");
+                    b.HasIndex("UrgenciaId", "TecnicoId").IsUnique();
+                    b.ToTable("OfertasUrgencia", t => t.HasCheckConstraint(
+                        "CK_OfertasUrgencia_Precio", "\"PrecioEstimado\" >= 0"));
+                });
+
             modelBuilder.Entity("ClickYa.Api.Models.SolicitudUrgencia", b =>
                 {
                     b.Property<int>("Id")
@@ -472,6 +505,13 @@ namespace ClickYa.Api.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CategoriaId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ContactoClienteProtegido")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
@@ -484,21 +524,45 @@ namespace ClickYa.Api.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("FechaSeleccion")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("FotoUrl")
                         .HasColumnType("text");
+
+                    b.Property<string>("DireccionExactaProtegida")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("OfertaSeleccionadaId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Rubro")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TecnicoId")
+                    b.Property<int?>("TecnicoId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("TokenClienteHash")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("WhatsAppCliente")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ZonaBarrio")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
+
+                    b.HasIndex("OfertaSeleccionadaId").IsUnique();
+
+                    b.HasIndex("TecnicoId");
 
                     b.ToTable("Urgencias");
                 });
@@ -513,6 +577,9 @@ namespace ClickYa.Api.Migrations
 
                     b.Property<bool>("Activo")
                         .HasColumnType("boolean");
+
+                    b.Property<int?>("CategoriaId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
@@ -568,7 +635,65 @@ namespace ClickYa.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoriaId");
+
                     b.ToTable("Tecnicos");
+                });
+
+            modelBuilder.Entity("ClickYa.Api.Models.CalificacionServicio", b =>
+                {
+                    b.HasOne("Tecnico", null)
+                        .WithMany()
+                        .HasForeignKey("TecnicoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ClickYa.Api.Models.SolicitudUrgencia", null)
+                        .WithOne()
+                        .HasForeignKey("ClickYa.Api.Models.CalificacionServicio", "UrgenciaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ClickYa.Api.Models.OfertaUrgencia", b =>
+                {
+                    b.HasOne("Tecnico", null)
+                        .WithMany()
+                        .HasForeignKey("TecnicoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ClickYa.Api.Models.SolicitudUrgencia", null)
+                        .WithMany()
+                        .HasForeignKey("UrgenciaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ClickYa.Api.Models.SolicitudUrgencia", b =>
+                {
+                    b.HasOne("ClickYa.Api.Models.Categoria", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ClickYa.Api.Models.OfertaUrgencia", null)
+                        .WithMany()
+                        .HasForeignKey("OfertaSeleccionadaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Tecnico", null)
+                        .WithMany()
+                        .HasForeignKey("TecnicoId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("Tecnico", b =>
+                {
+                    b.HasOne("ClickYa.Api.Models.Categoria", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("ClickYa.Api.Models.PublicacionComercio", b =>

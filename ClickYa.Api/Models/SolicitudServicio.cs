@@ -2,6 +2,7 @@
 
 namespace ClickYa.Api.Models
 {
+    [Obsolete("Modelo histórico conservado por compatibilidad. Usar SolicitudUrgencia.")]
     public class SolicitudServicio
     {
         public int Id { get; set; }

@@ -8,15 +8,14 @@ namespace ClickYa.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Obsolete("Flujo histórico reemplazado por SolicitudUrgencia y ofertas.")]
     public class SolicitudServicioController : ControllerBase
     {
         private readonly AppDbContext _db;
-        private readonly string _uploadsPath;
 
-        public SolicitudServicioController(AppDbContext db, IWebHostEnvironment env)
+        public SolicitudServicioController(AppDbContext db)
         {
             _db = db;
-            _uploadsPath = Path.Combine(env.WebRootPath, "uploads");
         }
 
         [HttpGet]
@@ -42,39 +41,14 @@ namespace ClickYa.Api.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [RequestSizeLimit(20_000_000)]
-        public async Task<IActionResult> Crear(
+        [Obsolete("Usar POST /api/Urgencia.")]
+        public IActionResult Crear(
             [FromForm] string rubro,
             [FromForm] string descripcion,
             [FromForm] string whatsAppCliente,
             IFormFile? imagen)
-        {
-            var imagenUrl = "";
-            if (imagen != null && imagen.Length > 0)
-            {
-                if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
-                var ext = Path.GetExtension(imagen.FileName).ToLower();
-                var fileName = $"{Guid.NewGuid()}{ext}";
-                var filePath = Path.Combine(_uploadsPath, fileName);
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await imagen.CopyToAsync(stream);
-                imagenUrl = $"/uploads/{fileName}";
-            }
-
-            var nueva = new SolicitudServicio
-            {
-                Rubro = rubro,
-                Descripcion = descripcion,
-                WhatsAppCliente = whatsAppCliente,
-                ImagenUrl = imagenUrl,
-                Fecha = DateTime.UtcNow,
-                Estado = "Pendiente"
-            };
-
-            _db.SolicitudesServicio.Add(nueva);
-            await _db.SaveChangesAsync();
-            return Ok(nueva);
-        }
+            => StatusCode(StatusCodes.Status410Gone,
+                "Este flujo quedó obsoleto. Actualizá la aplicación para publicar una urgencia.");
 
         [HttpPut("{id}/estado")]
         [Authorize(Roles = SecurityDefaults.AdminRole)]

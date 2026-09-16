@@ -9,6 +9,7 @@ public class Tecnico
     [JsonIgnore]
     public string Token { get; set; } = "";
     public bool Activo { get; set; } = true;
+    public int? CategoriaId { get; set; }
 
     // NUEVO
     public bool EsPremium { get; set; } = false;
@@ -17,8 +18,12 @@ public class Tecnico
     public string Ubicacion { get; set; } = ""; // lat,lng
     public string Direccion { get; set; } = "";
     public string Descripcion { get; set; } = "";
+    // Inicio de la membresía/última renovación. La vigencia termina 30 días después.
     public DateTime? FechaPremium { get; set; } = null;
     public string Instagram { get; set; } = "";
     public double Latitud { get; set; } = 0;
     public double Longitud { get; set; } = 0;
+
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public bool PremiumVigente => ClickYa.Api.Models.PremiumMembership.IsVigente(this, DateTime.UtcNow);
 }

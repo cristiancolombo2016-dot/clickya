@@ -12,12 +12,12 @@ namespace ClickYa.Api.Controllers
     public class PublicacionController : ControllerBase
     {
         private readonly AppDbContext _db;
-        private readonly string _uploadsPath;
+        private readonly SafeImageStorage _images;
 
-        public PublicacionController(AppDbContext db, IWebHostEnvironment env)
+        public PublicacionController(AppDbContext db, SafeImageStorage images)
         {
             _db = db;
-            _uploadsPath = Path.Combine(env.WebRootPath, "uploads");
+            _images = images;
         }
 
         [AllowAnonymous]
@@ -60,8 +60,10 @@ namespace ClickYa.Api.Controllers
             if (tecnico == null) return Unauthorized("Token inválido");
             if (string.IsNullOrWhiteSpace(form.Titulo)) return BadRequest("Falta título");
 
-            int maxImagenes = tecnico.EsPremium ? 20 : 8;
-            var imagenesUrls = await GuardarImagenes(form.Imagenes, maxImagenes);
+            int maxImagenes = PremiumMembership.IsVigente(tecnico, DateTime.UtcNow) ? 20 : 8;
+            var imagenesUrls = await _images.SaveManyAsync(form.Imagenes, maxImagenes);
+            if (imagenesUrls == null)
+                return BadRequest($"Podés subir hasta {maxImagenes} imágenes JPG, PNG o WEBP de 10 MB cada una.");
 
             var nueva = new Publicacion
             {
@@ -73,7 +75,8 @@ namespace ClickYa.Api.Controllers
             };
 
             _db.Publicaciones.Add(nueva);
-            await _db.SaveChangesAsync();
+            try { await _db.SaveChangesAsync(); }
+            catch { imagenesUrls.ForEach(_images.Delete); throw; }
             return Ok(nueva);
         }
 
@@ -94,8 +97,14 @@ namespace ClickYa.Api.Controllers
 
             if (form.Imagenes != null && form.Imagenes.Count > 0)
             {
-                int maxImagenes = tecnico.EsPremium ? 20 : 8;
-                existente.Imagenes = await GuardarImagenes(form.Imagenes, maxImagenes);
+                int maxImagenes = PremiumMembership.IsVigente(tecnico, DateTime.UtcNow) ? 20 : 8;
+                var nuevasImagenes = await _images.SaveManyAsync(form.Imagenes, maxImagenes);
+                if (nuevasImagenes == null)
+                    return BadRequest($"Podés subir hasta {maxImagenes} imágenes JPG, PNG o WEBP de 10 MB cada una.");
+                existente.Imagenes = nuevasImagenes;
+                try { await _db.SaveChangesAsync(); }
+                catch { nuevasImagenes.ForEach(_images.Delete); throw; }
+                return Ok(existente);
             }
 
             await _db.SaveChangesAsync();
@@ -115,23 +124,6 @@ namespace ClickYa.Api.Controllers
             return Ok();
         }
 
-        private async Task<List<string>> GuardarImagenes(List<IFormFile>? imagenes, int max)
-        {
-            var urls = new List<string>();
-            if (imagenes == null || imagenes.Count == 0) return urls;
-            if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
-
-            foreach (var imagen in imagenes.Take(max))
-            {
-                if (imagen.Length == 0) continue;
-                var fileName = Guid.NewGuid() + Path.GetExtension(imagen.FileName);
-                var filePath = Path.Combine(_uploadsPath, fileName);
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await imagen.CopyToAsync(stream);
-                urls.Add($"/uploads/{fileName}");
-            }
-            return urls;
-        }
     }
 
     public class PublicacionForm

@@ -3,6 +3,7 @@ using ClickYa.Api.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.RateLimiting;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,16 @@ if (!builder.Environment.IsDevelopment())
         !PasswordSecurity.IsHash(builder.Configuration["Security:AdminPasswordHash"]))
         throw new InvalidOperationException(
             "Faltan Security__AdminUsername o Security__AdminPasswordHash válido.");
+    try
+    {
+        if (Convert.FromBase64String(builder.Configuration["Security:SensitiveDataKey"] ?? "").Length != 32)
+            throw new FormatException();
+    }
+    catch (FormatException)
+    {
+        throw new InvalidOperationException(
+            "Falta Security__SensitiveDataKey o no contiene 32 bytes codificados en Base64.");
+    }
 }
 
 // 👇 CONFIGURACIÓN KESTREL
@@ -51,6 +62,23 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSingleton<AccessTokenService>();
 builder.Services.AddSingleton<WebLoginTicketService>();
 builder.Services.AddSingleton<LoginThrottle>();
+builder.Services.AddSingleton<SensitiveDataProtector>();
+builder.Services.AddSingleton<AnonymousRequestTokenService>();
+builder.Services.AddSingleton<SafeImageStorage>();
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("urgencias-anonimas", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(10),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
 builder.Services
     .AddAuthentication(SecurityDefaults.AuthenticationScheme)
     .AddScheme<AuthenticationSchemeOptions, ClickYaAuthenticationHandler>(
@@ -88,6 +116,7 @@ app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.MapControllers();
 
