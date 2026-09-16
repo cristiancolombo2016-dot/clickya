@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClickYa.Api.Models;
+using ClickYa.Api.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ClickYa.Api.Controllers
 {
@@ -17,6 +20,7 @@ namespace ClickYa.Api.Controllers
             _uploadsPath = Path.Combine(env.WebRootPath, "uploads");
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -26,6 +30,7 @@ namespace ClickYa.Api.Controllers
             return Ok(lista);
         }
 
+        [AllowAnonymous]
         [HttpGet("tecnico/{tecnicoId}")]
         public async Task<IActionResult> GetPorTecnico(int tecnicoId)
         {
@@ -36,6 +41,7 @@ namespace ClickYa.Api.Controllers
             return Ok(lista);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -44,11 +50,13 @@ namespace ClickYa.Api.Controllers
             return Ok(pub);
         }
 
+        [Authorize(Roles = SecurityDefaults.TecnicoRole)]
         [HttpPost]
         [RequestSizeLimit(100_000_000)]
-        public async Task<IActionResult> Crear([FromQuery] string token, [FromForm] PublicacionForm form)
+        public async Task<IActionResult> Crear([FromForm] PublicacionForm form)
         {
-            var tecnico = await _db.Tecnicos.FirstOrDefaultAsync(t => t.Token == token && t.Activo);
+            var tecnicoId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0;
+            var tecnico = await _db.Tecnicos.FirstOrDefaultAsync(t => t.Id == tecnicoId && t.Activo);
             if (tecnico == null) return Unauthorized("Token inválido");
             if (string.IsNullOrWhiteSpace(form.Titulo)) return BadRequest("Falta título");
 
@@ -69,16 +77,17 @@ namespace ClickYa.Api.Controllers
             return Ok(nueva);
         }
 
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.TecnicoRole}")]
         [HttpPut("{id}")]
         [RequestSizeLimit(100_000_000)]
-        public async Task<IActionResult> Editar(int id, [FromQuery] string token, [FromForm] PublicacionForm form)
+        public async Task<IActionResult> Editar(int id, [FromForm] PublicacionForm form)
         {
-            var tecnico = await _db.Tecnicos.FirstOrDefaultAsync(t => t.Token == token && t.Activo);
-            if (tecnico == null) return Unauthorized("Token inválido");
-
-            var existente = await _db.Publicaciones
-                .FirstOrDefaultAsync(x => x.Id == id && x.TecnicoId == tecnico.Id);
+            var existente = await _db.Publicaciones.FirstOrDefaultAsync(x => x.Id == id);
             if (existente == null) return NotFound();
+            if (!User.CanAccess(SecurityDefaults.TecnicoRole, existente.TecnicoId)) return Forbid();
+
+            var tecnico = await _db.Tecnicos.FindAsync(existente.TecnicoId);
+            if (tecnico == null || !tecnico.Activo) return Unauthorized();
 
             existente.Titulo = form.Titulo ?? existente.Titulo;
             existente.Descripcion = form.Descripcion ?? existente.Descripcion;
@@ -93,15 +102,13 @@ namespace ClickYa.Api.Controllers
             return Ok(existente);
         }
 
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.TecnicoRole}")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Eliminar(int id, [FromQuery] string token)
+        public async Task<IActionResult> Eliminar(int id)
         {
-            var tecnico = await _db.Tecnicos.FirstOrDefaultAsync(t => t.Token == token && t.Activo);
-            if (tecnico == null) return Unauthorized("Token inválido");
-
-            var existente = await _db.Publicaciones
-                .FirstOrDefaultAsync(x => x.Id == id && x.TecnicoId == tecnico.Id);
+            var existente = await _db.Publicaciones.FirstOrDefaultAsync(x => x.Id == id);
             if (existente == null) return NotFound();
+            if (!User.CanAccess(SecurityDefaults.TecnicoRole, existente.TecnicoId)) return Forbid();
 
             _db.Publicaciones.Remove(existente);
             await _db.SaveChangesAsync();

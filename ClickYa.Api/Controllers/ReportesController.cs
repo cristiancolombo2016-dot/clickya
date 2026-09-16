@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClickYa.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using ClickYa.Api.Security;
 
 namespace ClickYa.Api.Controllers
 {
@@ -16,6 +18,7 @@ namespace ClickYa.Api.Controllers
 
         // Listar todos los reportes (para el panel admin)
         [HttpGet]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> GetTodos()
         {
             var lista = await _db.Reportes
@@ -26,6 +29,7 @@ namespace ClickYa.Api.Controllers
 
         // Crear un reporte (desde la app)
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Crear([FromBody] Reporte reporte)
         {
             reporte.CreatedAt = DateTime.UtcNow;
@@ -37,6 +41,7 @@ namespace ClickYa.Api.Controllers
 
         // Eliminar un reporte (cuando ya lo resolviste)
         [HttpDelete("{id}")]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> Eliminar(int id)
         {
             var reporte = await _db.Reportes.FindAsync(id);

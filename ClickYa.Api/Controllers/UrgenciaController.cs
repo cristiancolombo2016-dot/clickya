@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClickYa.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using ClickYa.Api.Security;
 
 namespace ClickYa.Api.Controllers
 {
@@ -18,6 +20,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpPost("foto")]
+        [AllowAnonymous]
         [RequestSizeLimit(10_000_000)]
         public async Task<IActionResult> SubirFoto(IFormFile archivo)
         {
@@ -32,6 +35,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Crear([FromBody] SolicitudUrgencia solicitud)
         {
             solicitud.Fecha = DateTime.UtcNow;
@@ -42,8 +46,11 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpGet("tecnico/{tecnicoId}")]
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.TecnicoRole}")]
         public async Task<IActionResult> GetPorTecnico(int tecnicoId)
         {
+            if (!User.CanAccess(SecurityDefaults.TecnicoRole, tecnicoId))
+                return Forbid();
             var lista = await _db.Urgencias
                 .Where(x => x.TecnicoId == tecnicoId)
                 .OrderByDescending(x => x.Fecha)
@@ -52,10 +59,13 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpPut("{id}/estado")]
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.TecnicoRole}")]
         public async Task<IActionResult> CambiarEstado(int id, [FromBody] string estado)
         {
             var item = await _db.Urgencias.FindAsync(id);
             if (item == null) return NotFound();
+            if (!User.CanAccess(SecurityDefaults.TecnicoRole, item.TecnicoId))
+                return Forbid();
             item.Estado = estado;
             await _db.SaveChangesAsync();
             return Ok(item);

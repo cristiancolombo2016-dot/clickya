@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace ClickYa.Api.Controllers;
 
 [ApiController]
@@ -7,6 +9,7 @@ namespace ClickYa.Api.Controllers;
 public class DataController : ControllerBase
 {
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult Get([FromQuery] int ciudadId = 1)
     {
         // MOCK mínimo solo para probar

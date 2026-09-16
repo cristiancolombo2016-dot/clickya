@@ -2,3 +2,4 @@
 bin/
 obj/
 *.user
+ClickYa.Api/wwwroot/data/

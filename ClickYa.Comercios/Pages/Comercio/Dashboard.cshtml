@@ -1,4 +1,5 @@
 ﻿@page "/Comercio/Dashboard"
+@model ClickYa.Comercios.Pages.Comercio.DashboardModel
 
 <h1 style="display:none">Dashboard Comercio</h1>
 
@@ -180,27 +181,12 @@
 
 @section Scripts {
     <script>
-        const apiBase = "https://clickya-production.up.railway.app";
-        let comercioId = 1;
+        const apiBase = "/secure-api";
+        const comercioId = @Model.ComercioId;
+        window.clickyaComercioId = comercioId;
 
         async function inicializar() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get("token");
-
-            if (token) {
-                try {
-                            const res = await fetch(`${apiBase}/api/Comercio/token/${token}`);
-        if (res.ok) {
-            const data = await res.json();
-            comercioId = data.id;
-            window.clickyaComercioId = data.id;
-        }
-                } catch (e) {
-                    console.error("Error obteniendo comercioId por token", e);
-                }
-            }
-
-           cargarDashboard();
+            cargarDashboard();
             cargarMensajesAdmin();
         }
 
@@ -649,10 +635,6 @@
 
         async function borrarMensaje() {
             if (!confirm("¿Borrar este mensaje?")) return;
-            const m = mensajesAdmin[msgCurrent];
-            try {
-                await fetch(`${apiBase}/api/MensajeAdmin/${m.id}`, { method: "DELETE" });
-            } catch (e) {}
             mensajesAdmin.splice(msgCurrent, 1);
             if (msgCurrent >= mensajesAdmin.length && msgCurrent > 0) msgCurrent--;
             renderBanner();

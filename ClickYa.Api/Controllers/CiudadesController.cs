@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace ClickYa.Api.Controllers
 {
     [ApiController]
@@ -7,6 +9,7 @@ namespace ClickYa.Api.Controllers
     public class CiudadesController : ControllerBase
     {
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Get()
         {
             var ciudades = new[]

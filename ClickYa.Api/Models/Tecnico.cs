@@ -1,9 +1,12 @@
-﻿public class Tecnico
+﻿using System.Text.Json.Serialization;
+
+public class Tecnico
 {
     public int Id { get; set; }
     public string Nombre { get; set; } = "";
     public string Rubro { get; set; } = "";
     public string WhatsApp { get; set; } = "";
+    [JsonIgnore]
     public string Token { get; set; } = "";
     public bool Activo { get; set; } = true;
 

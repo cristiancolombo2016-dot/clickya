@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClickYa.Api.Models;
+using ClickYa.Api.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
@@ -17,6 +19,7 @@ namespace ClickYa.Api.Controllers
             _uploadsPath = Path.Combine(env.WebRootPath, "uploads");
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -24,6 +27,7 @@ namespace ClickYa.Api.Controllers
             return Ok(lista);
         }
 
+        [AllowAnonymous]
         [HttpGet("rubro/{rubro}")]
         public async Task<IActionResult> GetPorRubro(string rubro)
         {
@@ -33,6 +37,7 @@ namespace ClickYa.Api.Controllers
             return Ok(lista);
         }
 
+        [AllowAnonymous]
         [HttpGet("categoria/{rubro}")]
         public async Task<IActionResult> GetPorCategoria(string rubro)
         {
@@ -43,6 +48,7 @@ namespace ClickYa.Api.Controllers
             return Ok(lista);
         }
 
+        [AllowAnonymous]
         [HttpGet("urgencias")]
         public async Task<IActionResult> GetUrgencias()
         {
@@ -52,6 +58,7 @@ namespace ClickYa.Api.Controllers
             return Ok(lista);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -60,34 +67,73 @@ namespace ClickYa.Api.Controllers
             return Ok(tecnico);
         }
 
-        [HttpGet("token/{token}")]
-        public async Task<IActionResult> GetPorToken(string token)
-        {
-            var tecnico = await _db.Tecnicos.FirstOrDefaultAsync(t => t.Token == token);
-            if (tecnico == null) return NotFound();
-            return Ok(tecnico);
-        }
-
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         [HttpPost]
         public async Task<IActionResult> Crear([FromBody] Tecnico tecnico)
         {
+            tecnico.Token = "";
             _db.Tecnicos.Add(tecnico);
             await _db.SaveChangesAsync();
             return Ok(tecnico);
         }
 
+        [AllowAnonymous]
+        [HttpPost("registro")]
+        public async Task<IActionResult> Registrar([FromBody] TecnicoRegistroRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Nombre) ||
+                string.IsNullOrWhiteSpace(request.Rubro) ||
+                string.IsNullOrWhiteSpace(request.WhatsApp))
+                return BadRequest("Nombre, rubro y WhatsApp son obligatorios.");
+
+            var tecnico = new Tecnico
+            {
+                Nombre = request.Nombre.Trim(),
+                Rubro = request.Rubro.Trim(),
+                WhatsApp = request.WhatsApp.Trim(),
+                Token = "",
+                Activo = true,
+                EsPremium = false
+            };
+
+            _db.Tecnicos.Add(tecnico);
+            await _db.SaveChangesAsync();
+            var tokens = HttpContext.RequestServices.GetRequiredService<AccessTokenService>();
+            var tickets = HttpContext.RequestServices.GetRequiredService<WebLoginTicketService>();
+            var accessToken = tokens.Create(SecurityDefaults.TecnicoRole, tecnico.Id, tecnico.Nombre);
+            return Ok(new { tecnico.Id, tecnico.Nombre, dashboardTicket = tickets.Issue(accessToken) });
+        }
+
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
+        [HttpPost("{id:int}/access-ticket")]
+        public async Task<IActionResult> GenerarAcceso(int id)
+        {
+            var tecnico = await _db.Tecnicos.FindAsync(id);
+            if (tecnico == null) return NotFound();
+
+            var tokens = HttpContext.RequestServices.GetRequiredService<AccessTokenService>();
+            var tickets = HttpContext.RequestServices.GetRequiredService<WebLoginTicketService>();
+            var accessToken = tokens.Create(SecurityDefaults.TecnicoRole, tecnico.Id, tecnico.Nombre);
+            return Ok(new { dashboardTicket = tickets.Issue(accessToken) });
+        }
+
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.TecnicoRole}")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Editar(int id, [FromBody] Tecnico tecnico)
         {
+            if (!User.CanAccess(SecurityDefaults.TecnicoRole, id)) return Forbid();
             var existente = await _db.Tecnicos.FindAsync(id);
             if (existente == null) return NotFound();
 
             existente.Nombre = tecnico.Nombre;
             existente.Rubro = tecnico.Rubro;
             existente.WhatsApp = tecnico.WhatsApp;
-            existente.Activo = tecnico.Activo;
-            existente.EsPremium = tecnico.EsPremium;
-            existente.FechaPremium = tecnico.FechaPremium;
+            if (User.IsInRole(SecurityDefaults.AdminRole))
+            {
+                existente.Activo = tecnico.Activo;
+                existente.EsPremium = tecnico.EsPremium;
+                existente.FechaPremium = tecnico.FechaPremium;
+            }
             existente.FotoPortada = tecnico.FotoPortada;
             existente.Logo = tecnico.Logo;
             existente.Ubicacion = tecnico.Ubicacion;
@@ -96,13 +142,11 @@ namespace ClickYa.Api.Controllers
             existente.Instagram = tecnico.Instagram;
             existente.Latitud = tecnico.Latitud;
             existente.Longitud = tecnico.Longitud;
-            if (!string.IsNullOrWhiteSpace(tecnico.Token))
-                existente.Token = tecnico.Token;
-
             await _db.SaveChangesAsync();
             return Ok(existente);
         }
 
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Eliminar(int id)
         {
@@ -113,9 +157,11 @@ namespace ClickYa.Api.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.TecnicoRole}")]
         [HttpPost("{id}/portada")]
         public async Task<IActionResult> SubirPortada(int id, IFormFile archivo)
         {
+            if (!User.CanAccess(SecurityDefaults.TecnicoRole, id)) return Forbid();
             if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(archivo.FileName);
             var filePath = Path.Combine(_uploadsPath, fileName);
@@ -129,9 +175,11 @@ namespace ClickYa.Api.Controllers
             return Ok(new { portadaUrl = existente.FotoPortada });
         }
 
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.TecnicoRole}")]
         [HttpPost("{id}/logo")]
         public async Task<IActionResult> SubirLogo(int id, IFormFile archivo)
         {
+            if (!User.CanAccess(SecurityDefaults.TecnicoRole, id)) return Forbid();
             if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(archivo.FileName);
             var filePath = Path.Combine(_uploadsPath, fileName);
@@ -144,5 +192,12 @@ namespace ClickYa.Api.Controllers
             await _db.SaveChangesAsync();
             return Ok(new { logoUrl = existente.Logo });
         }
+    }
+
+    public sealed class TecnicoRegistroRequest
+    {
+        public string Nombre { get; set; } = "";
+        public string Rubro { get; set; } = "";
+        public string WhatsApp { get; set; } = "";
     }
 }

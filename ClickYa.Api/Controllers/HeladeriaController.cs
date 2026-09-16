@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClickYa.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using ClickYa.Api.Security;
 
 namespace ClickYa.Api.Controllers
 {
@@ -16,6 +18,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpGet("{comercioId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(int comercioId)
         {
             var h = await _db.Heladerias
@@ -26,8 +29,11 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpPut("{comercioId}")]
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.ComercioRole}")]
         public async Task<IActionResult> Put(int comercioId, [FromBody] Heladeria heladeria)
         {
+            if (!User.CanAccess(SecurityDefaults.ComercioRole, comercioId))
+                return Forbid();
             var existente = await _db.Heladerias
                 .Include(x => x.Sabores)
                 .FirstOrDefaultAsync(x => x.ComercioId == comercioId);
