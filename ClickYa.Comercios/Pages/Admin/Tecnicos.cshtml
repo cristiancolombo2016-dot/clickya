@@ -277,12 +277,14 @@
     </div>
 
     <script>
-                const API = 'https://clickya-production.up.railway.app';
-        const DASHBOARD_URL = 'http://192.168.100.9:5175/Tecnico/Dashboard';
+                const API = '/secure-api';
+        const DASHBOARD_URL = 'https://alert-kindness-production-90e4.up.railway.app/Tecnico/Dashboard';
+        let tecnicosCache = [];
 
         async function cargar() {
             const r = await fetch(`${API}/api/Tecnico`);
             const tecnicos = await r.json();
+            tecnicosCache = tecnicos;
 
             const cont = document.getElementById('listaTecnicos');
             const alertas = document.getElementById('alertasVencimiento');
@@ -311,13 +313,14 @@
                 const vencimiento = new Date(fechaPremium);
                 vencimiento.setDate(vencimiento.getDate() + 30);
                 const diasRestantes = Math.ceil((vencimiento - new Date()) / (1000 * 60 * 60 * 24));
-                const nombre = t.nombre || t.Nombre;
-                const wa = t.whatsApp || t.WhatsApp;
+                const nombre = t.nombre || t.Nombre || '';
+                const nombreSeguro = escapeHtml(nombre);
+                const wa = onlyDigits(t.whatsApp || t.WhatsApp);
                 if (diasRestantes <= 5) {
                     const vencido = diasRestantes < 0;
                     alertas.innerHTML += `
                         <div class="alerta-vencimiento">
-                            <strong>⚠️ ${vencido ? 'VENCIDO' : 'Próximo a vencer'} — ${nombre}</strong>
+                            <strong>⚠️ ${vencido ? 'VENCIDO' : 'Próximo a vencer'} — ${nombreSeguro}</strong>
                             ${vencido ? `Venció hace ${Math.abs(diasRestantes)} días` : `Vence en ${diasRestantes} día${diasRestantes !== 1 ? 's' : ''}`}
                             <br/>
                             <a href="https://wa.me/${wa}?text=${encodeURIComponent(`Hola ${nombre}! Tu plan Premium de ClickYa ${vencido ? 'venció' : 'vence en ' + diasRestantes + ' días'}. Renovalo para seguir apareciendo en urgencias.`)}"
@@ -328,15 +331,15 @@
 
             cont.innerHTML = tecnicos.map(t => {
                 const id = t.id || t.Id;
-                const nombre = t.nombre || t.Nombre;
-                const rubro = t.rubro || t.Rubro;
-                const wa = t.whatsApp || t.WhatsApp;
-                const token = t.token || t.Token;
+                const nombre = t.nombre || t.Nombre || '';
+                const rubro = t.rubro || t.Rubro || '';
+                const wa = onlyDigits(t.whatsApp || t.WhatsApp);
+                const nombreSeguro = escapeHtml(nombre);
+                const rubroSeguro = escapeHtml(rubro);
+                const waSeguro = escapeHtml(wa);
                 const esPremium = t.esPremium || t.EsPremium || false;
                 const activo = t.activo || t.Activo || false;
                 const fechaPremium = t.fechaPremium || t.FechaPremium;
-                const linkTecnico = `${DASHBOARD_URL}?token=${token}`;
-
                 let badgeVencimiento = '';
                 if (esPremium && fechaPremium) {
                     const vencimiento = new Date(fechaPremium);
@@ -350,19 +353,16 @@
                 return `
                 <div class="row ${activo ? '' : 'row-inactivo'}">
                     <div class="info">
-                        <h3>${nombre}
+                        <h3>${nombreSeguro}
                             <span class="badge ${esPremium ? 'badge-premium' : 'badge-gratuito'}">${esPremium ? '⭐ Premium' : 'Gratuito'}</span>
                             ${badgeVencimiento}
                             <span class="badge ${activo ? 'badge-activo' : 'badge-inactivo'}">${activo ? 'Activo' : 'Inactivo'}</span>
                         </h3>
-                        <p>${rubro} · ${wa}</p>
+                        <p>${rubroSeguro} · ${waSeguro}</p>
                     </div>
                     <div class="actions">
-                        ${token
-                            ? `<a class="btn btn-wa" href="https://wa.me/${wa}?text=${encodeURIComponent('Hola ' + nombre + '! Tu acceso al dashboard de ClickYa: ' + linkTecnico)}" target="_blank">📲 Enviar link</a>`
-                            : `<button class="btn btn-link" onclick="generarToken(${id})">Generar link</button>`
-                        }
-                        <a class="btn btn-wa" href="https://wa.me/${wa}" target="_blank">💬 Mensaje</a>
+                        <button class="btn btn-link" onclick="generarToken(${id})">Generar nuevo link</button>
+                        <a class="btn btn-wa" href="https://wa.me/${waSeguro}" target="_blank" rel="noopener">💬 Mensaje</a>
                         ${esPremium
                             ? `<button class="btn btn-quitar-premium" onclick="togglePremium(${id}, false)">Quitar premium</button>`
                             : `<button class="btn btn-premium" onclick="togglePremium(${id}, true)">⭐ Premium</button>`
@@ -413,15 +413,16 @@
         }
 
         async function generarToken(id) {
-            const r = await fetch(`${API}/api/Tecnico/${id}`);
-            const t = await r.json();
-            const token = crypto.randomUUID().replace(/-/g, '');
-            await fetch(`${API}/api/Tecnico/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...t, token })
-            });
-            cargar();
+            const tecnico = tecnicosCache.find(t => Number(t.id || t.Id) === Number(id));
+            const wa = onlyDigits(tecnico?.whatsApp || tecnico?.WhatsApp);
+            const nombre = tecnico?.nombre || tecnico?.Nombre || '';
+            const response = await fetch(`${API}/api/Tecnico/${id}/access-ticket`, { method: 'POST' });
+            if (!response.ok) { alert('No se pudo generar el acceso.'); return; }
+            const data = await response.json();
+            const link = `${DASHBOARD_URL}?ticket=${encodeURIComponent(data.dashboardTicket)}`;
+            const mensaje = encodeURIComponent(`Hola ${nombre}! Tu nuevo acceso al dashboard de ClickYa: ${link}`);
+            if (wa) window.open(`https://wa.me/${wa}?text=${mensaje}`, '_blank', 'noopener');
+            else await navigator.clipboard.writeText(link);
         }
 
         async function eliminar(id) {
@@ -439,16 +440,24 @@
             const whatsApp = document.getElementById('inpWhatsApp').value.trim();
             const esPremium = document.getElementById('inpPremium').checked;
             if (!nombre || !whatsApp) { alert('Completá todos los campos'); return; }
-            const token = crypto.randomUUID().replace(/-/g, '');
             const fechaPremium = esPremium ? new Date().toISOString() : null;
             await fetch(`${API}/api/Tecnico`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, rubro, whatsApp, token, activo: true, esPremium, fechaPremium })
+                body: JSON.stringify({ nombre, rubro, whatsApp, activo: true, esPremium, fechaPremium })
             });
             cerrarModal();
             cargar();
         }
+
+        function escapeHtml(value) {
+            return (value ?? '').toString()
+                .replaceAll('&', '&amp;').replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;').replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        function onlyDigits(value) { return (value ?? '').toString().replace(/\D/g, ''); }
 
         cargar();
     </script>

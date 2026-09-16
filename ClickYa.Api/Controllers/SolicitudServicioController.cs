@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClickYa.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using ClickYa.Api.Security;
 
 namespace ClickYa.Api.Controllers
 {
@@ -18,6 +20,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> GetAll()
         {
             var lista = await _db.SolicitudesServicio
@@ -27,6 +30,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpGet("rubro/{rubro}")]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> GetPorRubro(string rubro)
         {
             var lista = await _db.SolicitudesServicio
@@ -37,6 +41,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [RequestSizeLimit(20_000_000)]
         public async Task<IActionResult> Crear(
             [FromForm] string rubro,
@@ -72,6 +77,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpPut("{id}/estado")]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> CambiarEstado(int id, [FromBody] string estado)
         {
             var solicitud = await _db.SolicitudesServicio.FindAsync(id);

@@ -1,4 +1,6 @@
-﻿namespace ClickYa.Api.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ClickYa.Api.Models
 {
     public class Comercio
     {
@@ -16,6 +18,7 @@
         public string PortadaTipo { get; set; } = string.Empty;
         public string LogoUrl { get; set; } = string.Empty;
         public string Estado { get; set; } = "Activo";
+        [JsonIgnore]
         public string Token { get; set; } = string.Empty;
         public double Latitud { get; set; } = 0;
         public double Longitud { get; set; } = 0;

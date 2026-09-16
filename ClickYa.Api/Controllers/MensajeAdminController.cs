@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClickYa.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using ClickYa.Api.Security;
 
 namespace ClickYa.Api.Controllers
 {
@@ -16,6 +18,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpGet("activos")]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> GetActivos()
         {
             var lista = await _db.MensajesAdmin.Where(m => m.Activo).ToListAsync();
@@ -23,8 +26,11 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpGet("tecnico/{tecnicoId}")]
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.TecnicoRole}")]
         public async Task<IActionResult> GetParaTecnico(int tecnicoId)
         {
+            if (!User.CanAccess(SecurityDefaults.TecnicoRole, tecnicoId))
+                return Forbid();
             var lista = await _db.MensajesAdmin
                 .Where(m => m.Activo && (
                     m.Destino == "todos" ||
@@ -37,8 +43,11 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpGet("comercio/{comercioId}")]
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.ComercioRole}")]
         public async Task<IActionResult> GetParaComercio(int comercioId)
         {
+            if (!User.CanAccess(SecurityDefaults.ComercioRole, comercioId))
+                return Forbid();
             var comercio = await _db.Comercios.FindAsync(comercioId);
             var rubro = comercio?.Rubro?.ToLower() ?? "";
             var categoria = comercio?.Categoria?.ToLower() ?? "";
@@ -58,6 +67,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> Crear([FromBody] MensajeAdmin mensaje)
         {
             mensaje.Fecha = DateTime.UtcNow;
@@ -68,6 +78,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> Eliminar(int id)
         {
             var mensaje = await _db.MensajesAdmin.FindAsync(id);

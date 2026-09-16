@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using Microsoft.AspNetCore.Authorization;
+using ClickYa.Api.Security;
+
 namespace ClickYa.Api.Controllers
 {
     [ApiController]
@@ -7,6 +10,7 @@ namespace ClickYa.Api.Controllers
     public class FilesController : ControllerBase
     {
         [HttpPost("upload")]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
             if (file == null || file.Length == 0)

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClickYa.Api.Models;
+using ClickYa.Api.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
@@ -31,6 +33,7 @@ namespace ClickYa.Api.Controllers
             return (0, 0);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -39,6 +42,7 @@ namespace ClickYa.Api.Controllers
             return Ok(comercio);
         }
 
+        [AllowAnonymous]
         [HttpGet("todos")]
         public async Task<IActionResult> GetTodos()
         {
@@ -46,6 +50,7 @@ namespace ClickYa.Api.Controllers
             return Ok(lista);
         }
 
+        [AllowAnonymous]
         [HttpGet("rubro/{rubro}")]
         public async Task<IActionResult> GetPorRubro(string rubro)
         {
@@ -55,6 +60,7 @@ namespace ClickYa.Api.Controllers
             return Ok(lista);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -63,17 +69,11 @@ namespace ClickYa.Api.Controllers
             return Ok(comercio);
         }
 
-        [HttpGet("token/{token}")]
-        public async Task<IActionResult> GetPorToken(string token)
-        {
-            var comercio = await _db.Comercios.FirstOrDefaultAsync(x => x.Token == token);
-            if (comercio == null) return NotFound("Token inválido");
-            return Ok(comercio);
-        }
-
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.ComercioRole}")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> PutById(int id, [FromBody] Comercio comercioNuevo)
         {
+            if (!User.CanAccess(SecurityDefaults.ComercioRole, id)) return Forbid();
             if (comercioNuevo == null) return BadRequest();
             var comercio = await _db.Comercios.FindAsync(id);
             if (comercio == null) return NotFound("No existe el comercio.");
@@ -87,12 +87,16 @@ namespace ClickYa.Api.Controllers
             comercio.Longitud = coords.lng;
             comercio.Correo = comercioNuevo.Correo;
             comercio.Horarios = comercioNuevo.Horarios;
-            comercio.Rubro = comercioNuevo.Rubro;
-            comercio.Estado = comercioNuevo.Estado;
+            if (User.IsInRole(SecurityDefaults.AdminRole))
+            {
+                comercio.Rubro = comercioNuevo.Rubro;
+                comercio.Estado = comercioNuevo.Estado;
+            }
             await _db.SaveChangesAsync();
             return Ok(comercio);
         }
 
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         [HttpPost("crear")]
         public async Task<IActionResult> Crear([FromBody] Comercio nuevo)
         {
@@ -108,9 +112,11 @@ namespace ClickYa.Api.Controllers
             return Ok(nuevo);
         }
 
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.ComercioRole}")]
         [HttpPost("{id:int}/portada")]
         public async Task<IActionResult> SubirPortadaPorId(int id, IFormFile archivo)
         {
+            if (!User.CanAccess(SecurityDefaults.ComercioRole, id)) return Forbid();
             if (archivo == null || archivo.Length == 0) return BadRequest("Archivo inválido");
             if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
             var extension = Path.GetExtension(archivo.FileName).ToLower();
@@ -129,9 +135,11 @@ namespace ClickYa.Api.Controllers
             return Ok(comercio);
         }
 
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.ComercioRole}")]
         [HttpPost("{id:int}/logo")]
         public async Task<IActionResult> SubirLogoPorId(int id, IFormFile archivo)
         {
+            if (!User.CanAccess(SecurityDefaults.ComercioRole, id)) return Forbid();
             if (archivo == null || archivo.Length == 0) return BadRequest("Archivo inválido");
             if (!Directory.Exists(_uploadsPath)) Directory.CreateDirectory(_uploadsPath);
             var extension = Path.GetExtension(archivo.FileName).ToLower();
@@ -148,6 +156,7 @@ namespace ClickYa.Api.Controllers
             return Ok(comercio);
         }
 
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         [HttpPut("{id:int}/destacado")]
         public async Task<IActionResult> ToggleDestacado(int id, [FromBody] bool esDestacado)
         {
@@ -158,6 +167,7 @@ namespace ClickYa.Api.Controllers
             return Ok(comercio);
         }
 
+        [AllowAnonymous]
         [HttpGet("destacados")]
         public async Task<IActionResult> GetDestacados()
         {

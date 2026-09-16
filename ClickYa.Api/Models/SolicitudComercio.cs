@@ -1,4 +1,6 @@
-﻿namespace ClickYa.Api.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ClickYa.Api.Models
 {
     public class SolicitudComercio
     {
@@ -12,9 +14,11 @@
         public DateTime CreatedAt { get; set; }
         public string? LogoUrl { get; set; }
         public string? PortadaUrl { get; set; }
+        [JsonIgnore]
         public string? Token { get; set; }
         public int ComercioId { get; set; }
         public string Email { get; set; } = "";
+        [JsonIgnore]
         public string Password { get; set; } = "";
         public bool EsDestacado { get; set; } = false;
     }

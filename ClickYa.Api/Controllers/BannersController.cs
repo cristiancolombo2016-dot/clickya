@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClickYa.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using ClickYa.Api.Security;
 
 namespace ClickYa.Api.Controllers
 {
@@ -18,6 +20,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var lista = await _db.Banners
@@ -27,6 +30,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpGet("seccion/{seccion}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPorSeccion(string seccion)
         {
             var lista = await _db.Banners
@@ -38,6 +42,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpGet("todos")]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> GetTodos()
         {
             var lista = await _db.Banners.ToListAsync();
@@ -45,6 +50,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         [RequestSizeLimit(20_000_000)]
         public async Task<IActionResult> Crear([FromForm] BannerForm form)
         {
@@ -78,6 +84,7 @@ namespace ClickYa.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = SecurityDefaults.AdminRole)]
         public async Task<IActionResult> Eliminar(int id)
         {
             var banner = await _db.Banners.FindAsync(id);

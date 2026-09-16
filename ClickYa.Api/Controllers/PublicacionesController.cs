@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ClickYa.Api.Models;
+using ClickYa.Api.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClickYa.Api.Controllers
@@ -17,6 +19,7 @@ namespace ClickYa.Api.Controllers
             _uploadsPath = Path.Combine(env.WebRootPath, "uploads");
         }
 
+        [AllowAnonymous]
         [HttpGet("todas")]
         public async Task<IActionResult> GetTodas()
         {
@@ -26,6 +29,7 @@ namespace ClickYa.Api.Controllers
             return Ok(lista);
         }
 
+        [AllowAnonymous]
         [HttpGet("comercio/{comercioId}")]
         public async Task<IActionResult> GetPorComercio(int comercioId)
         {
@@ -36,10 +40,12 @@ namespace ClickYa.Api.Controllers
             return Ok(lista);
         }
 
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.ComercioRole}")]
         [HttpPost]
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Crear([FromForm] PublicacionComercioForm form)
         {
+            if (!User.CanAccess(SecurityDefaults.ComercioRole, form.ComercioId)) return Forbid();
             if (string.IsNullOrWhiteSpace(form.Titulo))
                 return BadRequest("Falta título");
 
@@ -63,12 +69,14 @@ namespace ClickYa.Api.Controllers
             return Ok(nueva);
         }
 
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.ComercioRole}")]
         [HttpPut("{id}")]
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> Editar(int id, [FromForm] PublicacionComercioForm form)
         {
             var existente = await _db.PublicacionesComercios.FindAsync(id);
             if (existente == null) return NotFound("Publicación no encontrada");
+            if (!User.CanAccess(SecurityDefaults.ComercioRole, existente.ComercioId)) return Forbid();
 
             existente.Titulo = form.Titulo ?? existente.Titulo;
             existente.Descripcion = form.Descripcion ?? existente.Descripcion;
@@ -85,11 +93,13 @@ namespace ClickYa.Api.Controllers
             return Ok(existente);
         }
 
+        [Authorize(Roles = $"{SecurityDefaults.AdminRole},{SecurityDefaults.ComercioRole}")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Eliminar(int id)
         {
             var existente = await _db.PublicacionesComercios.FindAsync(id);
             if (existente == null) return NotFound("Publicación no encontrada");
+            if (!User.CanAccess(SecurityDefaults.ComercioRole, existente.ComercioId)) return Forbid();
             _db.PublicacionesComercios.Remove(existente);
             await _db.SaveChangesAsync();
             return Ok();

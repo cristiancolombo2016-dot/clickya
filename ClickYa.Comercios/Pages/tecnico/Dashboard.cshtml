@@ -1,4 +1,5 @@
 ﻿@page "/Tecnico/Dashboard"
+@model ClickYa.Comercios.Pages.tecnico.DashboardModel
 @{
     Layout = null;
 }
@@ -360,16 +361,14 @@
     </div>
 
     <script>
-        const API = 'https://clickya-production.up.railway.app';
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get('token');
+        const API = '/secure-api';
+        const tecnicoId = @Model.TecnicoId;
         let tecnico = null;
         let pubEditandoId = null;
 
         async function init() {
-            if (!token) return;
             try {
-                const r = await fetch(`${API}/api/Tecnico/token/${token}`);
+                const r = await fetch(`${API}/api/Tecnico/${tecnicoId}`);
                 if (!r.ok) throw new Error();
                 tecnico = await r.json();
 
@@ -378,10 +377,13 @@
                 document.getElementById('txtDesc').textContent = tecnico.descripcion || '';
 
                 const links = [];
-                if (tecnico.whatsApp) links.push(`<a href="https://wa.me/54${tecnico.whatsApp}" target="_blank" style="color:#25D366;font-weight:600;">📲 WhatsApp</a>`);
-                if (tecnico.instagram) links.push(`<a href="https://instagram.com/${tecnico.instagram}" target="_blank" style="color:#E1306C;font-weight:600;">📸 Instagram</a>`);
-                if (tecnico.direccion) links.push(`<span style="color:#666;">📍 ${tecnico.direccion}</span>`);
-                if (tecnico.ubicacion) links.push(`<a href="${tecnico.ubicacion}" target="_blank" style="color:#4B0082;font-weight:600;">🗺️ Ver ubicación</a>`);
+                const wa = (tecnico.whatsApp || '').replace(/\D/g, '');
+                const instagram = (tecnico.instagram || '').replace(/^@@/, '');
+                const ubicacion = safeHttpUrl(tecnico.ubicacion);
+                if (wa) links.push(`<a href="https://wa.me/54${encodeURIComponent(wa)}" target="_blank" rel="noopener" style="color:#25D366;font-weight:600;">📲 WhatsApp</a>`);
+                if (instagram) links.push(`<a href="https://instagram.com/${encodeURIComponent(instagram)}" target="_blank" rel="noopener" style="color:#E1306C;font-weight:600;">📸 Instagram</a>`);
+                if (tecnico.direccion) links.push(`<span style="color:#666;">📍 ${escHtml(tecnico.direccion)}</span>`);
+                if (ubicacion) links.push(`<a href="${escHtml(ubicacion)}" target="_blank" rel="noopener" style="color:#4B0082;font-weight:600;">🗺️ Ver ubicación</a>`);
                 document.getElementById('txtLinks').innerHTML = links.join('');
 
                 if (tecnico.esPremium) document.getElementById('badgePremium').style.display = 'inline-block';
@@ -411,7 +413,7 @@
                     if (mensajes.length > 0) {
                         const banner = document.createElement('div');
                         banner.style.cssText = 'background:#EDE9FE;border-left:4px solid #7C3AED;padding:14px 18px;border-radius:12px;margin-bottom:16px;font-size:14px;color:#4B0082;';
-                        banner.innerHTML = mensajes.map(m => `📢 ${m.texto}`).join('<br>');
+                        banner.innerHTML = mensajes.map(m => `📢 ${escHtml(m.texto)}`).join('<br>');
                         document.querySelector('.local-preview').prepend(banner);
                     }
                 } catch(e) {}
@@ -588,7 +590,7 @@
             formData.append('Titulo', titulo);
             formData.append('Descripcion', descripcion);
             Array.from(imagenes).slice(0, maxImg).forEach(f => formData.append('Imagenes', f));
-            const res = await fetch(`${API}/api/Publicacion/${pubEditandoId}?token=${token}`, { method: 'PUT', body: formData });
+            const res = await fetch(`${API}/api/Publicacion/${pubEditandoId}`, { method: 'PUT', body: formData });
             if (res.ok) { await cargarPublicaciones(); cerrarModalEditar(); }
             else alert('Error al editar');
         }
@@ -611,14 +613,14 @@
             formData.append('Titulo', titulo);
             formData.append('Descripcion', descripcion);
             Array.from(imagenes).slice(0, maxImg).forEach(f => formData.append('Imagenes', f));
-            const res = await fetch(`${API}/api/Publicacion?token=${token}`, { method: 'POST', body: formData });
+            const res = await fetch(`${API}/api/Publicacion`, { method: 'POST', body: formData });
             if (res.ok) { const nueva = await res.json(); agregarCard(nueva); cerrarModalAgregar(); }
             else alert('Error al guardar');
         }
 
         async function eliminarPublicacion() {
             if (!confirm('¿Eliminar esta publicación?')) return;
-            const res = await fetch(`${API}/api/Publicacion/${pubEditandoId}?token=${token}`, { method: 'DELETE' });
+            const res = await fetch(`${API}/api/Publicacion/${pubEditandoId}`, { method: 'DELETE' });
             if (res.ok) { await cargarPublicaciones(); cerrarModalEditar(); }
         }
 
@@ -634,6 +636,13 @@
                 .replaceAll('&', '&amp;').replaceAll('<', '&lt;')
                 .replaceAll('>', '&gt;').replaceAll('"', '&quot;')
                 .replaceAll("'", '&#039;');
+        }
+
+        function safeHttpUrl(value) {
+            try {
+                const url = new URL(value || '');
+                return url.protocol === 'https:' ? url.href : '';
+            } catch { return ''; }
         }
 
         let galeriaImagenes = [];
@@ -691,22 +700,29 @@
                 const contenedor = document.getElementById('listaUrgencias');
                 lista.forEach(u => {
                     const fecha = new Date(u.fecha).toLocaleDateString('es-AR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+                    const estadoSeguro = escHtml(u.estado);
+                    const fotoSegura = safeAssetUrl(u.fotoUrl);
+                    const whatsappSeguro = (u.whatsAppCliente || '').replace(/\D/g, '');
                     contenedor.innerHTML += `
                         <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-left:4px solid ${u.estado === 'Nueva' ? '#dc2626' : '#22c55e'}">
                             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                                 <span style="font-weight:700;font-size:15px;">${escHtml(u.rubro)}</span>
-                                <span style="font-size:12px;padding:3px 10px;border-radius:999px;background:${u.estado === 'Nueva' ? '#fee2e2' : '#dcfce7'};color:${u.estado === 'Nueva' ? '#dc2626' : '#16a34a'};font-weight:700;">${u.estado}</span>
+                                <span style="font-size:12px;padding:3px 10px;border-radius:999px;background:${u.estado === 'Nueva' ? '#fee2e2' : '#dcfce7'};color:${u.estado === 'Nueva' ? '#dc2626' : '#16a34a'};font-weight:700;">${estadoSeguro}</span>
                             </div>
                             <p style="font-size:14px;color:#444;margin:0 0 8px;">${escHtml(u.descripcion)}</p>
-                            ${u.fotoUrl ? `<img src="${u.fotoUrl}" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin-bottom:8px;">` : ''}
+                            ${fotoSegura ? `<img src="${fotoSegura}" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin-bottom:8px;">` : ''}
                             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                                <a href="https://wa.me/${u.whatsAppCliente}" target="_blank" style="background:#25D366;color:white;padding:7px 14px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;">📲 Contactar</a>
+                                <a href="https://wa.me/${whatsappSeguro}" target="_blank" rel="noopener" style="background:#25D366;color:white;padding:7px 14px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;">📲 Contactar</a>
                                 <span style="font-size:12px;color:#888;">${fecha}</span>
                             </div>
                         </div>
                     `;
                 });
             } catch(e) { console.error(e); }
+        }
+
+        function safeAssetUrl(value) {
+            return /^\/uploads\/[a-zA-Z0-9._-]+$/.test(value || '') ? API + value : '';
         }
         init().then(() => cargarUrgencias());
     </script>

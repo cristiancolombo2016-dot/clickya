@@ -32,7 +32,7 @@ public partial class LoginClientePage : ContentPage
         var password = PasswordEntry.Text;
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
-            await DisplayAlert("Error", "Ingres· tu email y contraseÒa.", "OK");
+            await DisplayAlert("Error", "Ingres√° tu email y contrase√±a.", "OK");
             return;
         }
         try
@@ -46,15 +46,15 @@ public partial class LoginClientePage : ContentPage
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadFromJsonAsync<LoginResponse>();
-                if (data != null && !string.IsNullOrEmpty(data.Token))
+                if (data != null && !string.IsNullOrEmpty(data.DashboardTicket))
                 {
-                    var dashboardUrl = $"https://alert-kindness-production-90e4.up.railway.app/Comercio/Dashboard?token={data.Token}";
+                    var dashboardUrl = $"https://alert-kindness-production-90e4.up.railway.app/Comercio/Dashboard?ticket={Uri.EscapeDataString(data.DashboardTicket)}";
                     await Launcher.OpenAsync(dashboardUrl);
                 }
             }
             else
             {
-                await DisplayAlert("Error", "Email o contraseÒa incorrectos.", "OK");
+                await DisplayAlert("Error", "Email o contrase√±a incorrectos.", "OK");
             }
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public partial class LoginClientePage : ContentPage
 }
 public class LoginResponse
 {
-    public string Token { get; set; } = "";
+    public string DashboardTicket { get; set; } = "";
     public int ComercioId { get; set; }
     public string Nombre { get; set; } = "";
 }

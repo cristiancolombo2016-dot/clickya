@@ -84,12 +84,9 @@ public partial class RegistroClientePage : ContentPage
                 {
                     Nombre = NombreEntry.Text,
                     Rubro = CategoriaPicker.SelectedItem?.ToString() ?? "",
-                    WhatsApp = WhatsappEntry.Text,
-                    Token = Guid.NewGuid().ToString("N"),
-                    Activo = true,
-                    EsPremium = false
+                    WhatsApp = WhatsappEntry.Text
                 };
-                response = await client.PostAsJsonAsync("api/Tecnico", tecnico);
+                response = await client.PostAsJsonAsync("api/Tecnico/registro", tecnico);
             }
             else
             {
@@ -98,9 +95,9 @@ public partial class RegistroClientePage : ContentPage
                     await DisplayAlert("Datos incompletos", "Ingresá tu email.", "OK");
                     return;
                 }
-                if (string.IsNullOrWhiteSpace(PasswordEntry.Text) || PasswordEntry.Text.Length < 6)
+                if (string.IsNullOrWhiteSpace(PasswordEntry.Text) || PasswordEntry.Text.Length < 8)
                 {
-                    await DisplayAlert("Datos incompletos", "La contraseña debe tener al menos 6 caracteres.", "OK");
+                    await DisplayAlert("Datos incompletos", "La contraseña debe tener al menos 8 caracteres.", "OK");
                     return;
                 }
 
@@ -119,34 +116,19 @@ public partial class RegistroClientePage : ContentPage
 
             if (response.IsSuccessStatusCode)
             {
-                var numeroWhatsApp = ArmarWhatsApp(WhatsappEntry.Text.Trim());
-
                 if (esServicio)
                 {
                     var tecnicoCreado = await response.Content.ReadFromJsonAsync<TecnicoRegistrado>();
-                    if (tecnicoCreado != null && !string.IsNullOrEmpty(tecnicoCreado.Token))
+                    if (tecnicoCreado != null && !string.IsNullOrEmpty(tecnicoCreado.DashboardTicket))
                     {
-                        var dashboardUrl = $"https://alert-kindness-production-90e4.up.railway.app/Tecnico/Dashboard?token={tecnicoCreado.Token}";
-                        var mensaje = $"Hola {tecnicoCreado.Nombre}! 👋 Bienvenido a ClickYa.\n\nTu panel de control es este link, guardalo:\n\n{dashboardUrl}";
-                        var waUrl = $"https://wa.me/{numeroWhatsApp}?text={Uri.EscapeDataString(mensaje)}";
-                        await Launcher.OpenAsync(waUrl);
-                    }
-                }
-                else
-                {
-                    var comercioCreado = await response.Content.ReadFromJsonAsync<ComercioRegistrado>();
-                    if (comercioCreado != null && !string.IsNullOrEmpty(comercioCreado.Token))
-                    {
-                        var dashboardUrl = $"https://alert-kindness-production-90e4.up.railway.app/Comercio/Dashboard?token={comercioCreado.Token}";
-                        var mensaje = $"Hola {comercioCreado.Nombre}! 👋 Bienvenido a ClickYa.\n\nTu panel de control:\n{dashboardUrl}\n\nEntrá con tu email y contraseña desde la app.";
-                        var waUrl = $"https://wa.me/{numeroWhatsApp}?text={Uri.EscapeDataString(mensaje)}";
-                        await Launcher.OpenAsync(waUrl);
+                        var dashboardUrl = $"https://alert-kindness-production-90e4.up.railway.app/Tecnico/Dashboard?ticket={Uri.EscapeDataString(tecnicoCreado.DashboardTicket)}";
+                        await Launcher.OpenAsync(dashboardUrl);
                     }
                 }
 
                 await DisplayAlert("¡Listo!", esServicio
-                    ? "Registro exitoso. Guardá el link que te enviamos por WhatsApp."
-                    : "Registro exitoso. Te enviamos el acceso por WhatsApp.", "OK");
+                    ? "Registro exitoso. Abrimos tu panel con una sesión segura."
+                    : "Registro exitoso. Ingresá con tu email y contraseña desde la app.", "OK");
 
                 NombreEntry.Text = string.Empty;
                 WhatsappEntry.Text = string.Empty;
@@ -173,11 +155,5 @@ public class TecnicoRegistrado
 {
     public int Id { get; set; }
     public string Nombre { get; set; } = "";
-    public string Token { get; set; } = "";
-}
-public class ComercioRegistrado
-{
-    public string Token { get; set; } = "";
-    public int ComercioId { get; set; }
-    public string Nombre { get; set; } = "";
+    public string DashboardTicket { get; set; } = "";
 }
