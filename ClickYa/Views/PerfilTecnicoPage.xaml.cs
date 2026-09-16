@@ -53,6 +53,15 @@ public partial class PerfilTecnicoPage : ContentPage
             var pubs = JsonSerializer.Deserialize<List<PublicacionItem>>(jsonPubs, opciones) ?? new();
             System.Diagnostics.Debug.WriteLine("PUBS COUNT: " + pubs.Count);
             ListaPublicaciones.ItemsSource = pubs;
+            var jsonCalificaciones = await http.GetStringAsync($"{BASE_URL}/api/Tecnico/{id}/calificaciones");
+            var reputacion = JsonSerializer.Deserialize<ReputacionTecnicoDto>(jsonCalificaciones, opciones);
+            if (reputacion != null)
+            {
+                LblReputacion.Text = reputacion.CantidadOpiniones == 0
+                    ? "Sin opiniones"
+                    : $"⭐ {reputacion.PromedioEstrellas:F1} · {reputacion.CantidadOpiniones} opiniones";
+                ListaOpiniones.ItemsSource = reputacion.Opiniones;
+            }
         }
         catch (Exception ex)
         {
@@ -198,6 +207,23 @@ public class TecnicoPerfilDto
     public string Instagram { get; set; } = "";
     public string Ubicacion { get; set; } = "";
     public bool EsPremium { get; set; }
+    public double PromedioEstrellas { get; set; }
+    public int CantidadOpiniones { get; set; }
+}
+
+public sealed class ReputacionTecnicoDto
+{
+    public double PromedioEstrellas { get; set; }
+    public int CantidadOpiniones { get; set; }
+    public List<OpinionTecnicoDto> Opiniones { get; set; } = new();
+}
+
+public sealed class OpinionTecnicoDto
+{
+    public int Estrellas { get; set; }
+    public string? Comentario { get; set; }
+    public DateTime FechaCreacion { get; set; }
+    public string EstrellasTexto => new string('★', Estrellas) + new string('☆', 5 - Estrellas);
 }
 
 public class PublicacionItem

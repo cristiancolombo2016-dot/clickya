@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClickYa.Views.MisSolicitudesPage"
+             BackgroundColor="#F7F7FA" Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Padding="18,48,18,16" ColumnDefinitions="Auto,*" BackgroundColor="#1A0A2E">
+            <Button Text="‹" FontSize="38" TextColor="White" BackgroundColor="Transparent" Clicked="Volver_Clicked"/>
+            <Label Grid.Column="1" Text="Mis solicitudes" TextColor="White" FontSize="22"
+                   FontAttributes="Bold" VerticalOptions="Center" Margin="12,0,0,0"/>
+        </Grid>
+        <CollectionView Grid.Row="1" x:Name="ListaSolicitudes" Margin="12" SelectionMode="None">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
+                    <Label Text="📋" FontSize="48" HorizontalOptions="Center"/>
+                    <Label Text="Todavía no publicaste urgencias" TextColor="#777"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Margin="4,6" Padding="16" CornerRadius="18" BackgroundColor="White" HasShadow="True">
+                        <VerticalStackLayout Spacing="8">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Rubro}" FontSize="18" FontAttributes="Bold" TextColor="#222"/>
+                                <Label Grid.Column="1" Text="{Binding Estado}" TextColor="#7C3AED" FontAttributes="Bold"/>
+                            </Grid>
+                            <Label Text="{Binding Descripcion}" TextColor="#444"/>
+                            <Label Text="{Binding ZonaTexto}" TextColor="#666"/>
+                            <Label Text="{Binding OfertasTexto}" TextColor="#B8008A" FontAttributes="Bold"/>
+                            <CollectionView ItemsSource="{Binding Ofertas}" SelectionMode="None">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame Padding="12" Margin="0,4" CornerRadius="14" BackgroundColor="#F5F0FA" HasShadow="False">
+                                            <VerticalStackLayout Spacing="5">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <Label Text="{Binding TecnicoNombre}" FontAttributes="Bold" TextColor="#222"/>
+                                                    <Label Grid.Column="1" Text="{Binding PrecioTexto}" FontAttributes="Bold" TextColor="#16803A"/>
+                                                </Grid>
+                                                <Label Text="{Binding Disponibilidad}" TextColor="#555"/>
+                                                <Label Text="{Binding Mensaje}" TextColor="#666"/>
+                                                <Label Text="{Binding ReputacionTexto}" TextColor="#B8860B"/>
+                                                <HorizontalStackLayout Spacing="8">
+                                                    <Button Text="Ver perfil" FontSize="12" BackgroundColor="#EDE9FE" TextColor="#5B21B6"
+                                                            CommandParameter="{Binding .}" Clicked="VerPerfil_Clicked"/>
+                                                    <Button Text="Elegir oferta" FontSize="12" BackgroundColor="#5C0BBF" TextColor="White"
+                                                            IsVisible="{Binding PuedeSeleccionar}" CommandParameter="{Binding .}" Clicked="Seleccionar_Clicked"/>
+                                                    <Label Text="✅ Elegida" TextColor="#16803A" FontAttributes="Bold"
+                                                           IsVisible="{Binding Seleccionada}" VerticalOptions="Center"/>
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <Button Text="Calificar técnico" BackgroundColor="#E6B84D" TextColor="#222"
+                                    IsVisible="{Binding PuedeCalificar}" CommandParameter="{Binding .}" Clicked="Calificar_Clicked"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

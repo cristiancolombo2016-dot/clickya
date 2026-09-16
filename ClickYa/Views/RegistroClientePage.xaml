@@ -88,7 +88,7 @@
                     <!-- CONTRASEÑA -->
                     <Entry
                         x:Name="PasswordEntry"
-                        Placeholder="Contraseña (mín. 6 caracteres)"
+                        Placeholder="Contraseña (mín. 8 caracteres)"
                         IsPassword="True"
                         BackgroundColor="#F6F6F6"
                         TextColor="#222"

@@ -4,18 +4,28 @@ using System.Text.Json;
 namespace ClickYa.Views;
 
 [QueryProperty(nameof(Rubro), "rubro")]
+[QueryProperty(nameof(CategoriaId), "categoriaId")]
 public partial class TecnicosRubroPage : ContentPage
 {
     private const string BASE_URL = "https://clickya-production.up.railway.app";
 
     private string _rubro = "";
+    private int _categoriaId;
+    public string CategoriaId
+    {
+        set
+        {
+            if (int.TryParse(value, out var id)) _categoriaId = id;
+            if (_categoriaId > 0) CargarTecnicos();
+        }
+    }
     public string Rubro
     {
         set
         {
             _rubro = value;
             LblRubro.Text = value;
-            CargarTecnicos(value);
+            if (_categoriaId > 0) CargarTecnicos();
         }
     }
 
@@ -24,13 +34,13 @@ public partial class TecnicosRubroPage : ContentPage
         InitializeComponent();
     }
 
-    private async void CargarTecnicos(string rubro)
+    private async void CargarTecnicos()
     {
         try
         {
             using var http = new HttpClient();
             var json = await http.GetStringAsync(
-                $"{BASE_URL}/api/Tecnico/categoria/{Uri.EscapeDataString(rubro)}");
+                $"{BASE_URL}/api/Tecnico/categoria/{_categoriaId}");
 
             var opciones = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var lista = JsonSerializer.Deserialize<List<TecnicoItem>>(json, opciones) ?? new();
@@ -51,7 +61,7 @@ public partial class TecnicosRubroPage : ContentPage
                         ? Location.CalculateDistance(ubicacionUsuario.Latitude, ubicacionUsuario.Longitude, t.Latitud, t.Longitud, DistanceUnits.Kilometers)
                         : double.MaxValue
                 })
-                .OrderByDescending(x => x.Tecnico.EsPremium)
+                .OrderByDescending(x => x.Tecnico.PremiumVigente)
                 .ThenBy(x => x.Km)
                 .Select(x => x.Tecnico)
                 .ToList();
@@ -85,9 +95,15 @@ public class TecnicoItem
     public string FotoPortada { get; set; } = "";
     public string Logo { get; set; } = "";
     public bool EsPremium { get; set; }
+    public bool PremiumVigente { get; set; }
     public bool Activo { get; set; }
     public double Latitud { get; set; } = 0;
     public double Longitud { get; set; } = 0;
+    public double PromedioEstrellas { get; set; }
+    public int CantidadOpiniones { get; set; }
+    public string ReputacionTexto => CantidadOpiniones == 0
+        ? "Sin opiniones"
+        : $"⭐ {PromedioEstrellas:F1} ({CantidadOpiniones})";
 
     public string Iniciales => Nombre.Length >= 2
         ? Nombre.Substring(0, 2).ToUpper()

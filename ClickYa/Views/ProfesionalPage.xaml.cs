@@ -5,6 +5,7 @@ using Microsoft.Maui.ApplicationModel;
 
 namespace ClickYa.Views;
 
+[Obsolete("Pantalla demostrativa reemplazada por PerfilTecnicoPage.")]
 public partial class ProfesionalPage : ContentPage
 {
     public ProfesionalPage()

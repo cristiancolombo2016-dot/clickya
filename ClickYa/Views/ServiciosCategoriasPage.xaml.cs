@@ -17,14 +17,7 @@ public partial class ServiciosCategoriasPage : ContentPage
     {
         InitializeComponent();
 
-        Categorias = new ObservableCollection<CategoriaServicio>
-        {
-            new CategoriaServicio { Nombre = "Electricista", Imagen = "electricos1.jfif" },
-            new CategoriaServicio { Nombre = "Refrigeración", Imagen = "refrigeracion2.jfif" },
-            new CategoriaServicio { Nombre = "Plomería", Imagen = "gasista1.png" },
-            new CategoriaServicio { Nombre = "Gasista", Imagen = "gasista1.jfif" },
-            new CategoriaServicio { Nombre = "Carpintería", Imagen = "carpintero2.jfif" }
-        };
+        Categorias = new ObservableCollection<CategoriaServicio>();
 
         ServiciosDestacados = new ObservableCollection<ServicioDestacado>();
 
@@ -50,6 +43,7 @@ public partial class ServiciosCategoriasPage : ContentPage
                     {
                         Categorias.Add(new CategoriaServicio
                         {
+                            Id = c.Id,
                             Nombre = c.Nombre,
                             Imagen = string.IsNullOrWhiteSpace(c.IconoUrl) ? "electricos1.jfif"
                                 : c.IconoUrl.StartsWith("http") ? c.IconoUrl
@@ -119,7 +113,7 @@ public partial class ServiciosCategoriasPage : ContentPage
             var opciones = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var tecnicos = System.Text.Json.JsonSerializer.Deserialize<List<TecnicoItem>>(json, opciones) ?? new();
 
-            var premiums = tecnicos.Where(t => t.EsPremium && t.Activo).ToList();
+            var premiums = tecnicos.Where(t => t.PremiumVigente && t.Activo).ToList();
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -175,7 +169,6 @@ public partial class ServiciosCategoriasPage : ContentPage
     {
         base.OnDisappearing();
         _bannerTimer?.Stop();
-        _buscarTimer?.Stop();
     }
 
     protected override void OnAppearing()
@@ -187,29 +180,17 @@ public partial class ServiciosCategoriasPage : ContentPage
 
     private async void BtnUrgencia_Clicked(object sender, EventArgs e)
     {
-        var rubros = new string[]
-        {
-            "Electricista", "Gasista", "Plomero",
-            "Aire acondicionado", "Carpintería", "Cerrajería", "Otro"
-        };
-
-        var seleccion = await DisplayActionSheet(
-            "¿Qué tipo de servicio necesitás?",
-            "Cancelar", null, rubros);
-
-        if (seleccion == null || seleccion == "Cancelar") return;
-
-        await Shell.Current.GoToAsync(
-            $"solicitar-servicio?rubro={Uri.EscapeDataString(seleccion)}");
+        await Shell.Current.GoToAsync("solicitar-servicio");
     }
+    private async void MisSolicitudes_Tapped(object sender, EventArgs e)
+        => await Shell.Current.GoToAsync("mis-solicitudes");
     private async void AbrirBuscador_Tapped(object sender, EventArgs e)
         => await Shell.Current.GoToAsync("buscador");
     private async void OnCategoriaTapped(object sender, TappedEventArgs e)
     {
-        var rubro = e.Parameter?.ToString();
-        if (string.IsNullOrEmpty(rubro)) return;
+        if (e.Parameter is not CategoriaServicio categoria) return;
         await Shell.Current.GoToAsync(
-            $"tecnicos-rubro?rubro={Uri.EscapeDataString(rubro)}");
+            $"tecnicos-rubro?categoriaId={categoria.Id}&rubro={Uri.EscapeDataString(categoria.Nombre)}");
     }
     private async void OnDestacadoTapped(object sender, TappedEventArgs e)
     {
@@ -218,41 +199,6 @@ public partial class ServiciosCategoriasPage : ContentPage
         await Shell.Current.GoToAsync($"perfil-tecnico?id={sd.TecnicoId}");
     }
 
-    private List<string> _todosLosRubros = new()
-    {
-        "Electricista", "Gasista", "Plomero",
-        "Aire acondicionado", "Carpintería", "Cerrajería",
-        "Refrigeración", "Plomería", "Pintor", "Techista"
-    };
-
-    private System.Timers.Timer? _buscarTimer;
-
-    private void OnBuscarChanged(object sender, TextChangedEventArgs e)
-    {
-        var texto = e.NewTextValue?.Trim() ?? "";
-        if (string.IsNullOrEmpty(texto) || texto.Length < 2) return;
-
-        _buscarTimer?.Stop();
-        _buscarTimer?.Dispose();
-
-        _buscarTimer = new System.Timers.Timer(1000);
-        _buscarTimer.AutoReset = false;
-        _buscarTimer.Elapsed += async (s, ev) =>
-        {
-            var coincidencia = _todosLosRubros
-                .FirstOrDefault(r => r.ToLower().StartsWith(texto.ToLower()));
-
-            if (coincidencia != null)
-            {
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    await Shell.Current.GoToAsync(
-                        $"tecnicos-rubro?rubro={Uri.EscapeDataString(coincidencia)}");
-                });
-            }
-        };
-        _buscarTimer?.Start();
-    }
 }
 
 public class BannerServicio
@@ -264,6 +210,7 @@ public class BannerServicio
 
 public class CategoriaServicio
 {
+    public int Id { get; set; }
     public string Nombre { get; set; } = string.Empty;
     public string Imagen { get; set; } = string.Empty;
 }

@@ -57,6 +57,13 @@
                     </Frame.GestureRecognizers>
                     <Label Text="🛍 Tiendas" TextColor="#CCC" FontSize="13"/>
                 </Frame>
+                <Frame x:Name="ChipServicios" CornerRadius="16" Padding="12,6"
+                       BackgroundColor="Transparent" HasShadow="False" BorderColor="#444">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="FiltroServicios_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <Label Text="🔧 Servicios" TextColor="#CCC" FontSize="13"/>
+                </Frame>
             </HorizontalStackLayout>
         </ScrollView>
 

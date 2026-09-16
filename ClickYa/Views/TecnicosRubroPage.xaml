@@ -84,6 +84,7 @@
        FontSize="16" TextColor="#4B0082"
        FontAttributes="Bold"
        IsVisible="{Binding TieneDireccion}"/>
+                                <Label Text="{Binding ReputacionTexto}" FontSize="13" TextColor="#B8860B"/>
                             </VerticalStackLayout>
 
                            

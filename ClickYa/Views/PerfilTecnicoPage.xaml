@@ -151,6 +151,23 @@
                 </VerticalStackLayout>
             </Frame>
 
+            <Frame Margin="18,16,18,0" CornerRadius="18" Padding="16" HasShadow="True" BackgroundColor="White">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Reputación" FontSize="18" FontAttributes="Bold" TextColor="#111"/>
+                    <Label x:Name="LblReputacion" Text="Sin opiniones" FontSize="16" TextColor="#B8860B"/>
+                    <CollectionView x:Name="ListaOpiniones" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <VerticalStackLayout Padding="0,6" Spacing="2">
+                                    <Label Text="{Binding EstrellasTexto}" TextColor="#B8860B"/>
+                                    <Label Text="{Binding Comentario}" TextColor="#555" LineBreakMode="WordWrap"/>
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
             <!-- PUBLICACIONES -->
             <Label Text="Publicaciones"
                    FontSize="20" FontAttributes="Bold"

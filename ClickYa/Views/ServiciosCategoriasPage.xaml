@@ -61,6 +61,21 @@
                     </Grid>
                 </Frame>
 
+                <Frame CornerRadius="16" Padding="14,12" HasShadow="False"
+                       BackgroundColor="#2A1040" BorderColor="#3A1A60" Margin="16,10,16,0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="MisSolicitudes_Tapped"/>
+                    </Frame.GestureRecognizers>
+                    <Grid ColumnDefinitions="52,*,Auto" ColumnSpacing="12">
+                        <Label Text="📋" FontSize="26" VerticalOptions="Center" HorizontalOptions="Center"/>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Mis solicitudes" TextColor="White" FontSize="15" FontAttributes="Bold"/>
+                            <Label Text="Consultá las ofertas recibidas" TextColor="#B8A0FF" FontSize="11"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" Text="›" FontSize="24" TextColor="#FFFFFF66" VerticalOptions="Center"/>
+                    </Grid>
+                </Frame>
+
                 <!-- BUSCADOR -->
                 <Frame CornerRadius="22" Padding="14,0" HeightRequest="52"
                        HasShadow="False" BorderColor="#3A1A60"
@@ -91,7 +106,7 @@
                                    BorderColor="#3A1A60" HasShadow="False" IsClippedToBounds="True">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnCategoriaTapped"
-                                                          CommandParameter="{Binding Nombre}"/>
+                                                          CommandParameter="{Binding .}"/>
                                 </Frame.GestureRecognizers>
                                 <Grid>
                                     <Image Source="{Binding Imagen}" Aspect="AspectFill"/>

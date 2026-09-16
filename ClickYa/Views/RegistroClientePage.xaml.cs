@@ -39,6 +39,7 @@ public partial class RegistroClientePage : ContentPage
 
         var rubro = RubroPicker.SelectedItem.ToString()!.ToLower();
         CategoriaPicker.ItemsSource = null;
+        CategoriaPicker.ItemDisplayBinding = new Binding(nameof(CategoriaItem.Nombre));
         CategoriaPicker.Title = "Cargando...";
 
         try
@@ -47,13 +48,14 @@ public partial class RegistroClientePage : ContentPage
             var categorias = await client.GetFromJsonAsync<List<CategoriaItem>>($"api/Categorias/seccion/{rubro}");
 
             if (categorias != null && categorias.Count > 0)
-                CategoriaPicker.ItemsSource = categorias.Select(c => c.Nombre).ToList();
+                CategoriaPicker.ItemsSource = categorias;
             else
-                CategoriaPicker.ItemsSource = new List<string> { "Sin categorías" };
+                CategoriaPicker.ItemsSource = Array.Empty<CategoriaItem>();
         }
         catch
         {
-            CategoriaPicker.ItemsSource = new List<string> { "Error al cargar" };
+            CategoriaPicker.ItemsSource = Array.Empty<CategoriaItem>();
+            await DisplayAlert("Error", "No se pudieron cargar las categorías.", "OK");
         }
 
         CategoriaPicker.Title = "Categoría";
@@ -76,6 +78,12 @@ public partial class RegistroClientePage : ContentPage
         try
         {
             var esServicio = RubroPicker.SelectedItem?.ToString() == "Servicios";
+            var categoria = CategoriaPicker.SelectedItem as CategoriaItem;
+            if (categoria == null)
+            {
+                await DisplayAlert("Datos incompletos", "Seleccioná una categoría válida.", "OK");
+                return;
+            }
             HttpResponseMessage response;
 
             if (esServicio)
@@ -83,7 +91,8 @@ public partial class RegistroClientePage : ContentPage
                 var tecnico = new
                 {
                     Nombre = NombreEntry.Text,
-                    Rubro = CategoriaPicker.SelectedItem?.ToString() ?? "",
+                    Rubro = categoria.Nombre,
+                    CategoriaId = categoria.Id,
                     WhatsApp = WhatsappEntry.Text
                 };
                 response = await client.PostAsJsonAsync("api/Tecnico/registro", tecnico);
@@ -105,7 +114,7 @@ public partial class RegistroClientePage : ContentPage
                 {
                     Nombre = NombreEntry.Text,
                     Rubro = RubroPicker.Items[RubroPicker.SelectedIndex],
-                    Categoria = CategoriaPicker.Items[CategoriaPicker.SelectedIndex],
+                    Categoria = categoria.Nombre,
                     Telefono = WhatsappEntry.Text,
                     Descripcion = string.IsNullOrWhiteSpace(MensajeEditor.Text) ? "Sin descripción" : MensajeEditor.Text,
                     Email = EmailEntry.Text.Trim(),

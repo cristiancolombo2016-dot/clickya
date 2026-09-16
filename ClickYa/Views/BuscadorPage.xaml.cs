@@ -1,6 +1,8 @@
 using ClickYa.Models;
 using ClickYa.Services;
 using System.Net.Http.Json;
+using System.Globalization;
+using System.Text;
 
 namespace ClickYa.Views
 {
@@ -55,6 +57,7 @@ namespace ClickYa.Views
                 _ubicacionUsuario = ubicacion;
             }
             catch { }
+
         }
 
         private double CalcularKm(double lat, double lng)
@@ -108,6 +111,25 @@ namespace ClickYa.Views
                             TipoNavegacion = "local"
                         });
                     }
+                }
+            }
+            catch { }
+
+            try
+            {
+                using var http = new HttpClient();
+                var tecnicos = await http.GetFromJsonAsync<List<TecnicoBusquedaDto>>($"{BASE_URL}/api/Tecnico");
+                foreach (var t in tecnicos ?? new())
+                {
+                    if (!t.Activo) continue;
+                    var km = CalcularKm(t.Latitud, t.Longitud);
+                    _todosResultados.Add(new ResultadoBusqueda
+                    {
+                        Id = t.Id, Nombre = t.Nombre, Subtitulo = t.Rubro,
+                        Logo = string.IsNullOrWhiteSpace(t.Logo) ? "tecnico.png" : $"{BASE_URL}{t.Logo}",
+                        Tipo = "TÃ©cnico", ColorTipo = "#7C3AED", Km = km,
+                        DistanciaTexto = FormatearDistancia(km), TipoNavegacion = "tecnico"
+                    });
                 }
             }
             catch { }
@@ -175,6 +197,7 @@ namespace ClickYa.Views
                 {
                     if (_filtroActivo == "comidas" && r.Tipo != "Comida" && r.Tipo != "Plato") return false;
                     if (_filtroActivo == "tiendas" && r.Tipo != "Tienda") return false;
+                    if (_filtroActivo == "servicios" && r.Tipo != "TÃ©cnico") return false;
 
                     if (r.Tipo == "Plato")
                         return Normalizar(r.Nombre).Contains(norm);
@@ -202,17 +225,17 @@ namespace ClickYa.Views
 
         private string Normalizar(string texto)
         {
-            return texto.ToLower()
-                .Replace("á", "a").Replace("é", "e").Replace("í", "i")
-                .Replace("ó", "o").Replace("ú", "u").Replace("ñ", "n");
+            var normalized = texto.ToLowerInvariant().Normalize(NormalizationForm.FormD);
+            return string.Concat(normalized.Where(c =>
+                CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark));
         }
 
         private void AplicarFiltro(string filtro)
         {
             _filtroActivo = filtro;
 
-            var chips = new[] { ChipTodo, ChipComidas, ChipTiendas };
-            var filtros = new[] { "todo", "comidas", "tiendas" };
+            var chips = new[] { ChipTodo, ChipComidas, ChipTiendas, ChipServicios };
+            var filtros = new[] { "todo", "comidas", "tiendas", "servicios" };
 
             for (int i = 0; i < chips.Length; i++)
             {
@@ -230,6 +253,7 @@ namespace ClickYa.Views
         private void FiltroTodo_Tapped(object sender, EventArgs e) => AplicarFiltro("todo");
         private void FiltroComidas_Tapped(object sender, EventArgs e) => AplicarFiltro("comidas");
         private void FiltroTiendas_Tapped(object sender, EventArgs e) => AplicarFiltro("tiendas");
+        private void FiltroServicios_Tapped(object sender, EventArgs e) => AplicarFiltro("servicios");
 
         private async void OnResultadoTapped(object sender, TappedEventArgs e)
         {
@@ -237,6 +261,8 @@ namespace ClickYa.Views
 
             if (resultado.TipoNavegacion == "local")
                 await Shell.Current.GoToAsync($"local?id={resultado.Id}");
+            else if (resultado.TipoNavegacion == "tecnico")
+                await Shell.Current.GoToAsync($"perfil-tecnico?id={resultado.Id}");
         }
 
         private async void Volver_Tapped(object sender, EventArgs e)
@@ -253,5 +279,16 @@ namespace ClickYa.Views
         public string Descripcion { get; set; } = "";
         public string ImagenUrl { get; set; } = "";
         public string Precio { get; set; } = "";
+    }
+
+    public sealed class TecnicoBusquedaDto
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; } = "";
+        public string Rubro { get; set; } = "";
+        public string Logo { get; set; } = "";
+        public bool Activo { get; set; }
+        public double Latitud { get; set; }
+        public double Longitud { get; set; }
     }
 }

@@ -19,11 +19,11 @@ namespace ClickYa
             Routing.RegisterRoute("producto-tienda", typeof(ProductoTiendaPage));
             Routing.RegisterRoute("tienda-local", typeof(TiendaLocalPage));
             Routing.RegisterRoute("servicios-categorias", typeof(ServiciosCategoriasPage));
-            Routing.RegisterRoute("profesional", typeof(ProfesionalPage));
             Routing.RegisterRoute("bares", typeof(BaresPage));
             Routing.RegisterRoute(nameof(BarPage), typeof(BarPage));
             Routing.RegisterRoute(nameof(RegistroClientePage), typeof(RegistroClientePage));
             Routing.RegisterRoute("solicitar-servicio", typeof(SolicitarServicioPage));
+            Routing.RegisterRoute("mis-solicitudes", typeof(MisSolicitudesPage));
             Routing.RegisterRoute("tecnicos-rubro", typeof(TecnicosRubroPage));
             Routing.RegisterRoute("perfil-tecnico", typeof(PerfilTecnicoPage));
             Routing.RegisterRoute("galeria-pub", typeof(GaleriaPublicacionPage));
