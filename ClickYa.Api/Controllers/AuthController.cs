@@ -61,6 +61,9 @@ public sealed class AuthController : ControllerBase
     [HttpPost("legacy-token")]
     public async Task<IActionResult> LegacyToken([FromBody] LegacyTokenRequest request)
     {
+        if (!_configuration.GetValue<bool>("Security:AllowLegacyTokens"))
+            return Unauthorized("Los accesos anteriores fueron deshabilitados. Solicitá un enlace nuevo.");
+
         var throttleKey = $"legacy:{HttpContext.Connection.RemoteIpAddress}";
         if (_throttle.IsBlocked(throttleKey))
             return StatusCode(StatusCodes.Status429TooManyRequests, "Demasiados intentos. Probá nuevamente más tarde.");

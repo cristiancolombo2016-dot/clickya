@@ -95,6 +95,7 @@ namespace ClickYa.Api.Controllers
 
             var needsUpgrade = false;
             var passwordOk = solicitud != null &&
+                             PasswordSecurity.IsHash(solicitud.Password) &&
                              PasswordSecurity.Verify(req.Password, solicitud.Password, out needsUpgrade);
 
             if (!passwordOk || solicitud == null)
