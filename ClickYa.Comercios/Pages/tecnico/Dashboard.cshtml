@@ -386,7 +386,7 @@
                 if (ubicacion) links.push(`<a href="${escHtml(ubicacion)}" target="_blank" rel="noopener" style="color:#4B0082;font-weight:600;">🗺️ Ver ubicación</a>`);
                 document.getElementById('txtLinks').innerHTML = links.join('');
 
-                if (tecnico.esPremium) document.getElementById('badgePremium').style.display = 'inline-block';
+                if (tecnico.premiumVigente) document.getElementById('badgePremium').style.display = 'inline-block';
                 if (tecnico.fotoPortada) {
                     document.getElementById('imgPortada').src = API + tecnico.fotoPortada;
                     document.getElementById('imgPortada').style.display = 'block';
@@ -684,41 +684,96 @@
         }
        
 
-             async function cargarUrgencias() {
+        async function cargarUrgencias() {
             if (!tecnico) return;
+            const section = document.createElement('div');
+            section.className = 'local-section';
+            section.innerHTML = `
+                <div class="section-title" style="color:#dc2626;">🚨 Urgencias</div>
+                <div id="estadoUrgencias" style="font-size:13px;color:#666;margin-bottom:10px;">Cargando...</div>
+                <div id="listaUrgencias"></div>
+                <div class="section-title" style="margin-top:20px;">Mis ofertas</div>
+                <div id="listaOfertas"></div>
+                <div class="section-title" style="margin-top:20px;">Contactos habilitados</div>
+                <div id="listaSeleccionadas"></div>`;
+            document.querySelector('.local-preview').insertBefore(section, document.querySelector('.local-section'));
+
             try {
-                const r = await fetch(`${API}/api/Urgencia/tecnico/${tecnico.id}`);
-                const lista = await r.json();
-                if (lista.length === 0) return;
-                const section = document.createElement('div');
-                section.className = 'local-section';
-                section.innerHTML = `
-                    <div class="section-title" style="color:#dc2626;">🚨 Urgencias recibidas</div>
-                    <div id="listaUrgencias"></div>
-                `;
-                document.querySelector('.local-preview').insertBefore(section, document.querySelector('.local-section'));
-                const contenedor = document.getElementById('listaUrgencias');
-                lista.forEach(u => {
-                    const fecha = new Date(u.fecha).toLocaleDateString('es-AR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
-                    const estadoSeguro = escHtml(u.estado);
-                    const fotoSegura = safeAssetUrl(u.fotoUrl);
-                    const whatsappSeguro = (u.whatsAppCliente || '').replace(/\D/g, '');
-                    contenedor.innerHTML += `
-                        <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-left:4px solid ${u.estado === 'Nueva' ? '#dc2626' : '#22c55e'}">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                                <span style="font-weight:700;font-size:15px;">${escHtml(u.rubro)}</span>
-                                <span style="font-size:12px;padding:3px 10px;border-radius:999px;background:${u.estado === 'Nueva' ? '#fee2e2' : '#dcfce7'};color:${u.estado === 'Nueva' ? '#dc2626' : '#16a34a'};font-weight:700;">${estadoSeguro}</span>
-                            </div>
-                            <p style="font-size:14px;color:#444;margin:0 0 8px;">${escHtml(u.descripcion)}</p>
-                            ${fotoSegura ? `<img src="${fotoSegura}" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin-bottom:8px;">` : ''}
-                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                                <a href="https://wa.me/${whatsappSeguro}" target="_blank" rel="noopener" style="background:#25D366;color:white;padding:7px 14px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;">📲 Contactar</a>
-                                <span style="font-size:12px;color:#888;">${fecha}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-            } catch(e) { console.error(e); }
+                const [disponibles, ofertas, seleccionadas] = await Promise.all([
+                    fetch(`${API}/api/Urgencia/disponibles`),
+                    fetch(`${API}/api/Urgencia/mis-ofertas`),
+                    fetch(`${API}/api/Urgencia/seleccionadas`)
+                ]);
+                const estado = document.getElementById('estadoUrgencias');
+                if (disponibles.status === 403) {
+                    estado.textContent = 'Necesitás una membresía Premium activa y vigente para ver urgencias y enviar ofertas.';
+                    document.getElementById('listaUrgencias').innerHTML = '';
+                } else if (!disponibles.ok) {
+                    estado.textContent = 'No se pudieron cargar las urgencias.';
+                } else {
+                    const lista = await disponibles.json();
+                    estado.textContent = lista.length ? 'Disponibles en tu rubro' : 'No hay urgencias abiertas en tu rubro.';
+                    document.getElementById('listaUrgencias').innerHTML = lista.map(u => tarjetaUrgencia(u)).join('');
+                }
+                if (ofertas.ok) {
+                    const lista = await ofertas.json();
+                    document.getElementById('listaOfertas').innerHTML = lista.length
+                        ? lista.map(o => tarjetaOferta(o)).join('')
+                        : '<p style="color:#777;font-size:13px;">Todavía no enviaste ofertas.</p>';
+                }
+                if (seleccionadas.ok) {
+                    const lista = await seleccionadas.json();
+                    document.getElementById('listaSeleccionadas').innerHTML = lista.length
+                        ? lista.map(s => tarjetaSeleccionada(s)).join('')
+                        : '<p style="color:#777;font-size:13px;">El contacto aparece cuando un cliente elige tu oferta.</p>';
+                }
+            } catch(e) {
+                document.getElementById('estadoUrgencias').textContent = 'No se pudieron cargar las urgencias.';
+                console.error(e);
+            }
+        }
+
+        function tarjetaUrgencia(u) {
+            const foto = safeAssetUrl(u.fotoUrl);
+            return `<div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-left:4px solid #dc2626">
+                <strong>${escHtml(u.rubro)}</strong><span style="float:right;color:#666;font-size:12px;">${escHtml(u.zonaBarrio)}</span>
+                <p style="font-size:14px;color:#444;">${escHtml(u.descripcion)}</p>
+                ${foto ? `<img src="${foto}" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin-bottom:8px;">` : ''}
+                ${u.yaOferto ? '<span style="color:#16a34a;font-weight:700;">Oferta enviada</span>' : `<button class="btn btn-dark" onclick="enviarOferta(${Number(u.id)})">Enviar oferta</button>`}
+            </div>`;
+        }
+
+        function tarjetaOferta(o) {
+            return `<div style="background:#fff;border-radius:12px;padding:12px;margin-bottom:8px;border:1px solid #eee;">
+                <strong>${escHtml(o.rubro)}</strong> · ${escHtml(o.zonaBarrio)}
+                <div>$ ${Number(o.precioEstimado).toLocaleString('es-AR')} · ${escHtml(o.disponibilidad)}</div>
+                <small>${o.seleccionada ? '✅ Elegida por el cliente' : 'Esperando decisión del cliente'}</small>
+            </div>`;
+        }
+
+        function tarjetaSeleccionada(s) {
+            const telefono = (s.contactoCliente || '').replace(/\D/g, '');
+            return `<div style="background:#ecfdf5;border-radius:12px;padding:12px;margin-bottom:8px;border:1px solid #86efac;">
+                <strong>${escHtml(s.rubro)}</strong><p>${escHtml(s.descripcion)}</p>
+                <div>📍 ${escHtml(s.direccionExacta)}</div><div>📲 ${escHtml(s.contactoCliente)}</div>
+                ${telefono ? `<a href="https://wa.me/${telefono}" target="_blank" rel="noopener" class="btn btn-dark">Contactar</a>` : ''}
+            </div>`;
+        }
+
+        async function enviarOferta(urgenciaId) {
+            const precioTexto = prompt('Precio estimado');
+            if (precioTexto === null) return;
+            const precioEstimado = Number(precioTexto.replace(',', '.'));
+            if (!Number.isFinite(precioEstimado) || precioEstimado < 0) { alert('Ingresá un precio válido.'); return; }
+            const disponibilidad = prompt('¿Cuándo podés ir? (Ahora, en 30 minutos, en 1 hora, etc.)');
+            if (!disponibilidad || !disponibilidad.trim()) return;
+            const mensaje = prompt('Mensaje breve (opcional)') || '';
+            const response = await fetch(`${API}/api/Urgencia/${urgenciaId}/ofertas`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ precioEstimado, disponibilidad: disponibilidad.trim(), mensaje: mensaje.trim() })
+            });
+            if (!response.ok) { alert(await response.text() || 'No se pudo enviar la oferta.'); return; }
+            location.reload();
         }
 
         function safeAssetUrl(value) {

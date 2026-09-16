@@ -252,13 +252,7 @@
             <div>
                 <label>Rubro</label>
                 <select id="inpRubro">
-                    <option value="Electricista">Electricista</option>
-                    <option value="Gasista">Gasista</option>
-                    <option value="Plomero">Plomero</option>
-                    <option value="Aire acondicionado">Aire acondicionado</option>
-                    <option value="Carpintería">Carpintería</option>
-                    <option value="Cerrajería">Cerrajería</option>
-                    <option value="Otro">Otro</option>
+                    <option value="">Cargando rubros...</option>
                 </select>
             </div>
             <div>
@@ -280,6 +274,15 @@
                 const API = '/secure-api';
         const DASHBOARD_URL = 'https://alert-kindness-production-90e4.up.railway.app/Tecnico/Dashboard';
         let tecnicosCache = [];
+
+        async function cargarRubros() {
+            const select = document.getElementById('inpRubro');
+            const response = await fetch(`${API}/api/Categorias/seccion/servicios`);
+            if (!response.ok) { select.innerHTML = '<option value="">No se pudieron cargar</option>'; return; }
+            const categorias = await response.json();
+            select.innerHTML = categorias.map(c =>
+                `<option value="${Number(c.id || c.Id)}">${escapeHtml(c.nombre || c.Nombre)}</option>`).join('');
+        }
 
         async function cargar() {
             const r = await fetch(`${API}/api/Tecnico`);
@@ -338,6 +341,7 @@
                 const rubroSeguro = escapeHtml(rubro);
                 const waSeguro = escapeHtml(wa);
                 const esPremium = t.esPremium || t.EsPremium || false;
+                const premiumVigente = t.premiumVigente ?? t.PremiumVigente ?? false;
                 const activo = t.activo || t.Activo || false;
                 const fechaPremium = t.fechaPremium || t.FechaPremium;
                 let badgeVencimiento = '';
@@ -354,7 +358,7 @@
                 <div class="row ${activo ? '' : 'row-inactivo'}">
                     <div class="info">
                         <h3>${nombreSeguro}
-                            <span class="badge ${esPremium ? 'badge-premium' : 'badge-gratuito'}">${esPremium ? '⭐ Premium' : 'Gratuito'}</span>
+                            <span class="badge ${premiumVigente ? 'badge-premium' : 'badge-gratuito'}">${premiumVigente ? '⭐ Premium vigente' : (esPremium ? 'Premium vencido' : 'Gratuito')}</span>
                             ${badgeVencimiento}
                             <span class="badge ${activo ? 'badge-activo' : 'badge-inactivo'}">${activo ? 'Activo' : 'Inactivo'}</span>
                         </h3>
@@ -364,7 +368,8 @@
                         <button class="btn btn-link" onclick="generarToken(${id})">Generar nuevo link</button>
                         <a class="btn btn-wa" href="https://wa.me/${waSeguro}" target="_blank" rel="noopener">💬 Mensaje</a>
                         ${esPremium
-                            ? `<button class="btn btn-quitar-premium" onclick="togglePremium(${id}, false)">Quitar premium</button>`
+                            ? `<button class="btn btn-premium" onclick="togglePremium(${id}, true)">Renovar 30 días</button>
+                               <button class="btn btn-quitar-premium" onclick="togglePremium(${id}, false)">Quitar premium</button>`
                             : `<button class="btn btn-premium" onclick="togglePremium(${id}, true)">⭐ Premium</button>`
                         }
                         ${activo
@@ -436,15 +441,17 @@
 
         async function guardarTecnico() {
             const nombre = document.getElementById('inpNombre').value.trim();
-            const rubro = document.getElementById('inpRubro').value;
+            const rubroSelect = document.getElementById('inpRubro');
+            const categoriaId = Number(rubroSelect.value);
+            const rubro = rubroSelect.options[rubroSelect.selectedIndex]?.text || '';
             const whatsApp = document.getElementById('inpWhatsApp').value.trim();
             const esPremium = document.getElementById('inpPremium').checked;
-            if (!nombre || !whatsApp) { alert('Completá todos los campos'); return; }
+            if (!nombre || !whatsApp || !categoriaId) { alert('Completá todos los campos'); return; }
             const fechaPremium = esPremium ? new Date().toISOString() : null;
             await fetch(`${API}/api/Tecnico`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, rubro, whatsApp, activo: true, esPremium, fechaPremium })
+                body: JSON.stringify({ nombre, rubro, categoriaId, whatsApp, activo: true, esPremium, fechaPremium })
             });
             cerrarModal();
             cargar();
@@ -459,7 +466,7 @@
 
         function onlyDigits(value) { return (value ?? '').toString().replace(/\D/g, ''); }
 
-        cargar();
+        Promise.all([cargarRubros(), cargar()]);
     </script>
 
 </body>
